@@ -56,11 +56,11 @@ public class MainActivity extends AppCompatActivity {
                 name_list.add(json.getString("name"));
                 storage_list.add(json.getString("storage"));
                 list.add(name_list.get(i)+"\n"+storage_list.get(i));
-//                list.add(jsonArray.getString(i));
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
+
 
 
         Add.setOnClickListener(new View.OnClickListener() {
@@ -84,7 +84,8 @@ public class MainActivity extends AppCompatActivity {
                 save.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Add(name.getText().toString(), storage.getText().toString());
+                        Save(name.getText().toString(), storage.getText().toString());
+
                         alertDialog.dismiss();
                     }
                 });
@@ -105,15 +106,27 @@ public class MainActivity extends AppCompatActivity {
                 Collections.swap(list, fromPosition, toPosition);
                 recyclerView.getAdapter().notifyItemMoved(fromPosition, toPosition);
 
-//                SharedPreferences prefs = getSharedPreferences("MySharedPref",MODE_PRIVATE);
-//                SharedPreferences.Editor editor = prefs.edit();
-//                editor.putString("key",  jsonArray.toString());
-//                editor.commit();
+                Toast.makeText(MainActivity.this, list.toString(), Toast.LENGTH_SHORT).show();
 
+                jsonArray = new JSONArray();
+                try {
+                    for(int i = 0; i < list.size(); i++){
+                        String[] text=list.get(i).split("\n");
+                        json = new JSONObject();
+                        json.put("name", text[0]);
+                        json.put("storage", text[1]);
+                        jsonArray.put(json);
+                    }
+                } catch (Exception e) {
+                    Log.d("error", "Error spotted:"+e);
+                }
 
-                Toast.makeText(MainActivity.this, jsonArray.toString(), Toast.LENGTH_SHORT).show();
+                SharedPreferences prefs = getSharedPreferences("MySharedPref",MODE_PRIVATE);
+                SharedPreferences.Editor editor = prefs.edit();
+                editor.putString("key",  jsonArray.toString());
+                editor.commit();
+                Log.d("array_data", "save array data:"+jsonArray.toString());
 
-                Log.d("array_data","change  array data order:"+jsonArray.toString());
                 return false;
             }
 
@@ -126,20 +139,20 @@ public class MainActivity extends AppCompatActivity {
         itemTouchHelper.attachToRecyclerView(recyclerView);
     }
 
-    public void Add(String name, String storage) {
+    public void Save(String name, String storage) {
+
+
+        //adding data works fine
         name_list.add(name);
         storage_list.add(storage);
-
-        list.add(name_list+"\n"+storage_list);
-
+        list.add(name+"\n"+storage);
         jsonArray = new JSONArray();
         try {
             for(int i = 0; i < list.size(); i++){
                 json = new JSONObject();
                 json.put("name", name_list.get(i));
                 json.put("storage", storage_list.get(i));
-                jsonArray.put(json); //jsonObj will be pushed into jsonArray
-//                jsonArray.put(list.get(i));
+                jsonArray.put(json);
             }
         } catch (Exception e) {
             Log.d("error", "Error spotted:"+e);
@@ -150,4 +163,7 @@ public class MainActivity extends AppCompatActivity {
         editor.commit();
         Log.d("array_data", "save array data:"+jsonArray.toString());
     }
+
+
+
 }
