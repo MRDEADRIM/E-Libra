@@ -76,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
                     public void onClick(View v) {
                         name_list.add(name.getText().toString());
                         storage_list.add(storage.getText().toString());
-                        list.add(name.getText().toString() + "\n" + storage);
+                        list.add(name.getText().toString() + "\n" + storage.getText().toString());
                         jsonArray = new JSONArray();
                         try {
                             for (i = 0; i < list.size(); i++) {
