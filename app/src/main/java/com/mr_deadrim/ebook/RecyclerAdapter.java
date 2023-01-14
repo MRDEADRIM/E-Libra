@@ -16,7 +16,6 @@ import java.util.List;
 
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHolder> {
 
-    private static final String TAG = "RecyclerAdapter";
     List<String> moviesList;
 
 
@@ -59,12 +58,12 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
             rowCountTextView = itemView.findViewById(R.id.rowCountTextView);
 
             itemView.setOnClickListener(this);
-
             itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View view) {
 //                    moviesList.remove(getAdapterPosition());
 //                    notifyItemRemoved(getAdapterPosition());
+                    Toast.makeText(view.getContext(), "long click", Toast.LENGTH_SHORT).show();
                     return true;
                 }
             });
@@ -74,20 +73,10 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
         @Override
         public void onClick(View view) {
 
-
-
-//            String selectedItem = (String) getAdapterPosition();
-//            textView.setText("The best football player is : " + selectedItem);
-
-//            lv_pdf.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//                @Override
-//                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-
-
-            Intent intent = new Intent(view.getContext(), PdfActivity.class);
-            intent.putExtra("name", moviesList.get(getAdapterPosition()));
-            intent.putExtra("path", "/sdcard/download/");
-            view.getContext().startActivity(intent);
+//            Intent intent = new Intent(view.getContext(), PdfActivity.class);
+//            intent.putExtra("name", moviesList.get(getAdapterPosition()));
+//            intent.putExtra("path", "/sdcard/download/");
+//            view.getContext().startActivity(intent);
 
 
 

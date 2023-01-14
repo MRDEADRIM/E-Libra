@@ -2,41 +2,50 @@ package com.mr_deadrim.ebook;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Environment;
 import android.widget.Toast;
 
-public class PdfActivity extends AppCompatActivity {
+import com.github.barteksc.pdfviewer.PDFView;
+import com.github.barteksc.pdfviewer.listener.OnPageChangeListener;
+
+import java.io.File;
+
+public class PdfActivity extends AppCompatActivity implements OnPageChangeListener {
+
+    private SharedPreferences pdfReader;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pdf);
 
-        Intent intent = getIntent();
-        String name = intent.getStringExtra("name");
-        String path = intent.getStringExtra("path");
+//        Intent intent = getIntent();
+//        String name = intent.getStringExtra("name");
+//        String path = intent.getStringExtra("path");
 
 
-//        pdfReader = this.getSharedPreferences("PDFReader", Context.MODE_PRIVATE);
-//        String path="/sdcard/abc.pdf";
-//        File file=new File(path);
-//
-//
-//        PDFView pdfView = (PDFView) findViewById(R.id.pdfbook);
-//        pdfView.fromFile(file)
-//                .defaultPage(pdfReader.getInt("pages",0))
-//                .onPageChange(this)
-//                .load();
+        pdfReader = this.getSharedPreferences("PDFReader", Context.MODE_PRIVATE);
+//        String path="/abc.pdf";
+        File file=new File(Environment.getExternalStorageDirectory()+"/abc.pdf");
 
-        Toast.makeText(this, path+name, Toast.LENGTH_SHORT).show();
+        PDFView pdfView = (PDFView) findViewById(R.id.pdfbook);
+        pdfView.fromFile(file)
+                .defaultPage(pdfReader.getInt("pages",0))
+                .onPageChange(this)
+                .load();
+
+//        Toast.makeText(this, path+name, Toast.LENGTH_SHORT).show();
     }
 
-//    @Override
-//    public void onPageChanged(int page, int pageCount) {
-//        SharedPreferences.Editor edit = pdfReader.edit();
-//        edit.putInt("pages",page);
-//        edit.commit();
-//    }
+
+    @Override
+    public void onPageChanged(int page, int pageCount) {
+        SharedPreferences.Editor edit = pdfReader.edit();
+        edit.putInt("pages",page);
+        edit.apply();
+    }
 }

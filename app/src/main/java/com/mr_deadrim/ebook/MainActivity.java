@@ -96,6 +96,8 @@ public class MainActivity extends AppCompatActivity {
                 alertDialog.show();
             }
         });
+//        recyclerAdapter = new RecyclerAdapter(list);
+
         recyclerAdapter = new RecyclerAdapter(list);
         recyclerView.setAdapter(recyclerAdapter);
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
