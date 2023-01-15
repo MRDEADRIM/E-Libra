@@ -1,7 +1,10 @@
 package com.mr_deadrim.ebook;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -16,8 +19,11 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -40,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Add = findViewById(R.id.add);
         recyclerView = findViewById(R.id.recyclerView);
+
         SharedPreferences prefs = getSharedPreferences("MySharedPref", MODE_PRIVATE);
         try {
             jsonArray = new JSONArray(prefs.getString("key", "[]"));
@@ -52,6 +59,42 @@ public class MainActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+//        JSONObject json = new JSONObject();
+//        try {
+//            json.put("name", "John Doe");
+//            json.put("age", 30);
+//            json.put("isStudent", false);
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
+
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//            if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+//                requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
+//            }
+//        }
+//
+//        File folder = new File("/sdcard/", "E Book");
+//        if (!folder.exists()) {
+//            Toast.makeText(this, "folder created successfully", Toast.LENGTH_SHORT).show();
+//            folder.mkdir();
+//        }
+//
+//        File file = new File(folder, "data.json");
+//        if (!file.exists()) {
+//            Toast.makeText(this, "text created successfully", Toast.LENGTH_SHORT).show();
+//            try {
+//                FileWriter fileWriter = new FileWriter(file);
+//                fileWriter.write(String.valueOf(jsonArray));
+//                fileWriter.flush();
+//                fileWriter.close();
+//            }catch (Exception e){
+//                Toast.makeText(this, "error"+e, Toast.LENGTH_SHORT).show();
+//            }
+//
+//        }
+
 
         Add.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -98,7 +141,7 @@ public class MainActivity extends AppCompatActivity {
         });
 //        recyclerAdapter = new RecyclerAdapter(list);
 
-        recyclerAdapter = new RecyclerAdapter(list);
+        recyclerAdapter = new RecyclerAdapter(jsonArray);
         recyclerView.setAdapter(recyclerAdapter);
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
         recyclerView.addItemDecoration(dividerItemDecoration);

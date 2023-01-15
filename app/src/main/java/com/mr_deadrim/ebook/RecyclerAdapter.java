@@ -12,16 +12,27 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.List;
 
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHolder> {
 
-    List<String> moviesList;
+
+    JSONArray jsonArray;
 
 
-    public RecyclerAdapter(List<String> moviesList) {
-        this.moviesList = moviesList;
+//    public RecyclerAdapter(List<String> moviesList) {
+//        this.moviesList = moviesList;
+//    }
+    public RecyclerAdapter(JSONArray jsonArray) {
+        this.jsonArray = jsonArray;
     }
+
+
 
     @NonNull
     @Override
@@ -34,15 +45,19 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.rowCountTextView.setText(String.valueOf(position));
-        holder.textView.setText(moviesList.get(position));
-
-
+        try {
+            JSONObject jsonObject = jsonArray.getJSONObject(position);
+            String name = jsonObject.getString("name");
+            String storage = jsonObject.getString("storage");
+            holder.textView.setText(String.valueOf(jsonObject));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public int getItemCount() {
-        return moviesList.size();
+        return jsonArray.length();
     }
 
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -73,14 +88,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
         @Override
         public void onClick(View view) {
 
-//            Intent intent = new Intent(view.getContext(), PdfActivity.class);
-//            intent.putExtra("name", moviesList.get(getAdapterPosition()));
-//            intent.putExtra("path", "/sdcard/download/");
-//            view.getContext().startActivity(intent);
-
-
-
-            Toast.makeText(view.getContext(), moviesList.get(getAdapterPosition()), Toast.LENGTH_SHORT).show();
+            Toast.makeText(view.getContext(), "click", Toast.LENGTH_SHORT).show();
         }
 
     }

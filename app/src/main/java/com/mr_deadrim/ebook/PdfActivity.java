@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.widget.Toast;
@@ -28,17 +29,17 @@ public class PdfActivity extends AppCompatActivity implements OnPageChangeListen
 //        String path = intent.getStringExtra("path");
 
 
-        pdfReader = this.getSharedPreferences("PDFReader", Context.MODE_PRIVATE);
-//        String path="/abc.pdf";
-        File file=new File(Environment.getExternalStorageDirectory()+"/abc.pdf");
+//        pdfReader = this.getSharedPreferences("PDFReader", Context.MODE_PRIVATE);
+//        File file=new File(Environment.getExternalStorageDirectory()+"/abc.pdf");
+//        PDFView pdfView = (PDFView) findViewById(R.id.pdfbook);
+//        pdfView.fromFile(file)
+//                .defaultPage(pdfReader.getInt("pages",0))
+//                .onPageChange(this)
+//                .load();
 
-        PDFView pdfView = (PDFView) findViewById(R.id.pdfbook);
-        pdfView.fromFile(file)
-                .defaultPage(pdfReader.getInt("pages",0))
-                .onPageChange(this)
-                .load();
 
-//        Toast.makeText(this, path+name, Toast.LENGTH_SHORT).show();
+
+
     }
 
 
