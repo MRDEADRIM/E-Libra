@@ -120,18 +120,15 @@ public class MainActivity extends AppCompatActivity {
                         name_list.add(name.getText().toString());
                         storage_list.add(storage.getText().toString());
                         list.add(name.getText().toString() + "\n" + storage.getText().toString());
-                        jsonArray = new JSONArray();
+                        JSONObject json = new JSONObject();
                         try {
-                            for (i = 0; i < list.size(); i++) {
-                                json = new JSONObject();
-                                json.put("name", name_list.get(i));
-                                json.put("storage", storage_list.get(i));
-                                jsonArray.put(json);
-                            }
-                        } catch (Exception e) {
-                            Log.d("error", "Error spotted on add:" + e);
-                            Toast.makeText(MainActivity.this, "Error spotted on add", Toast.LENGTH_SHORT).show();
+                            json.put("name", name.getText().toString());
+                            json.put("storage", storage.getText().toString());
+                            jsonArray.put(json);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
+                        Toast.makeText(MainActivity.this, jsonArray.toString(), Toast.LENGTH_SHORT).show();
                         Save();
                         alertDialog.dismiss();
                     }
