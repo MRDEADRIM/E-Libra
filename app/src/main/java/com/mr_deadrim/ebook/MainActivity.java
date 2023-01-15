@@ -60,42 +60,6 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-//        JSONObject json = new JSONObject();
-//        try {
-//            json.put("name", "John Doe");
-//            json.put("age", 30);
-//            json.put("isStudent", false);
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//        }
-
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//            if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-//                requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
-//            }
-//        }
-//
-//        File folder = new File("/sdcard/", "E Book");
-//        if (!folder.exists()) {
-//            Toast.makeText(this, "folder created successfully", Toast.LENGTH_SHORT).show();
-//            folder.mkdir();
-//        }
-//
-//        File file = new File(folder, "data.json");
-//        if (!file.exists()) {
-//            Toast.makeText(this, "text created successfully", Toast.LENGTH_SHORT).show();
-//            try {
-//                FileWriter fileWriter = new FileWriter(file);
-//                fileWriter.write(String.valueOf(jsonArray));
-//                fileWriter.flush();
-//                fileWriter.close();
-//            }catch (Exception e){
-//                Toast.makeText(this, "error"+e, Toast.LENGTH_SHORT).show();
-//            }
-//
-//        }
-
-
         Add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -120,6 +84,7 @@ public class MainActivity extends AppCompatActivity {
                         name_list.add(name.getText().toString());
                         storage_list.add(storage.getText().toString());
                         list.add(name.getText().toString() + "\n" + storage.getText().toString());
+
                         JSONObject json = new JSONObject();
                         try {
                             json.put("name", name.getText().toString());
@@ -136,8 +101,6 @@ public class MainActivity extends AppCompatActivity {
                 alertDialog.show();
             }
         });
-//        recyclerAdapter = new RecyclerAdapter(list);
-
         recyclerAdapter = new RecyclerAdapter(jsonArray);
         recyclerView.setAdapter(recyclerAdapter);
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);

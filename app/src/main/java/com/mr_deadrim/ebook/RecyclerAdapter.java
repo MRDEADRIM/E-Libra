@@ -76,7 +76,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
             itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View view) {
-//                    moviesList.remove(getAdapterPosition());
+//                    jsonArray.remove(getAdapterPosition());
 //                    notifyItemRemoved(getAdapterPosition());
                     Toast.makeText(view.getContext(), "long click", Toast.LENGTH_SHORT).show();
                     return true;
