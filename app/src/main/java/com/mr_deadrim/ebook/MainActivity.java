@@ -32,13 +32,10 @@ public class MainActivity extends AppCompatActivity {
 
     RecyclerView recyclerView;
     RecyclerAdapter recyclerAdapter;
-    List<String> list = new ArrayList<>();
     Button Add;
-    int fromPosition, toPosition, i;
-    ArrayList<String> name_list = new ArrayList<>();
-    ArrayList<String> storage_list = new ArrayList<>();
+    int fromPosition, toPosition;
     JSONArray jsonArray;
-    JSONObject json;
+    JSONObject json,temp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,11 +47,8 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences prefs = getSharedPreferences("MySharedPref", MODE_PRIVATE);
         try {
             jsonArray = new JSONArray(prefs.getString("key", "[]"));
-            for (i = 0; i < jsonArray.length(); i++) {
+            for (int i = 0; i < jsonArray.length(); i++) {
                 json = (JSONObject) jsonArray.get(i);
-                name_list.add(json.getString("name"));
-                storage_list.add(json.getString("storage"));
-                list.add(name_list.get(i) + "\n" + storage_list.get(i));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -81,10 +75,6 @@ public class MainActivity extends AppCompatActivity {
                 save.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        name_list.add(name.getText().toString());
-                        storage_list.add(storage.getText().toString());
-                        list.add(name.getText().toString() + "\n" + storage.getText().toString());
-
                         JSONObject json = new JSONObject();
                         try {
                             json.put("name", name.getText().toString());
@@ -109,25 +99,18 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
-                fromPosition = viewHolder.getAdapterPosition();
-                toPosition = target.getAdapterPosition();
-                Collections.swap(list, fromPosition, toPosition);
-                recyclerView.getAdapter().notifyItemMoved(fromPosition, toPosition);
-                Toast.makeText(MainActivity.this, list.toString(), Toast.LENGTH_SHORT).show();
-                jsonArray = new JSONArray();
                 try {
-                    for (i = 0; i < list.size(); i++) {
-                        String[] text = list.get(i).split("\n");
-                        json = new JSONObject();
-                        json.put("name", text[0]);
-                        json.put("storage", text[1]);
-                        jsonArray.put(json);
-                    }
+                    fromPosition = viewHolder.getAdapterPosition();
+                    toPosition = target.getAdapterPosition();
+                    temp = (JSONObject) jsonArray.get(fromPosition);
+                    jsonArray.put(fromPosition, jsonArray.get(toPosition));
+                    jsonArray.put(toPosition, temp);
+                    recyclerView.getAdapter().notifyItemMoved(fromPosition, toPosition);
+                    Save();
                 } catch (Exception e) {
                     Log.d("error", "Error spotted on move:" + e);
-                    Toast.makeText(MainActivity.this, "Error spotted on save", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "Error spotted on move", Toast.LENGTH_SHORT).show();
                 }
-                Save();
                 return false;
             }
 
