@@ -1,8 +1,11 @@
 package com.mr_deadrim.ebook;
 
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.DocumentsContract;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -17,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import android.app.Activity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -24,6 +28,10 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerAdapter recyclerAdapter;
     private Button addButton;
     private JSONArray jsonArray;
+    public View dialogView;
+    public EditText nameEditText,storageEditText;
+    private static final int FILE_PICKER_REQUEST_CODE = 1;
+    private static final String TAG = "MainActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,11 +50,20 @@ public class MainActivity extends AppCompatActivity {
 
         addButton.setOnClickListener(v -> {
             final AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
-            View dialogView = getLayoutInflater().inflate(R.layout.dialog, null);
-            final EditText nameEditText = dialogView.findViewById(R.id.name);
-            final EditText storageEditText = dialogView.findViewById(R.id.storage);
+            dialogView = getLayoutInflater().inflate(R.layout.dialog, null);
+            nameEditText = dialogView.findViewById(R.id.name);
+            storageEditText = dialogView.findViewById(R.id.storage);
             Button cancelButton = dialogView.findViewById(R.id.btn_cancel);
             Button saveButton = dialogView.findViewById(R.id.btn_okay);
+            Button fileManager =dialogView.findViewById(R.id.button);
+
+            fileManager.setOnClickListener(view -> {
+
+                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                intent.setType("*/*");
+                intent.addCategory(Intent.CATEGORY_OPENABLE);
+                ((Activity) this).startActivityForResult(intent, FILE_PICKER_REQUEST_CODE);
+            });
 
             alert.setView(dialogView);
             final AlertDialog alertDialog = alert.create();
@@ -102,6 +119,23 @@ public class MainActivity extends AppCompatActivity {
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
         itemTouchHelper.attachToRecyclerView(recyclerView);
     }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == FILE_PICKER_REQUEST_CODE && resultCode == RESULT_OK && data != null) {
+            Uri selectedFileUri = data.getData();
+            String filePath = selectedFileUri.getPath();
+
+//            EditText storageEditText = dialogView.findViewById(R.id.storage);
+            storageEditText.setText(filePath);
+
+        }
+    }
+
+
+
 
     private void save() {
         SharedPreferences prefs = getSharedPreferences("MySharedPref", MODE_PRIVATE);
