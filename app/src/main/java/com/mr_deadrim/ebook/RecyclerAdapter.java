@@ -2,6 +2,7 @@ package com.mr_deadrim.ebook;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Handler;
 import android.util.Log;
@@ -21,6 +22,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHolder> {
 
     private static JSONArray jsonArray;
@@ -28,6 +31,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
     public RecyclerAdapter(JSONArray jsonArray) {
         this.jsonArray = jsonArray;
     }
+
 
     @NonNull
     @Override
@@ -138,11 +142,20 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
         public void onClick(View v) {
             try {
                 JSONObject jsonObject = jsonArray.getJSONObject(getAdapterPosition());
-                Context context = itemView.getContext();
-                PdfActivity.startActivity(context, jsonObject.toString());
+                String storagePath = jsonObject.getString("storage");
+                File file = new File(storagePath);
+                if (file.exists()) {
+                    Context context = itemView.getContext();
+                    Intent intent = new Intent(context, PdfActivity.class);
+                    intent.putExtra("storage", storagePath);
+                    context.startActivity(intent);
+                } else {
+                    Toast.makeText(itemView.getContext(), "File not found", Toast.LENGTH_SHORT).show();
+                }
             } catch (JSONException e) {
                 throw new RuntimeException(e);
             }
+
         }
 
         private void save() {

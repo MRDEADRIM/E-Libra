@@ -30,8 +30,7 @@ public class MainActivity extends AppCompatActivity {
     private JSONArray jsonArray;
     public View dialogView;
     public EditText nameEditText,storageEditText;
-    private static final int FILE_PICKER_REQUEST_CODE = 1;
-    private static final String TAG = "MainActivity";
+    private static final int PICK_FILE_REQUEST_CODE = 100;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,11 +57,10 @@ public class MainActivity extends AppCompatActivity {
             Button fileManager =dialogView.findViewById(R.id.button);
 
             fileManager.setOnClickListener(view -> {
-
-                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                intent.setType("*/*");
+                Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                intent.setType("application/pdf");
                 intent.addCategory(Intent.CATEGORY_OPENABLE);
-                ((Activity) this).startActivityForResult(intent, FILE_PICKER_REQUEST_CODE);
+                startActivityForResult(intent, PICK_FILE_REQUEST_CODE);
             });
 
             alert.setView(dialogView);
@@ -124,13 +122,16 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == FILE_PICKER_REQUEST_CODE && resultCode == RESULT_OK && data != null) {
-            Uri selectedFileUri = data.getData();
-            String filePath = selectedFileUri.getPath();
-
-//            EditText storageEditText = dialogView.findViewById(R.id.storage);
-            storageEditText.setText(filePath);
-
+        if (requestCode == PICK_FILE_REQUEST_CODE && resultCode == Activity.RESULT_OK && data != null) {
+            Uri uri = data.getData();
+            if (uri != null) {
+                String filePath = FileUtils.getPathFromURI(this, uri);
+                if (filePath != null) {
+                    storageEditText.setText(filePath);
+                } else {
+                    Toast.makeText(this, "Failed to get file path", Toast.LENGTH_SHORT).show();
+                }
+            }
         }
     }
 
