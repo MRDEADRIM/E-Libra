@@ -1,5 +1,6 @@
 package com.mr_deadrim.ebook;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -143,12 +144,16 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
             try {
                 JSONObject jsonObject = jsonArray.getJSONObject(getAdapterPosition());
                 String storagePath = jsonObject.getString("storage");
+                Integer page = jsonObject.getInt("page");
                 File file = new File(storagePath);
                 if (file.exists()) {
                     Context context = itemView.getContext();
                     Intent intent = new Intent(context, PdfActivity.class);
+                    intent.putExtra("position",getAdapterPosition());
                     intent.putExtra("storage", storagePath);
+                    intent.putExtra("page",page);
                     context.startActivity(intent);
+                    ((Activity) context).finish();
                 } else {
                     Toast.makeText(itemView.getContext(), "File not found", Toast.LENGTH_SHORT).show();
                 }

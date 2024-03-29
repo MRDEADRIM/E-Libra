@@ -1,30 +1,22 @@
 package com.mr_deadrim.ebook;
 
 import androidx.appcompat.app.AppCompatActivity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
-import android.util.Log;
 import android.widget.Toast;
 import com.github.barteksc.pdfviewer.PDFView;
 import com.github.barteksc.pdfviewer.listener.OnPageChangeListener;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.io.File;
 
 public class PdfActivity extends AppCompatActivity implements OnPageChangeListener {
 
-    private SharedPreferences pdfReader;
     public String storage;
+    public int position,current_page;
 
-    public static void startActivity(Context context, String jsonString) {
-        Intent intent = new Intent(context, PdfActivity.class);
-        intent.putExtra("jsonObject", jsonString);
-        context.startActivity(intent);
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,22 +25,51 @@ public class PdfActivity extends AppCompatActivity implements OnPageChangeListen
 
         Intent intent = getIntent();
         storage = intent.getStringExtra("storage");
+        position = intent.getIntExtra("position",0);
+        current_page=intent.getIntExtra("page",0);
         File file = new File(storage);
-        pdfReader = this.getSharedPreferences("PDFReader", Context.MODE_PRIVATE);
-        PDFView pdfView = (PDFView) findViewById(R.id.pdfbook);
+        PDFView pdfView = findViewById(R.id.pdfbook);
         pdfView.fromFile(file)
-                .defaultPage(pdfReader.getInt("pages", 0))
+                .defaultPage(current_page)
                 .onPageChange(this)
                 .load();
     }
 
+
     @Override
     public void onPageChanged(int page, int pageCount) {
-        SharedPreferences.Editor edit = pdfReader.edit();
-        edit.putInt("pages",page);
-        edit.apply();
-
-        Toast.makeText(this, "page:"+page, Toast.LENGTH_SHORT).show();
-
+        current_page=page;
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        savePage();
+    }
+
+    private void savePage() {
+        SharedPreferences prefs = getSharedPreferences("MySharedPref", MODE_PRIVATE);
+        try {
+            JSONArray jsonArray = new JSONArray(prefs.getString("key", "[]"));
+            JSONObject json = jsonArray.getJSONObject(position);
+            json.put("page", current_page);
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putString("key", jsonArray.toString());
+            editor.apply();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        Toast.makeText(this, "page saved.", Toast.LENGTH_SHORT).show();
+    }
+
+
+
 }

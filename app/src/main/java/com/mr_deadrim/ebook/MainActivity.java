@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.ItemTouchHelper;
@@ -24,9 +25,6 @@ import android.app.Activity;
 
 public class MainActivity extends AppCompatActivity {
 
-    private RecyclerView recyclerView;
-    private RecyclerAdapter recyclerAdapter;
-    private Button addButton;
     private JSONArray jsonArray;
     public View dialogView;
     public EditText nameEditText,storageEditText;
@@ -37,8 +35,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        addButton = findViewById(R.id.add);
-        recyclerView = findViewById(R.id.recyclerView);
+        Button addButton = findViewById(R.id.add);
+        RecyclerView recyclerView = findViewById(R.id.recyclerView);
 
         SharedPreferences prefs = getSharedPreferences("MySharedPref", MODE_PRIVATE);
         try {
@@ -74,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
                     JSONObject json = new JSONObject();
                     json.put("name", nameEditText.getText().toString());
                     json.put("storage", storageEditText.getText().toString());
+                    json.put("page",0);
                     jsonArray.put(json);
                     Toast.makeText(MainActivity.this, jsonArray.toString(), Toast.LENGTH_SHORT).show();
                     save();
@@ -86,10 +85,16 @@ public class MainActivity extends AppCompatActivity {
             alertDialog.show();
         });
 
-        recyclerAdapter = new RecyclerAdapter(jsonArray);
+        RecyclerAdapter recyclerAdapter = new RecyclerAdapter(jsonArray);
         recyclerView.setAdapter(recyclerAdapter);
         recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
 
+        ItemTouchHelper itemTouchHelper = getItemTouchHelper();
+        itemTouchHelper.attachToRecyclerView(recyclerView);
+    }
+
+    @NonNull
+    private ItemTouchHelper getItemTouchHelper() {
         ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP | ItemTouchHelper.DOWN | ItemTouchHelper.START | ItemTouchHelper.END, 0) {
             @Override
             public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
@@ -115,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
         };
 
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
-        itemTouchHelper.attachToRecyclerView(recyclerView);
+        return itemTouchHelper;
     }
 
 
