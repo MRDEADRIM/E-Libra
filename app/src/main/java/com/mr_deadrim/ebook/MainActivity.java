@@ -1,12 +1,14 @@
 package com.mr_deadrim.ebook;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.DocumentsContract;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -28,8 +30,8 @@ public class MainActivity extends AppCompatActivity {
     private JSONArray jsonArray;
     public View dialogView;
     public EditText nameEditText,storageEditText;
-    private static final int PICK_FILE_REQUEST_CODE = 100;
-
+    private static final int PICK_FILE_REQUEST_CODE = 1;
+    RecyclerAdapter recyclerAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,6 +75,7 @@ public class MainActivity extends AppCompatActivity {
                     json.put("name", nameEditText.getText().toString());
                     json.put("storage", storageEditText.getText().toString());
                     json.put("page",0);
+                    json.put("total_pages",0);
                     jsonArray.put(json);
                     Toast.makeText(MainActivity.this, jsonArray.toString(), Toast.LENGTH_SHORT).show();
                     save();
@@ -80,12 +83,13 @@ public class MainActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
                 alertDialog.dismiss();
+                recyclerAdapter.notifyDataSetChanged();
             });
 
             alertDialog.show();
         });
 
-        RecyclerAdapter recyclerAdapter = new RecyclerAdapter(jsonArray);
+        recyclerAdapter = new RecyclerAdapter(jsonArray);
         recyclerView.setAdapter(recyclerAdapter);
         recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
 
@@ -127,21 +131,23 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == PICK_FILE_REQUEST_CODE && resultCode == Activity.RESULT_OK && data != null) {
+        if (resultCode == Activity.RESULT_OK && data != null) {
             Uri uri = data.getData();
             if (uri != null) {
                 String filePath = FileUtils.getPathFromURI(this, uri);
                 if (filePath != null) {
-                    storageEditText.setText(filePath);
+                    if (requestCode == 1){
+                        storageEditText.setText(filePath);
+                    }
+                    if(requestCode == 2) {
+                        recyclerAdapter.setFilePath(filePath);
+                    }
                 } else {
                     Toast.makeText(this, "Failed to get file path", Toast.LENGTH_SHORT).show();
                 }
             }
         }
     }
-
-
-
 
     private void save() {
         SharedPreferences prefs = getSharedPreferences("MySharedPref", MODE_PRIVATE);

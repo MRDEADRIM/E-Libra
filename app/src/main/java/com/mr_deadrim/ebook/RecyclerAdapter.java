@@ -15,23 +15,24 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.io.File;
 
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHolder> {
 
     private static JSONArray jsonArray;
+    public EditText nameEditText,storageEditText;
+    public View dialogView;
 
     public RecyclerAdapter(JSONArray jsonArray) {
         this.jsonArray = jsonArray;
     }
+
+
 
 
     @NonNull
@@ -40,15 +41,28 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
         View view = layoutInflater.inflate(R.layout.row_item, parent, false);
         return new ViewHolder(view);
+
+
     }
+
+    public void setFilePath(String filePath) {
+        storageEditText.setText(filePath);
+    }
+
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         try {
             JSONObject jsonObject = jsonArray.getJSONObject(position);
             String name = jsonObject.getString("name");
-            String storage = jsonObject.getString("storage");
-            holder.textView.setText(String.valueOf(jsonObject));
+            String page = jsonObject.getString("page");
+            String total_pages = jsonObject.getString("total_pages");
+
+            holder.name.setText(name);
+
+            holder.pages.setText(" [ " + page + " | " + total_pages + " ] ");
+
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -59,16 +73,22 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
         return jsonArray.length();
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+
+
+    class ViewHolder extends RecyclerView.ViewHolder  implements View.OnClickListener  {
         private ImageView imageView;
-        private TextView textView, rowCountTextView;
+        private TextView name,pages,rowCountTextView;
         private Button updateButton, deleteButton;
+        private static final int PICK_FILE_REQUEST_CODE = 2;
+
+
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
+
             imageView = itemView.findViewById(R.id.imageView);
-            textView = itemView.findViewById(R.id.textView);
-            rowCountTextView = itemView.findViewById(R.id.rowCountTextView);
+            name = itemView.findViewById(R.id.textViewName);
+            pages = itemView.findViewById(R.id.textViewPages);
             updateButton = itemView.findViewById(R.id.btn_update);
             deleteButton = itemView.findViewById(R.id.btn_delete);
 
@@ -91,9 +111,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
                 Context context = itemView.getContext();
                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
                 LayoutInflater inflater = LayoutInflater.from(context);
-                View dialogView = inflater.inflate(R.layout.dialog, null);
-                EditText nameEditText = dialogView.findViewById(R.id.name);
-                EditText storageEditText = dialogView.findViewById(R.id.storage);
+               dialogView = inflater.inflate(R.layout.dialog, null);
+               nameEditText = dialogView.findViewById(R.id.name);
+               storageEditText = dialogView.findViewById(R.id.storage);
 
                 try {
                     JSONObject jsonObject = jsonArray.getJSONObject(getAdapterPosition());
@@ -108,6 +128,14 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 
                 Button cancelButton = dialogView.findViewById(R.id.btn_cancel);
                 Button saveButton = dialogView.findViewById(R.id.btn_okay);
+
+                Button fileManager = dialogView.findViewById(R.id.button);
+                fileManager.setOnClickListener(view -> {
+                    Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                    intent.setType("application/pdf");
+                    intent.addCategory(Intent.CATEGORY_OPENABLE);
+                    ((Activity) context).startActivityForResult(intent, PICK_FILE_REQUEST_CODE);
+                });
 
                 builder.setView(dialogView);
                 builder.setTitle("Update");

@@ -15,7 +15,7 @@ import java.io.File;
 public class PdfActivity extends AppCompatActivity implements OnPageChangeListener {
 
     public String storage;
-    public int position,current_page;
+    public int position,current_page,total_pages;
 
 
     @Override
@@ -39,6 +39,7 @@ public class PdfActivity extends AppCompatActivity implements OnPageChangeListen
     @Override
     public void onPageChanged(int page, int pageCount) {
         current_page=page;
+        total_pages=pageCount;
     }
 
     @Override
@@ -61,6 +62,7 @@ public class PdfActivity extends AppCompatActivity implements OnPageChangeListen
             JSONArray jsonArray = new JSONArray(prefs.getString("key", "[]"));
             JSONObject json = jsonArray.getJSONObject(position);
             json.put("page", current_page);
+            json.put("total_pages",total_pages);
             SharedPreferences.Editor editor = prefs.edit();
             editor.putString("key", jsonArray.toString());
             editor.apply();
@@ -69,7 +71,4 @@ public class PdfActivity extends AppCompatActivity implements OnPageChangeListen
         }
         Toast.makeText(this, "page saved.", Toast.LENGTH_SHORT).show();
     }
-
-
-
 }
