@@ -59,8 +59,6 @@ public class MainActivity extends AppCompatActivity {
             Button imageButton =dialogView.findViewById(R.id.button3);
             imageView = dialogView.findViewById(R.id.imageButton);
 
-
-
             fileManager.setOnClickListener(view -> {
                 Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
                 intent.setType("application/pdf");
@@ -86,14 +84,15 @@ public class MainActivity extends AppCompatActivity {
                     json.put("page",0);
                     json.put("total_pages",0);
                     jsonArray.put(json);
-                    Toast.makeText(MainActivity.this, jsonArray.toString(), Toast.LENGTH_SHORT).show();
-                    Log.d("json_array",jsonArray.toString());
+
                     save();
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                alertDialog.dismiss();
                 recyclerAdapter.notifyDataSetChanged();
+                image_path="";
+                alertDialog.dismiss();
+
             });
 
             alertDialog.show();
@@ -146,22 +145,10 @@ public class MainActivity extends AppCompatActivity {
                 String filePath = FileUtils.getPathFromURI(this, uri);
                 if (filePath != null) {
                     if (requestCode == 21) {
-                        try {
-                            Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
-                            imageView.setImageBitmap(bitmap);
-                            image_path=filePath;
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
+                        imageView.setImageURI(Uri.parse(filePath));
+                        image_path=filePath;
                     }
                     if(requestCode == 22){
-//                        try {
-//                            Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
-//                            imageView.setImageBitmap(bitmap);
-//                            image_path=filePath;
-//                        } catch (IOException e) {
-//                            e.printStackTrace();
-//                        }
                         recyclerAdapter.setImagePath(filePath);
                     }
                     if (requestCode == 1){

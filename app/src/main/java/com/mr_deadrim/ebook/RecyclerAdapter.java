@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.Environment;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -31,9 +33,6 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
     public EditText nameEditText,storageEditText;
     public ImageView imagePreview;
     public View dialogView;
-    public File imgFile;
-    Bitmap bitmap;
-
     public String image_path;
 
     public RecyclerAdapter(JSONArray jsonArray) {
@@ -53,13 +52,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
         storageEditText.setText(filePath);
     }
     public void setImagePath(String filePath){
-        File imgFile = new  File(filePath);
-        if(imgFile.exists()) {
-            bitmap= BitmapFactory.decodeFile(imgFile.getAbsolutePath());
-            imagePreview.setImageBitmap(bitmap);
-        }else{
-
-        }
+        imagePreview.setImageURI(Uri.parse(filePath));
         image_path=filePath;
     }
 
@@ -72,12 +65,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
             String page = jsonObject.getString("page");
             String total_pages = jsonObject.getString("total_pages");
             String image_path = jsonObject.getString("image_path");
-            File imgFile = new  File(image_path);
-            if(imgFile.exists()) {
-                bitmap= BitmapFactory.decodeFile(imgFile.getAbsolutePath());
-                holder.imageView.setImageBitmap(bitmap);
-            }else{
-            }
+            holder.imageView.setImageURI(Uri.parse(image_path));
             holder.name.setText(name);
             holder.pages.setText(" [ " + page + " | " + total_pages + " ] ");
         } catch (JSONException e) {
@@ -133,14 +121,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
                     String storage = jsonObject.getString("storage");
                     storageEditText.setText(storage);
                     nameEditText.setText(name);
-
-                    File imgFile = new  File(jsonObject.getString("image_path"));
-                    if(imgFile.exists()) {
-                        bitmap= BitmapFactory.decodeFile(imgFile.getAbsolutePath());
-                        imagePreview.setImageBitmap(bitmap);
-                    }else{
-
-                    }
+                    imagePreview.setImageURI(Uri.parse(jsonObject.getString("image_path")));
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -165,7 +146,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
                 });
 
                 builder.setView(dialogView);
-                builder.setTitle("Update");
+                builder.setTitle(" [ U P D A T E ] ");
                 AlertDialog dialog = builder.create();
                 dialog.show();
 

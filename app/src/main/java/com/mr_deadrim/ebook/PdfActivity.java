@@ -17,7 +17,6 @@ public class PdfActivity extends AppCompatActivity implements OnPageChangeListen
     public String storage;
     public int position,current_page,total_pages;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
