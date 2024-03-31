@@ -1,37 +1,38 @@
 package com.mr_deadrim.ebook;
 
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.DocumentsContract;
+import android.provider.MediaStore;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import android.app.Activity;
+import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
 
     private JSONArray jsonArray;
     public View dialogView;
     public EditText nameEditText,storageEditText;
-    private static final int PICK_FILE_REQUEST_CODE = 1;
+    private static final int PICK_FILE_REQUEST_CODE = 1,PICK_IMAGE_REQUEST=21;
     RecyclerAdapter recyclerAdapter;
+    private ImageView imageView;
+    public String image_path="";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,6 +56,10 @@ public class MainActivity extends AppCompatActivity {
             Button cancelButton = dialogView.findViewById(R.id.btn_cancel);
             Button saveButton = dialogView.findViewById(R.id.btn_okay);
             Button fileManager =dialogView.findViewById(R.id.button);
+            Button imageButton =dialogView.findViewById(R.id.button3);
+            imageView = dialogView.findViewById(R.id.imageButton);
+
+
 
             fileManager.setOnClickListener(view -> {
                 Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
@@ -62,7 +67,10 @@ public class MainActivity extends AppCompatActivity {
                 intent.addCategory(Intent.CATEGORY_OPENABLE);
                 startActivityForResult(intent, PICK_FILE_REQUEST_CODE);
             });
-
+            imageButton.setOnClickListener(view -> {
+                Intent galleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(galleryIntent, PICK_IMAGE_REQUEST);
+            });
             alert.setView(dialogView);
             final AlertDialog alertDialog = alert.create();
             alertDialog.setCanceledOnTouchOutside(false);
@@ -72,12 +80,14 @@ public class MainActivity extends AppCompatActivity {
             saveButton.setOnClickListener(v12 -> {
                 try {
                     JSONObject json = new JSONObject();
+                    json.put("image_path",image_path);
                     json.put("name", nameEditText.getText().toString());
                     json.put("storage", storageEditText.getText().toString());
                     json.put("page",0);
                     json.put("total_pages",0);
                     jsonArray.put(json);
                     Toast.makeText(MainActivity.this, jsonArray.toString(), Toast.LENGTH_SHORT).show();
+                    Log.d("json_array",jsonArray.toString());
                     save();
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -127,7 +137,6 @@ public class MainActivity extends AppCompatActivity {
         return itemTouchHelper;
     }
 
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -136,6 +145,25 @@ public class MainActivity extends AppCompatActivity {
             if (uri != null) {
                 String filePath = FileUtils.getPathFromURI(this, uri);
                 if (filePath != null) {
+                    if (requestCode == 21) {
+                        try {
+                            Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
+                            imageView.setImageBitmap(bitmap);
+                            image_path=filePath;
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    if(requestCode == 22){
+//                        try {
+//                            Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
+//                            imageView.setImageBitmap(bitmap);
+//                            image_path=filePath;
+//                        } catch (IOException e) {
+//                            e.printStackTrace();
+//                        }
+                        recyclerAdapter.setImagePath(filePath);
+                    }
                     if (requestCode == 1){
                         storageEditText.setText(filePath);
                     }
