@@ -5,10 +5,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.Environment;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -52,8 +49,10 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
         storageEditText.setText(filePath);
     }
     public void setImagePath(String filePath){
-        imagePreview.setImageURI(Uri.parse(filePath));
-        image_path=filePath;
+        if(!filePath.isEmpty()){
+            imagePreview.setImageURI(Uri.parse(filePath));
+            image_path=filePath;
+        }
     }
 
 
@@ -80,7 +79,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 
     class ViewHolder extends RecyclerView.ViewHolder  implements View.OnClickListener  {
         private ImageView imageView;
-        private TextView name,pages,rowCountTextView;
+        private TextView name,pages;
         private Button updateButton, deleteButton;
         private static final int PICK_FILE_REQUEST_CODE = 2,PICK_IMAGE_REQUEST=22;
 
