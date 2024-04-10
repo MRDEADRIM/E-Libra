@@ -6,14 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-
-<!--    <com.github.barteksc.pdfviewer.PDFView-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="match_parent"-->
-<!--        android:id="@+id/pdfbook"-->
-<!--        tools:ignore="MissingClass">-->
-<!--    </com.github.barteksc.pdfviewer.PDFView>-->
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="0dp"

@@ -156,13 +156,16 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
                         String newStorage = storageEditText.getText().toString();
                         jsonObject.put("name", newName);
                         jsonObject.put("storage", newStorage);
-                        jsonObject.put("image_path", image_path);
+                        if(image_path != null){
+                            jsonObject.put("image_path", image_path);
+                        }
                         notifyItemChanged(getAdapterPosition());
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                     save();
                     dialog.dismiss();
+                    image_path=null;
                 });
 
                 cancelButton.setOnClickListener(v12 -> dialog.dismiss());
