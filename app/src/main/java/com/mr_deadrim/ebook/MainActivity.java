@@ -33,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
     RecyclerAdapter recyclerAdapter;
     private ImageView imageView;
     public String image_path="";
+    boolean isAllFieldsChecked = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,9 +56,14 @@ public class MainActivity extends AppCompatActivity {
             storageEditText = dialogView.findViewById(R.id.storage);
             Button cancelButton = dialogView.findViewById(R.id.btn_cancel);
             Button saveButton = dialogView.findViewById(R.id.btn_okay);
-            Button fileManager =dialogView.findViewById(R.id.button);
-            Button imageButton =dialogView.findViewById(R.id.button3);
+            ImageView fileManager =dialogView.findViewById(R.id.button);
+            ImageView imageButton =dialogView.findViewById(R.id.button3);
             imageView = dialogView.findViewById(R.id.imageButton);
+
+            if(image_path.equals("")){
+                imageView.setImageResource(R.mipmap.ic_launcher);
+            }
+
 
             fileManager.setOnClickListener(view -> {
                 Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
@@ -76,23 +82,25 @@ public class MainActivity extends AppCompatActivity {
             cancelButton.setOnClickListener(v1 -> alertDialog.dismiss());
 
             saveButton.setOnClickListener(v12 -> {
-                try {
-                    JSONObject json = new JSONObject();
-                    json.put("image_path",image_path);
-                    json.put("name", nameEditText.getText().toString());
-                    json.put("storage", storageEditText.getText().toString());
-                    json.put("page",0);
-                    json.put("total_pages",0);
-                    jsonArray.put(json);
 
-                    save();
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                isAllFieldsChecked = CheckAllFields();
+                if(isAllFieldsChecked){
+                    try {
+                        JSONObject json = new JSONObject();
+                        json.put("image_path",image_path);
+                        json.put("name", nameEditText.getText().toString());
+                        json.put("storage", storageEditText.getText().toString());
+                        json.put("page",0);
+                        json.put("total_pages",0);
+                        jsonArray.put(json);
+                        save();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    recyclerAdapter.notifyDataSetChanged();
+                    image_path="";
+                    alertDialog.dismiss();
                 }
-                recyclerAdapter.notifyDataSetChanged();
-                image_path="";
-                alertDialog.dismiss();
-
             });
 
             alertDialog.show();
@@ -104,6 +112,18 @@ public class MainActivity extends AppCompatActivity {
 
         ItemTouchHelper itemTouchHelper = getItemTouchHelper();
         itemTouchHelper.attachToRecyclerView(recyclerView);
+    }
+    private boolean CheckAllFields() {
+        if (nameEditText.length() == 0) {
+            nameEditText.setError("This field is required");
+            return false;
+        }
+
+        if (storageEditText.length() == 0) {
+            storageEditText.setError("This field is required");
+            return false;
+        }
+        return true;
     }
 
     @NonNull

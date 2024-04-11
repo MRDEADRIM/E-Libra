@@ -64,7 +64,11 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
             String page = jsonObject.getString("page");
             String total_pages = jsonObject.getString("total_pages");
             String image_path = jsonObject.getString("image_path");
-            holder.imageView.setImageURI(Uri.parse(image_path));
+            if(image_path.equals("")){
+                holder.imageView.setImageResource(R.mipmap.ic_launcher);
+            }else{
+                holder.imageView.setImageURI(Uri.parse(image_path));
+            }
             holder.name.setText(name);
             holder.pages.setText(" [ " + page + " | " + total_pages + " ] ");
         } catch (JSONException e) {
@@ -80,8 +84,10 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
     class ViewHolder extends RecyclerView.ViewHolder  implements View.OnClickListener  {
         private ImageView imageView;
         private TextView name,pages;
-        private Button updateButton, deleteButton;
+        private ImageView updateButton, deleteButton;
         private static final int PICK_FILE_REQUEST_CODE = 2,PICK_IMAGE_REQUEST=22;
+
+        boolean isAllFieldsChecked = false;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -118,9 +124,15 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
                     JSONObject jsonObject = jsonArray.getJSONObject(getAdapterPosition());
                     String name = jsonObject.getString("name");
                     String storage = jsonObject.getString("storage");
+                    String image_path=jsonObject.getString("image_path");
                     storageEditText.setText(storage);
                     nameEditText.setText(name);
-                    imagePreview.setImageURI(Uri.parse(jsonObject.getString("image_path")));
+
+                    if(image_path.equals("")){
+                        imagePreview.setImageResource(R.mipmap.ic_launcher);
+                    }else{
+                        imagePreview.setImageURI(Uri.parse(image_path));
+                    }
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -128,8 +140,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 
                 Button cancelButton = dialogView.findViewById(R.id.btn_cancel);
                 Button saveButton = dialogView.findViewById(R.id.btn_okay);
-                Button fileManager = dialogView.findViewById(R.id.button);
-                Button imageButton =dialogView.findViewById(R.id.button3);
+                ImageView fileManager = dialogView.findViewById(R.id.button);
+                ImageView imageButton =dialogView.findViewById(R.id.button3);
 
 
                 fileManager.setOnClickListener(view -> {
@@ -145,27 +157,30 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
                 });
 
                 builder.setView(dialogView);
-                builder.setTitle(" [ U P D A T E ] ");
+                builder.setTitle(" [ E D I T ] ");
                 AlertDialog dialog = builder.create();
                 dialog.show();
 
                 saveButton.setOnClickListener(v1 -> {
-                    try {
-                        JSONObject jsonObject = jsonArray.getJSONObject(getAdapterPosition());
-                        String newName = nameEditText.getText().toString();
-                        String newStorage = storageEditText.getText().toString();
-                        jsonObject.put("name", newName);
-                        jsonObject.put("storage", newStorage);
-                        if(image_path != null){
-                            jsonObject.put("image_path", image_path);
+                    isAllFieldsChecked = CheckAllFields();
+                    if(isAllFieldsChecked) {
+                        try {
+                            JSONObject jsonObject = jsonArray.getJSONObject(getAdapterPosition());
+                            String newName = nameEditText.getText().toString();
+                            String newStorage = storageEditText.getText().toString();
+                            jsonObject.put("name", newName);
+                            jsonObject.put("storage", newStorage);
+                            if (image_path != null) {
+                                jsonObject.put("image_path", image_path);
+                            }
+                            notifyItemChanged(getAdapterPosition());
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
-                        notifyItemChanged(getAdapterPosition());
-                    } catch (JSONException e) {
-                        e.printStackTrace();
+                        save();
+                        dialog.dismiss();
+                        image_path = null;
                     }
-                    save();
-                    dialog.dismiss();
-                    image_path=null;
                 });
 
                 cancelButton.setOnClickListener(v12 -> dialog.dismiss());
@@ -176,6 +191,19 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
                 notifyItemRemoved(getAdapterPosition());
                 save();
             });
+        }
+
+        private boolean CheckAllFields() {
+            if (nameEditText.length() == 0) {
+                nameEditText.setError("This field is required");
+                return false;
+            }
+
+            if (storageEditText.length() == 0) {
+                storageEditText.setError("This field is required");
+                return false;
+            }
+            return true;
         }
 
         @Override
