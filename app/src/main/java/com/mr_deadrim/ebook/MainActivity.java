@@ -1,10 +1,13 @@
 package com.mr_deadrim.ebook;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -15,6 +18,8 @@ import android.widget.ImageView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
@@ -24,20 +29,28 @@ import org.json.JSONObject;
 import android.app.Activity;
 import java.io.IOException;
 
+import android.content.Intent;
+
 public class MainActivity extends AppCompatActivity {
 
     private JSONArray jsonArray;
     public View dialogView;
     public EditText nameEditText,storageEditText;
     private static final int PICK_FILE_REQUEST_CODE = 1,PICK_IMAGE_REQUEST=21;
+    private static final int STORAGE_PERMISSION_REQUEST_CODE = 1001;
+    private static final int MY_PERMISSIONS_REQUEST_READ_CONTACTS = 1;
     RecyclerAdapter recyclerAdapter;
     private ImageView imageView;
     public String image_path="";
     boolean isAllFieldsChecked = false;
+    private static final int PERMISSION_REQUEST_CODE = 100;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        checkPermission();
 
         Button addButton = findViewById(R.id.add);
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
@@ -126,6 +139,7 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+
     @NonNull
     private ItemTouchHelper getItemTouchHelper() {
         ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP | ItemTouchHelper.DOWN | ItemTouchHelper.START | ItemTouchHelper.END, 0) {
@@ -183,6 +197,16 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+
+    private void checkPermission() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)== PackageManager.PERMISSION_GRANTED ) {
+        } else {
+            Intent intent = new Intent(this, PermissionActivity.class);
+            startActivity(intent);
+            finish();
+        }
+    }
+
 
     private void save() {
         SharedPreferences prefs = getSharedPreferences("MySharedPref", MODE_PRIVATE);
