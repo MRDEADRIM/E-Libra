@@ -5,11 +5,10 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.MediaStore;
+import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -17,8 +16,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.ItemTouchHelper;
@@ -27,9 +26,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import android.app.Activity;
-import java.io.IOException;
-
-import android.content.Intent;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -37,8 +33,6 @@ public class MainActivity extends AppCompatActivity {
     public View dialogView;
     public EditText nameEditText,storageEditText;
     private static final int PICK_FILE_REQUEST_CODE = 1,PICK_IMAGE_REQUEST=21;
-    private static final int STORAGE_PERMISSION_REQUEST_CODE = 1001;
-    private static final int MY_PERMISSIONS_REQUEST_READ_CONTACTS = 1;
     RecyclerAdapter recyclerAdapter;
     private ImageView imageView;
     public String image_path="";
@@ -79,14 +73,15 @@ public class MainActivity extends AppCompatActivity {
 
 
             fileManager.setOnClickListener(view -> {
-                Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-                intent.setType("application/pdf");
-                intent.addCategory(Intent.CATEGORY_OPENABLE);
-                startActivityForResult(intent, PICK_FILE_REQUEST_CODE);
+                Intent intent = new Intent(MainActivity.this, FileManagerActivity.class);
+                intent.putExtra("status", "add_document");
+                ((Activity) MainActivity.this).startActivityForResult(intent, PICK_FILE_REQUEST_CODE);
+
             });
             imageButton.setOnClickListener(view -> {
-                Intent galleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(galleryIntent, PICK_IMAGE_REQUEST);
+                Intent intent = new Intent(MainActivity.this, FileManagerActivity.class);
+                intent.putExtra("status", "add_image");
+                ((Activity) MainActivity.this).startActivityForResult(intent, PICK_IMAGE_REQUEST);
             });
             alert.setView(dialogView);
             final AlertDialog alertDialog = alert.create();
@@ -170,14 +165,18 @@ public class MainActivity extends AppCompatActivity {
         return itemTouchHelper;
     }
 
+
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == Activity.RESULT_OK && data != null) {
-            Uri uri = data.getData();
-            if (uri != null) {
-                String filePath = FileUtils.getPathFromURI(this, uri);
-                if (filePath != null) {
+                if (data != null) {
+                    String filePath = data.getStringExtra("path");
+                    if (requestCode == 1){
+                        storageEditText.setText(filePath);
+                    }
+                    if(requestCode == 2) {
+                        recyclerAdapter.setFilePath(filePath);
+                    }
                     if (requestCode == 21) {
                         imageView.setImageURI(Uri.parse(filePath));
                         image_path=filePath;
@@ -185,25 +184,27 @@ public class MainActivity extends AppCompatActivity {
                     if(requestCode == 22){
                         recyclerAdapter.setImagePath(filePath);
                     }
-                    if (requestCode == 1){
-                        storageEditText.setText(filePath);
-                    }
-                    if(requestCode == 2) {
-                        recyclerAdapter.setFilePath(filePath);
-                    }
-                } else {
-                    Toast.makeText(this, "Failed to get file path", Toast.LENGTH_SHORT).show();
                 }
-            }
-        }
     }
 
+
     private void checkPermission() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)== PackageManager.PERMISSION_GRANTED ) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            if (Environment.isExternalStorageManager()) {
+                Toast.makeText(this, "alredy granted1", Toast.LENGTH_SHORT).show();
+            } else {
+                Intent intent = new Intent(this, PermissionActivity.class);
+                startActivity(intent);
+                finish();
+            }
         } else {
-            Intent intent = new Intent(this, PermissionActivity.class);
-            startActivity(intent);
-            finish();
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.MANAGE_EXTERNAL_STORAGE)== PackageManager.PERMISSION_GRANTED ) {
+            Toast.makeText(this, "alredy granted2", Toast.LENGTH_SHORT).show();
+            } else {
+                Intent intent = new Intent(this, PermissionActivity.class);
+                startActivity(intent);
+                finish();
+            }
         }
     }
 

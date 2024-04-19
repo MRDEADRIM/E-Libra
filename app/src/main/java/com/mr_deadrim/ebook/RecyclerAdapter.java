@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Handler;
-import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,7 +34,6 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
     public RecyclerAdapter(JSONArray jsonArray) {
         this.jsonArray = jsonArray;
     }
-
 
     @NonNull
     @Override
@@ -143,17 +141,16 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
                 ImageView fileManager = dialogView.findViewById(R.id.button);
                 ImageView imageButton =dialogView.findViewById(R.id.button3);
 
-
                 fileManager.setOnClickListener(view -> {
-                    Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-                    intent.setType("application/pdf");
-                    intent.addCategory(Intent.CATEGORY_OPENABLE);
+                    Intent intent = new Intent(context, FileManagerActivity.class);
+                    intent.putExtra("status", "add_document");
                     ((Activity) context).startActivityForResult(intent, PICK_FILE_REQUEST_CODE);
                 });
 
                 imageButton.setOnClickListener(view -> {
-                    Intent galleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                    ((Activity) context).startActivityForResult(galleryIntent, PICK_IMAGE_REQUEST);
+                    Intent intent = new Intent(context, FileManagerActivity.class);
+                    intent.putExtra("status", "add_image");
+                    ((Activity) context).startActivityForResult(intent, PICK_IMAGE_REQUEST);
                 });
 
                 builder.setView(dialogView);
