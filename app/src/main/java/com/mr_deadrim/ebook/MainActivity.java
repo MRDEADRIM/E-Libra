@@ -32,12 +32,11 @@ public class MainActivity extends AppCompatActivity {
     private JSONArray jsonArray;
     public View dialogView;
     public EditText nameEditText,storageEditText;
-    private static final int PICK_FILE_REQUEST_CODE = 1,PICK_IMAGE_REQUEST=21;
+    private static final int PICK_FILE_REQUEST_CODE = 1, PICK_IMAGE_REQUEST_CODE =21;
     RecyclerAdapter recyclerAdapter;
     private ImageView imageView;
     public String image_path="";
     boolean isAllFieldsChecked = false;
-    private static final int PERMISSION_REQUEST_CODE = 100;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,14 +62,13 @@ public class MainActivity extends AppCompatActivity {
             storageEditText = dialogView.findViewById(R.id.storage);
             Button cancelButton = dialogView.findViewById(R.id.btn_cancel);
             Button saveButton = dialogView.findViewById(R.id.btn_okay);
-            ImageView fileManager =dialogView.findViewById(R.id.button);
-            ImageView imageButton =dialogView.findViewById(R.id.button3);
+            ImageView fileManager = dialogView.findViewById(R.id.button);
+            ImageView imageButton = dialogView.findViewById(R.id.button3);
             imageView = dialogView.findViewById(R.id.imageButton);
 
-            if(image_path.equals("")){
+            if(image_path.isEmpty()){
                 imageView.setImageResource(R.mipmap.ic_launcher);
             }
-
 
             fileManager.setOnClickListener(view -> {
                 Intent intent = new Intent(MainActivity.this, FileManagerActivity.class);
@@ -81,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
             imageButton.setOnClickListener(view -> {
                 Intent intent = new Intent(MainActivity.this, FileManagerActivity.class);
                 intent.putExtra("status", "add_image");
-                ((Activity) MainActivity.this).startActivityForResult(intent, PICK_IMAGE_REQUEST);
+                ((Activity) MainActivity.this).startActivityForResult(intent, PICK_IMAGE_REQUEST_CODE);
             });
             alert.setView(dialogView);
             final AlertDialog alertDialog = alert.create();
@@ -191,15 +189,15 @@ public class MainActivity extends AppCompatActivity {
     private void checkPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             if (Environment.isExternalStorageManager()) {
-                Toast.makeText(this, "alredy granted1", Toast.LENGTH_SHORT).show();
+
             } else {
                 Intent intent = new Intent(this, PermissionActivity.class);
                 startActivity(intent);
                 finish();
             }
         } else {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.MANAGE_EXTERNAL_STORAGE)== PackageManager.PERMISSION_GRANTED ) {
-            Toast.makeText(this, "alredy granted2", Toast.LENGTH_SHORT).show();
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)== PackageManager.PERMISSION_GRANTED ) {
+
             } else {
                 Intent intent = new Intent(this, PermissionActivity.class);
                 startActivity(intent);

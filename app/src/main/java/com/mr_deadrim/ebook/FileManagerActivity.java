@@ -35,13 +35,8 @@ public class FileManagerActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_file_manager);
 
-
         Intent intent = getIntent();
         status = intent.getStringExtra("status");
-
-        Toast.makeText(this, status, Toast.LENGTH_SHORT).show();
-
-
         internalStoragePath = Environment.getExternalStorageDirectory().getAbsolutePath();
         fileList = new ArrayList<>();
         listView = findViewById(R.id.listView);
@@ -56,7 +51,6 @@ public class FileManagerActivity extends AppCompatActivity {
                     internalStoragePath = fileName;
                     displayFiles(internalStoragePath);
                 } else {
-                    Toast.makeText(FileManagerActivity.this, fileName, Toast.LENGTH_SHORT).show();
                     Intent resultIntent = new Intent();
                     resultIntent.putExtra("path", fileName);
                     setResult(RESULT_OK, resultIntent);
@@ -66,8 +60,6 @@ public class FileManagerActivity extends AppCompatActivity {
         });
     }
     private void displayFiles(String directoryPath) {
-        Toast.makeText(this, status, Toast.LENGTH_SHORT).show();
-
         path_text.setText(directoryPath);
         File directory = new File(directoryPath);
         File[] files = directory.listFiles();
@@ -81,7 +73,6 @@ public class FileManagerActivity extends AppCompatActivity {
                 if (status.equals("add_image") && (file.isDirectory() || file.getName().toLowerCase().endsWith(".png") || file.getName().toLowerCase().endsWith(".jpg") || file.getName().toLowerCase().endsWith(".jpeg"))) {
                     fileList.add(String.valueOf(file));
                 }
-                fileList.add(String.valueOf(file));
             }
         }
         FileManagerAdapter adapter = new FileManagerAdapter(this, fileList);

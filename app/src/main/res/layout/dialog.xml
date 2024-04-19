@@ -73,7 +73,8 @@
         android:id="@+id/button"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:src="@android:drawable/ic_menu_set_as"
+        android:layout_marginEnd="8dp"
+        android:src="@drawable/file_manager"
         app:layout_constraintBottom_toBottomOf="@+id/storage"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/storage" />

@@ -68,6 +68,6 @@ public class PdfActivity extends AppCompatActivity implements OnPageChangeListen
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        Toast.makeText(this, "page saved.", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "progress saved.", Toast.LENGTH_SHORT).show();
     }
 }

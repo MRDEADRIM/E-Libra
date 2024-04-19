@@ -62,7 +62,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
             String page = jsonObject.getString("page");
             String total_pages = jsonObject.getString("total_pages");
             String image_path = jsonObject.getString("image_path");
-            if(image_path.equals("")){
+            if(image_path.isEmpty()){
                 holder.imageView.setImageResource(R.mipmap.ic_launcher);
             }else{
                 holder.imageView.setImageURI(Uri.parse(image_path));
