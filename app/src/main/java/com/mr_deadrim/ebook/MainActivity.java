@@ -167,22 +167,22 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-                if (data != null) {
-                    String filePath = data.getStringExtra("path");
-                    if (requestCode == 1){
-                        storageEditText.setText(filePath);
-                    }
-                    if(requestCode == 2) {
-                        recyclerAdapter.setFilePath(filePath);
-                    }
-                    if (requestCode == 21) {
-                        imageView.setImageURI(Uri.parse(filePath));
-                        image_path=filePath;
-                    }
-                    if(requestCode == 22){
-                        recyclerAdapter.setImagePath(filePath);
-                    }
-                }
+        if (data != null) {
+            String filePath = data.getStringExtra("path");
+            if (requestCode == 1){
+                storageEditText.setText(filePath);
+            }
+            if(requestCode == 2) {
+                recyclerAdapter.setFilePath(filePath);
+            }
+            if (requestCode == 21) {
+                imageView.setImageURI(Uri.parse(filePath));
+                image_path=filePath;
+            }
+            if(requestCode == 22){
+                recyclerAdapter.setImagePath(filePath);
+            }
+        }
     }
 
 
@@ -196,7 +196,7 @@ public class MainActivity extends AppCompatActivity {
                 finish();
             }
         } else {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)== PackageManager.PERMISSION_GRANTED ) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)== PackageManager.PERMISSION_GRANTED ) {
 
             } else {
                 Intent intent = new Intent(this, PermissionActivity.class);

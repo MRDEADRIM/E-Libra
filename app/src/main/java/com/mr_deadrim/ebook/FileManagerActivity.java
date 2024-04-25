@@ -25,6 +25,7 @@ import java.util.Objects;
 public class FileManagerActivity extends AppCompatActivity {
 
     private ArrayList<String> fileList;
+
     private String internalStoragePath;
     private ListView listView;
     public TextView path_text;
