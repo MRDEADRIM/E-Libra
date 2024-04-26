@@ -49,11 +49,9 @@ public class ZoomLayout extends RecyclerView {
     private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
         private static final float MIN_SCALE_FACTOR = 0.0f;
         private static final float MAX_SCALE_FACTOR = 2.0f;
-        private float originalScaleFactor = 1.0f;
 
         @Override
         public boolean onScaleBegin(ScaleGestureDetector detector) {
-            originalScaleFactor = scaleFactor;
             return super.onScaleBegin(detector);
         }
 
