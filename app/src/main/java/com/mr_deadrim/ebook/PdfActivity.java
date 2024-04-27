@@ -1,40 +1,49 @@
 package com.mr_deadrim.ebook;
 
 
-import android.annotation.SuppressLint;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.graphics.PointF;
 import android.graphics.pdf.PdfRenderer;
 import android.os.Bundle;
 import android.os.ParcelFileDescriptor;
-
-import android.view.GestureDetector;
+import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
-import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.Toast;
-import android.graphics.Matrix;
 import java.io.File;
 import java.io.IOException;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class PdfActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
     private PdfRenderer pdfRenderer;
-    private int pageCount;
+
+
+    public String storage;
+    public int position,current_page=1,total_pages;
+
+    private Toast toast;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pdf);
+
+        Intent intent = getIntent();
+        storage = intent.getStringExtra("storage");
+        position = intent.getIntExtra("position",0);
+        current_page=intent.getIntExtra("page",0);
+
 
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -50,13 +59,31 @@ public class PdfActivity extends AppCompatActivity {
 
         PdfAdapter adapter = new PdfAdapter();
         recyclerView.setAdapter(adapter);
+
+        toast = Toast.makeText(this, "", Toast.LENGTH_SHORT);
+
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+
+                int firstVisibleItemPosition = ((LinearLayoutManager) recyclerView.getLayoutManager()).findFirstVisibleItemPosition();
+                if (firstVisibleItemPosition != RecyclerView.NO_POSITION) {
+                    current_page = firstVisibleItemPosition + 1;
+                    updateToast();
+                    Log.d("page_count", String.valueOf(current_page));
+                }
+            }
+        });
+
+        scrollToPage(current_page);
     }
 
     private void openPdfRenderer() throws IOException {
-        File file = new File("/sdcard/abc.pdf");
+        File file = new File(storage);
         ParcelFileDescriptor parcelFileDescriptor = ParcelFileDescriptor.open(file, ParcelFileDescriptor.MODE_READ_ONLY);
         pdfRenderer = new PdfRenderer(parcelFileDescriptor);
-        pageCount = pdfRenderer.getPageCount();
+        total_pages = pdfRenderer.getPageCount();
     }
 
     private class PdfAdapter extends RecyclerView.Adapter<PdfAdapter.PdfViewHolder> {
@@ -75,7 +102,7 @@ public class PdfActivity extends AppCompatActivity {
 
         @Override
         public int getItemCount() {
-            return pageCount;
+            return total_pages;
         }
 
         class PdfViewHolder extends RecyclerView.ViewHolder {
@@ -105,4 +132,49 @@ public class PdfActivity extends AppCompatActivity {
             pdfRenderer.close();
         }
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+        finish();
+    }
+    @Override
+    protected void onPause() {
+        super.onPause();
+        savePage();
+    }
+
+
+    private void savePage() {
+        SharedPreferences prefs = getSharedPreferences("MySharedPref", MODE_PRIVATE);
+        try {
+            JSONArray jsonArray = new JSONArray(prefs.getString("key", "[]"));
+            JSONObject json = jsonArray.getJSONObject(position);
+            json.put("page", current_page);
+            json.put("total_pages",total_pages);
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putString("key", jsonArray.toString());
+            editor.apply();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        Toast.makeText(this, "progress saved.", Toast.LENGTH_SHORT).show();
+    }
+
+
+    private void scrollToPage(int page) {
+        if (page > 0 && page <= total_pages) {
+            recyclerView.scrollToPosition(page-1);
+        }
+    }
+
+    private void updateToast() {
+        if (toast != null) {
+            toast.setText(" [ "+current_page+" | "+total_pages+" ] ");
+            toast.show();
+        }
+    }
+
 }
