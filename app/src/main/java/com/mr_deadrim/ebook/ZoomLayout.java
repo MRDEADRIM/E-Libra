@@ -5,10 +5,8 @@ import android.util.AttributeSet;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
-import android.view.View;
-
-import androidx.core.view.ViewCompat;
 import androidx.recyclerview.widget.RecyclerView;
+
 
 public class ZoomLayout extends RecyclerView {
 
@@ -19,6 +17,7 @@ public class ZoomLayout extends RecyclerView {
     private float translateY = 0.0f;
     private float maxTranslateX;
     private float maxTranslateY;
+    private static final float MIN_SCALE_FACTOR = 1.0f;
 
     public ZoomLayout(Context context) {
         super(context);
@@ -57,44 +56,50 @@ public class ZoomLayout extends RecyclerView {
             translateX -= distanceX / scaleFactor;
             translateY -= distanceY / scaleFactor;
             clampTranslation();
-            ViewCompat.setTranslationX(ZoomLayout.this, translateX);
-            ViewCompat.setTranslationY(ZoomLayout.this, translateY);
+            setTranslationX(translateX);
+            setTranslationY(translateY);
             return true;
         }
     }
 
     private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
-        private static final float MIN_SCALE_FACTOR = 1.0f; // Minimum scale factor to prevent zooming out beyond original size
 
         @Override
         public boolean onScale(ScaleGestureDetector detector) {
             float scaleFactorChange = detector.getScaleFactor() - 1.0f;
-            float newScaleFactor = scaleFactor + scaleFactorChange; // Apply the change
+            float newScaleFactor = scaleFactor + scaleFactorChange;
             newScaleFactor = Math.max(MIN_SCALE_FACTOR, Math.min(newScaleFactor, 2.0f));
-            if (getWidth() * newScaleFactor < ((View) getParent()).getWidth() ||
-                    getHeight() * newScaleFactor < ((View) getParent()).getHeight()) {
+            if (getWidth() * newScaleFactor < getParentWidth() ||
+                    getHeight() * newScaleFactor < getParentHeight()) {
                 return true;
             }
             float scaleFactorDiff = newScaleFactor / scaleFactor;
             scaleFactor = newScaleFactor;
-            ViewCompat.setScaleX(ZoomLayout.this, scaleFactor);
-            ViewCompat.setScaleY(ZoomLayout.this, scaleFactor);
+            setScaleX(scaleFactor);
+            setScaleY(scaleFactor);
             translateX *= scaleFactorDiff;
             translateY *= scaleFactorDiff;
             clampTranslation();
-            ViewCompat.setTranslationX(ZoomLayout.this, translateX);
-            ViewCompat.setTranslationY(ZoomLayout.this, translateY);
+            setTranslationX(translateX);
+            setTranslationY(translateY);
             return true;
         }
     }
 
     private void clampTranslation() {
-        View parent = (View) getParent();
-        int parentWidth = parent.getWidth();
-        int parentHeight = parent.getHeight();
+        int parentWidth = getParentWidth();
+        int parentHeight = getParentHeight();
         maxTranslateX = (getWidth() * scaleFactor - parentWidth) / 2;
         maxTranslateY = (getHeight() * scaleFactor - parentHeight) / 2;
         translateX = Math.max(-maxTranslateX, Math.min(translateX, maxTranslateX));
         translateY = Math.max(-maxTranslateY, Math.min(translateY, maxTranslateY));
+    }
+
+    private int getParentWidth() {
+        return ((android.view.View) getParent()).getWidth();
+    }
+
+    private int getParentHeight() {
+        return ((android.view.View) getParent()).getHeight();
     }
 }
