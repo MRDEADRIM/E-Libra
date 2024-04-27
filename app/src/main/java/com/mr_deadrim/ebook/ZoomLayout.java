@@ -18,6 +18,8 @@ public class ZoomLayout extends RecyclerView {
     private float maxTranslateX;
     private float maxTranslateY;
     private static final float MIN_SCALE_FACTOR = 1.0f;
+    private int parentWidth = 0;
+    private int parentHeight = 0;
 
     public ZoomLayout(Context context) {
         super(context);
@@ -63,14 +65,12 @@ public class ZoomLayout extends RecyclerView {
     }
 
     private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
-
         @Override
         public boolean onScale(ScaleGestureDetector detector) {
             float scaleFactorChange = detector.getScaleFactor() - 1.0f;
             float newScaleFactor = scaleFactor + scaleFactorChange;
             newScaleFactor = Math.max(MIN_SCALE_FACTOR, Math.min(newScaleFactor, 2.0f));
-            if (getWidth() * newScaleFactor < getParentWidth() ||
-                    getHeight() * newScaleFactor < getParentHeight()) {
+            if (getWidth() * newScaleFactor < parentWidth || getHeight() * newScaleFactor < parentHeight) {
                 return true;
             }
             float scaleFactorDiff = newScaleFactor / scaleFactor;
@@ -87,19 +87,16 @@ public class ZoomLayout extends RecyclerView {
     }
 
     private void clampTranslation() {
-        int parentWidth = getParentWidth();
-        int parentHeight = getParentHeight();
         maxTranslateX = (getWidth() * scaleFactor - parentWidth) / 2;
         maxTranslateY = (getHeight() * scaleFactor - parentHeight) / 2;
         translateX = Math.max(-maxTranslateX, Math.min(translateX, maxTranslateX));
         translateY = Math.max(-maxTranslateY, Math.min(translateY, maxTranslateY));
     }
 
-    private int getParentWidth() {
-        return ((android.view.View) getParent()).getWidth();
-    }
-
-    private int getParentHeight() {
-        return ((android.view.View) getParent()).getHeight();
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
+        parentWidth = ((android.view.View) getParent()).getWidth();
+        parentHeight = ((android.view.View) getParent()).getHeight();
     }
 }
