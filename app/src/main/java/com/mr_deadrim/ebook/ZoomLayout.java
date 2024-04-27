@@ -20,6 +20,7 @@ public class ZoomLayout extends RecyclerView {
     private static final float MIN_SCALE_FACTOR = 1.0f;
     private int parentWidth = 0;
     private int parentHeight = 0;
+    private static final float TRANSLATION_SENSITIVITY = 0.5f; // Adjust as needed
 
     public ZoomLayout(Context context) {
         super(context);
@@ -55,8 +56,8 @@ public class ZoomLayout extends RecyclerView {
     private class GestureListener extends GestureDetector.SimpleOnGestureListener {
         @Override
         public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-            translateX -= distanceX / scaleFactor;
-            translateY -= distanceY / scaleFactor;
+            translateX -= distanceX / scaleFactor * TRANSLATION_SENSITIVITY;
+            translateY -= distanceY / scaleFactor * TRANSLATION_SENSITIVITY;
             clampTranslation();
             setTranslationX(translateX);
             setTranslationY(translateY);
