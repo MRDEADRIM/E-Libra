@@ -1,29 +1,13 @@
 package com.mr_deadrim.ebook;
 
-import android.animation.ValueAnimator;
 import android.content.Context;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.FrameLayout;
-import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.RecyclerView;
 
-
-import android.animation.ValueAnimator;
-import android.content.Context;
-import android.util.AttributeSet;
-import android.util.Log;
-import android.view.GestureDetector;
-import android.view.MotionEvent;
-import android.view.ScaleGestureDetector;
-import android.view.View;
-import android.widget.FrameLayout;
-import androidx.annotation.Nullable;
+import androidx.core.view.ViewCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class ZoomLayout extends RecyclerView {
@@ -33,23 +17,25 @@ public class ZoomLayout extends RecyclerView {
     private float scaleFactor = 1.0f;
     private float translateX = 0.0f;
     private float translateY = 0.0f;
+    private float maxTranslateX;
+    private float maxTranslateY;
 
     public ZoomLayout(Context context) {
         super(context);
-        setup(context);
+        init(context);
     }
 
     public ZoomLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
-        setup(context);
+        init(context);
     }
 
     public ZoomLayout(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        setup(context);
+        init(context);
     }
 
-    private void setup(Context context) {
+    private void init(Context context) {
         scaleGestureDetector = new ScaleGestureDetector(context, new ScaleListener());
         gestureDetector = new GestureDetector(context, new GestureListener());
         setClickable(true);
@@ -68,29 +54,13 @@ public class ZoomLayout extends RecyclerView {
     private class GestureListener extends GestureDetector.SimpleOnGestureListener {
         @Override
         public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-            // Translate the view based on scroll distance
             translateX -= distanceX / scaleFactor;
             translateY -= distanceY / scaleFactor;
-            // Clamp translation to stay within bounds
             clampTranslation();
-            // Apply translation
-            setTranslationX(translateX);
-            setTranslationY(translateY);
+            ViewCompat.setTranslationX(ZoomLayout.this, translateX);
+            ViewCompat.setTranslationY(ZoomLayout.this, translateY);
             return true;
         }
-    }
-
-    private void clampTranslation() {
-        // Get parent dimensions
-        View parent = (View) getParent();
-        int parentWidth = parent.getWidth();
-        int parentHeight = parent.getHeight();
-        // Calculate maximum translation
-        float maxTranslateX = (getWidth() * scaleFactor - parentWidth) / 2;
-        float maxTranslateY = (getHeight() * scaleFactor - parentHeight) / 2;
-        // Clamp translation
-        translateX = Math.max(-maxTranslateX, Math.min(translateX, maxTranslateX));
-        translateY = Math.max(-maxTranslateY, Math.min(translateY, maxTranslateY));
     }
 
     private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
@@ -98,31 +68,33 @@ public class ZoomLayout extends RecyclerView {
 
         @Override
         public boolean onScale(ScaleGestureDetector detector) {
-            float scaleFactorChange = detector.getScaleFactor() - 1.0f; // Calculate the change in scale factor
+            float scaleFactorChange = detector.getScaleFactor() - 1.0f;
             float newScaleFactor = scaleFactor + scaleFactorChange; // Apply the change
-            newScaleFactor = Math.max(MIN_SCALE_FACTOR, Math.min(newScaleFactor, 2.0f)); // Clamp the new scale factor
-
-            // Check if the new scale factor would make the view smaller than the parent
+            newScaleFactor = Math.max(MIN_SCALE_FACTOR, Math.min(newScaleFactor, 2.0f));
             if (getWidth() * newScaleFactor < ((View) getParent()).getWidth() ||
                     getHeight() * newScaleFactor < ((View) getParent()).getHeight()) {
-                return true; // Prevent further scaling
+                return true;
             }
-
-            // Calculate the difference between the new and current scale factors
             float scaleFactorDiff = newScaleFactor / scaleFactor;
-            scaleFactor = newScaleFactor; // Update the current scale factor
-            // Apply scaling
-            setScaleX(scaleFactor);
-            setScaleY(scaleFactor);
-            // Adjust translation to keep the zoom centered
+            scaleFactor = newScaleFactor;
+            ViewCompat.setScaleX(ZoomLayout.this, scaleFactor);
+            ViewCompat.setScaleY(ZoomLayout.this, scaleFactor);
             translateX *= scaleFactorDiff;
             translateY *= scaleFactorDiff;
-            // Clamp translation after scaling
             clampTranslation();
-            // Apply translation
-            setTranslationX(translateX);
-            setTranslationY(translateY);
+            ViewCompat.setTranslationX(ZoomLayout.this, translateX);
+            ViewCompat.setTranslationY(ZoomLayout.this, translateY);
             return true;
         }
+    }
+
+    private void clampTranslation() {
+        View parent = (View) getParent();
+        int parentWidth = parent.getWidth();
+        int parentHeight = parent.getHeight();
+        maxTranslateX = (getWidth() * scaleFactor - parentWidth) / 2;
+        maxTranslateY = (getHeight() * scaleFactor - parentHeight) / 2;
+        translateX = Math.max(-maxTranslateX, Math.min(translateX, maxTranslateX));
+        translateY = Math.max(-maxTranslateY, Math.min(translateY, maxTranslateY));
     }
 }
