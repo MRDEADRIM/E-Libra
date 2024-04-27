@@ -64,7 +64,9 @@ public class ZoomLayout extends RecyclerView {
 
     private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
         private static final float SCALE_THRESHOLD = 0.02f; // Adjust as needed
+        private static final int SMOOTHING_FACTOR = 3; // Adjust as needed
         private float initialScaleFactor = 1.0f;
+        private float smoothedScaleFactor = 1.0f;
 
         @Override
         public boolean onScaleBegin(ScaleGestureDetector detector) {
@@ -75,7 +77,8 @@ public class ZoomLayout extends RecyclerView {
         @Override
         public boolean onScale(ScaleGestureDetector detector) {
             float scaleFactor = detector.getScaleFactor();
-            float newScaleFactor = initialScaleFactor * scaleFactor;
+            smoothedScaleFactor = (smoothedScaleFactor * (SMOOTHING_FACTOR - 1) + scaleFactor) / SMOOTHING_FACTOR;
+            float newScaleFactor = initialScaleFactor * smoothedScaleFactor;
             newScaleFactor = Math.max(0.1f, Math.min(newScaleFactor, 2.0f));
             float deltaScaleFactor = newScaleFactor / initialScaleFactor;
             int recyclerViewWidth = getWidth();
