@@ -10,8 +10,8 @@ android {
         applicationId "com.mr_deadrim.ebook"
         minSdk 24
         targetSdk 34
-        versionCode 1
-        versionName "1.0"
+        versionCode 202403
+        versionName "2024.03"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
