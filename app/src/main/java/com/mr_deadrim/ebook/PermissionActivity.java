@@ -8,7 +8,10 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.Settings;
+import android.view.KeyEvent;
+import android.view.View;
 import android.widget.Button;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import android.content.Intent;
@@ -18,6 +21,7 @@ public class PermissionActivity extends AppCompatActivity {
     private static final int STORAGE_PERMISSION_REQUEST_CODE = 100;
     private static final int APP_SETTINGS_REQUEST_CODE = 101;
     Button permission_btn;
+    private View dialogView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,9 +49,7 @@ public class PermissionActivity extends AppCompatActivity {
                 finish();
             } else {
                 String[] permissions = {Manifest.permission.READ_EXTERNAL_STORAGE};
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    requestPermissions(permissions, STORAGE_PERMISSION_REQUEST_CODE);
-                }
+                requestPermissions(permissions, STORAGE_PERMISSION_REQUEST_CODE);
             }
         }
     }
@@ -78,5 +80,33 @@ public class PermissionActivity extends AppCompatActivity {
             checkPermission();
         }
     }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == STORAGE_PERMISSION_REQUEST_CODE) {
+            checkPermission();
+        }
+    }
+
+
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            final AlertDialog.Builder alert = new AlertDialog.Builder(PermissionActivity.this);
+            dialogView = getLayoutInflater().inflate(R.layout.exit_dialog, null);
+            Button cancelButton = dialogView.findViewById(R.id.button2);
+            Button exitButton = dialogView.findViewById(R.id.button5);
+            alert.setView(dialogView);
+            final AlertDialog alertDialog = alert.create();
+            alertDialog.setCanceledOnTouchOutside(false);
+            cancelButton.setOnClickListener(v1 -> alertDialog.dismiss());
+            exitButton.setOnClickListener(v12 -> {
+                finish();
+            });
+            alertDialog.show();
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
 
 }

@@ -83,6 +83,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
         private ImageView imageView;
         private TextView name,pages;
         private ImageView updateButton, deleteButton;
+        private String storage;
         private static final int PICK_FILE_REQUEST_CODE = 2,PICK_IMAGE_REQUEST=22;
 
         boolean isAllFieldsChecked = false;
@@ -121,7 +122,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
                 try {
                     JSONObject jsonObject = jsonArray.getJSONObject(getAdapterPosition());
                     String name = jsonObject.getString("name");
-                    String storage = jsonObject.getString("storage");
+                    storage = jsonObject.getString("storage");
                     String image_path=jsonObject.getString("image_path");
                     storageEditText.setText(storage);
                     nameEditText.setText(name);
@@ -169,6 +170,10 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
                             jsonObject.put("storage", newStorage);
                             if (image_path != null) {
                                 jsonObject.put("image_path", image_path);
+                            }
+                            if(!storage.equals(storageEditText.getText().toString())){
+                                jsonObject.put("page", 0);
+                                jsonObject.put("total_pages",0);
                             }
                             notifyItemChanged(getAdapterPosition());
                         } catch (JSONException e) {

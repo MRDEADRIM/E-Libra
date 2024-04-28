@@ -20,7 +20,7 @@ public class ZoomLayout extends RecyclerView {
     private static final float MIN_SCALE_FACTOR = 1.0f;
     private int parentWidth = 0;
     private int parentHeight = 0;
-    private static final float TRANSLATION_SENSITIVITY = 0.5f; // Adjust as needed
+    private static final float TRANSLATION_SENSITIVITY = 1.0f;
 
     public ZoomLayout(Context context) {
         super(context);

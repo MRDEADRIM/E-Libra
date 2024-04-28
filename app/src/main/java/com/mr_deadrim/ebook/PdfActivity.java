@@ -1,6 +1,5 @@
 package com.mr_deadrim.ebook;
 
-
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -28,11 +27,12 @@ public class PdfActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private PdfRenderer pdfRenderer;
 
-
     public String storage;
-    public int position,current_page=1,total_pages;
+    public int position, current_page = 1, total_pages;
 
     private Toast toast;
+    private LinearLayoutManager layoutManager;
+    private PdfAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,12 +41,11 @@ public class PdfActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         storage = intent.getStringExtra("storage");
-        position = intent.getIntExtra("position",0);
-        current_page=intent.getIntExtra("page",0);
-
-
+        position = intent.getIntExtra("position", 0);
+        current_page = intent.getIntExtra("page", 0);
         recyclerView = findViewById(R.id.recyclerView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        layoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
 
         try {
             openPdfRenderer();
@@ -57,7 +56,7 @@ public class PdfActivity extends AppCompatActivity {
             return;
         }
 
-        PdfAdapter adapter = new PdfAdapter();
+        adapter = new PdfAdapter();
         recyclerView.setAdapter(adapter);
 
         toast = Toast.makeText(this, "", Toast.LENGTH_SHORT);
@@ -67,7 +66,7 @@ public class PdfActivity extends AppCompatActivity {
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
 
-                int firstVisibleItemPosition = ((LinearLayoutManager) recyclerView.getLayoutManager()).findFirstVisibleItemPosition();
+                int firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
                 if (firstVisibleItemPosition != RecyclerView.NO_POSITION) {
                     current_page = firstVisibleItemPosition + 1;
                     updateToast();
@@ -125,11 +124,16 @@ public class PdfActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (pdfRenderer != null) {
-            pdfRenderer.close();
+    private void scrollToPage(int page) {
+        if (page > 0 && page <= total_pages) {
+            recyclerView.scrollToPosition(page - 1);
+        }
+    }
+
+    private void updateToast() {
+        if (toast != null) {
+            toast.setText(" [ " + current_page + " | " + total_pages + " ] ");
+            toast.show();
         }
     }
 
@@ -140,12 +144,20 @@ public class PdfActivity extends AppCompatActivity {
         startActivity(intent);
         finish();
     }
+
     @Override
     protected void onPause() {
         super.onPause();
         savePage();
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (pdfRenderer != null) {
+            pdfRenderer.close();
+        }
+    }
 
     private void savePage() {
         SharedPreferences prefs = getSharedPreferences("MySharedPref", MODE_PRIVATE);
@@ -153,7 +165,7 @@ public class PdfActivity extends AppCompatActivity {
             JSONArray jsonArray = new JSONArray(prefs.getString("key", "[]"));
             JSONObject json = jsonArray.getJSONObject(position);
             json.put("page", current_page);
-            json.put("total_pages",total_pages);
+            json.put("total_pages", total_pages);
             SharedPreferences.Editor editor = prefs.edit();
             editor.putString("key", jsonArray.toString());
             editor.apply();
@@ -161,20 +173,6 @@ public class PdfActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         Toast.makeText(this, "progress saved.", Toast.LENGTH_SHORT).show();
-    }
-
-
-    private void scrollToPage(int page) {
-        if (page > 0 && page <= total_pages) {
-            recyclerView.scrollToPosition(page-1);
-        }
-    }
-
-    private void updateToast() {
-        if (toast != null) {
-            toast.setText(" [ "+current_page+" | "+total_pages+" ] ");
-            toast.show();
-        }
     }
 
 }

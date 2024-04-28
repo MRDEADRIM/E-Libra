@@ -10,6 +10,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -30,7 +31,7 @@ import android.app.Activity;
 public class MainActivity extends AppCompatActivity {
 
     private JSONArray jsonArray;
-    public View dialogView;
+    private View dialogView;
     public EditText nameEditText,storageEditText;
     private static final int PICK_FILE_REQUEST_CODE = 1, PICK_IMAGE_REQUEST_CODE =21;
     RecyclerAdapter recyclerAdapter;
@@ -206,6 +207,27 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            final AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
+            dialogView = getLayoutInflater().inflate(R.layout.exit_dialog, null);
+            Button cancelButton = dialogView.findViewById(R.id.button2);
+            Button exitButton = dialogView.findViewById(R.id.button5);
+
+            alert.setView(dialogView);
+            final AlertDialog alertDialog = alert.create();
+            alertDialog.setCanceledOnTouchOutside(false);
+
+            cancelButton.setOnClickListener(v1 -> alertDialog.dismiss());
+
+            exitButton.setOnClickListener(v12 -> {
+                finish();
+            });
+
+            alertDialog.show();
+        }
+        return super.onKeyDown(keyCode, event);
+    }
 
     private void save() {
         SharedPreferences prefs = getSharedPreferences("MySharedPref", MODE_PRIVATE);

@@ -1,17 +1,19 @@
 <resources>
     <string name="app_name">E Book</string>
-    <string name="permission_text">"<b>PERMISSION REQUEST</b>"\n\n
-Thank you for using E Book Before we proceed, we require your permission to access certain features on your device to enhance your experience and provide you with the best service possible.\n\n
-"<b>PERMISSION REQUIRED</b>"\n\n
-"<b>STORAGE:</b>" This permission is necessary to store and access files on your device. We assure you that E book does not store any of your personal data or information. We respect your privacy and are committed to maintaining the confidentiality and security of your data.\n\n
-"<b>WHY STORAGE PERMISSION IS REQUIRED:</b>"\n\n
-E book requires access to your device`s storage to fetch pdf and its thumbnail. Rest assured, we do not access, collect, or store any personal information.\n\n
-"<b>PRIVACY ASSURANCE</b>"\n\n
-We value your privacy and understand the importance of keeping your personal information secure. Please note that E Book does not collect, store, or share any of your data. Your privacy is our top priority, and we adhere to strict privacy policies to ensure the confidentiality of your information.\n\n
-"<b>HOW TO GRANT PERMISSION</b>"\n\n
+    <string name="permission_text">"<b>[ PERMISSION REQUEST ]</b>"\n\n
+Thank you for choosing E Book. Before we proceed, we kindly ask for your permission to access specific features on your device. This will help enhance your experience and provide you with the best service possible.\n\n
+"<b>[ PERMISSION REQUIRED ]</b>"\n\n
+"<b>STORAGE:</b>" This permission allows us to store and access files on your device. We want to assure you that E Book does not store any of your personal data or information. We respect your privacy and are committed to maintaining the confidentiality and security of your data.\n\n
+"<b>[ WHY STORAGE PERMISSION IS REQUIRED ]</b>"\n\n
+E Book needs access to your device's storage to fetch PDF files and their thumbnails. Please rest assured that we do not access, collect, or store any personal information.\n\n
+"<b>[ PRIVACY ASSURANCE ]</b>"\n\n
+Your privacy is important to us, and we understand the significance of keeping your personal information secure. It's essential to note that E Book does not collect, store, or share any of your data. We prioritize your privacy and adhere to strict privacy policies to ensure the confidentiality of your information.\n\n
+"<b>[ HOW TO GRANT PERMISSION ]</b>"\n\n
 To grant permission for storage access, please tap 'Grant Permission' below. A popup will appear; then, tap the 'Allow' button when prompted. If you choose not to grant this permission, the application may not be accessible.\n\n
 
 </string>
+
+    <string name="exit_text">[ ARE YOU SURE YOU WANT TO EXIT ? ]</string>
 
 
 </resources>
