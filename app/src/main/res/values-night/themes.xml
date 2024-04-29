@@ -4,5 +4,8 @@
         <!-- Customize your dark theme here. -->
         <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
         <item name="colorPrimary">@color/dark_blue_gray</item>
+
+
+        <item name="colorOnPrimary">@color/white</item>
     </style>
 </resources>

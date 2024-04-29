@@ -7,8 +7,7 @@ import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import androidx.recyclerview.widget.RecyclerView;
 
-
-public class ZoomLayout extends RecyclerView {
+public class PdfLayout extends RecyclerView {
 
     private ScaleGestureDetector scaleGestureDetector;
     private GestureDetector gestureDetector;
@@ -22,17 +21,17 @@ public class ZoomLayout extends RecyclerView {
     private int parentHeight = 0;
     private static final float TRANSLATION_SENSITIVITY = 1.0f;
 
-    public ZoomLayout(Context context) {
+    public PdfLayout(Context context) {
         super(context);
         init(context);
     }
 
-    public ZoomLayout(Context context, AttributeSet attrs) {
+    public PdfLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(context);
     }
 
-    public ZoomLayout(Context context, AttributeSet attrs, int defStyle) {
+    public PdfLayout(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         init(context);
     }

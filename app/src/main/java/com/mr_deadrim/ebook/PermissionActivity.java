@@ -55,15 +55,18 @@ public class PermissionActivity extends AppCompatActivity {
     }
 
     private void showSettingsDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Permissions required");
-        builder.setMessage("This app requires storage permission to function properly. You can grant the permission in the app settings.");
-        builder.setPositiveButton("GOTO SETTINGS", (dialog, which) -> {
-            dialog.cancel();
+        final AlertDialog.Builder alert = new AlertDialog.Builder(PermissionActivity.this);
+        dialogView = getLayoutInflater().inflate(R.layout.storage_permission_dialog, null);
+        Button goToSettingCancelButton = dialogView.findViewById(R.id.go_to_setting_cancel_button);
+        Button goToSettingButton = dialogView.findViewById(R.id.go_to_setting_button);
+        alert.setView(dialogView);
+        final AlertDialog alertDialog = alert.create();
+        alertDialog.setCanceledOnTouchOutside(false);
+        goToSettingCancelButton.setOnClickListener(v1 -> alertDialog.dismiss());
+        goToSettingButton.setOnClickListener(v12 -> {
             openAppSettings();
         });
-        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
-        builder.show();
+        alertDialog.show();
     }
 
     private void openAppSettings() {

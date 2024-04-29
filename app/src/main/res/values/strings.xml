@@ -10,10 +10,11 @@ E Book needs access to your device's storage to fetch PDF files and their thumbn
 Your privacy is important to us, and we understand the significance of keeping your personal information secure. It's essential to note that E Book does not collect, store, or share any of your data. We prioritize your privacy and adhere to strict privacy policies to ensure the confidentiality of your information.\n\n
 "<b>[ HOW TO GRANT PERMISSION ]</b>"\n\n
 To grant permission for storage access, please tap 'Grant Permission' below. A popup will appear; then, tap the 'Allow' button when prompted. If you choose not to grant this permission, the application may not be accessible.\n\n
-
-</string>
+    </string>
 
     <string name="exit_text">[ ARE YOU SURE YOU WANT TO EXIT ? ]</string>
 
+    <string name="storage_permission_title_text">[ PERMISSION REQUEST ]</string>
+    <string name="storage_permission_text">This app requires storage permission to function properly. You can grant the permission in the app settings.</string>
 
 </resources>

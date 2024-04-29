@@ -1,31 +1,19 @@
 package com.mr_deadrim.ebook;
 
-
-import android.app.Activity;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Environment;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Objects;
-
 
 public class FileManagerActivity extends AppCompatActivity {
 
     private ArrayList<String> fileList;
-
     private String internalStoragePath;
     private ListView listView;
     public TextView path_text;
