@@ -7,6 +7,7 @@ import android.graphics.pdf.PdfRenderer;
 import android.os.Bundle;
 import android.os.ParcelFileDescriptor;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,10 +27,8 @@ public class PdfActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
     private PdfRenderer pdfRenderer;
-
     public String storage;
     public int position, current_page = 1, total_pages;
-
     private Toast toast;
     private LinearLayoutManager layoutManager;
     private PdfAdapter adapter;
@@ -46,7 +45,6 @@ public class PdfActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.recyclerView);
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
-
         try {
             openPdfRenderer();
         } catch (IOException e) {
@@ -58,14 +56,11 @@ public class PdfActivity extends AppCompatActivity {
 
         adapter = new PdfAdapter();
         recyclerView.setAdapter(adapter);
-
         toast = Toast.makeText(this, "", Toast.LENGTH_SHORT);
-
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-
                 int firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
                 if (firstVisibleItemPosition != RecyclerView.NO_POSITION) {
                     current_page = firstVisibleItemPosition + 1;
@@ -138,11 +133,13 @@ public class PdfActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
-        finish();
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+            finish();
+        }
+        return super.onKeyDown(keyCode, event);
     }
 
     @Override
@@ -174,5 +171,4 @@ public class PdfActivity extends AppCompatActivity {
         }
         Toast.makeText(this, "progress saved.", Toast.LENGTH_SHORT).show();
     }
-
 }

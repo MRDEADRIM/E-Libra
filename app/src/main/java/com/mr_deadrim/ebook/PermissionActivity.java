@@ -16,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import android.content.Intent;
 import android.app.AlertDialog;
+import android.widget.Toast;
 
 public class PermissionActivity extends AppCompatActivity {
     private static final int STORAGE_PERMISSION_REQUEST_CODE = 100;
@@ -92,24 +93,20 @@ public class PermissionActivity extends AppCompatActivity {
         }
     }
 
-
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            final AlertDialog.Builder alert = new AlertDialog.Builder(PermissionActivity.this);
-            dialogView = getLayoutInflater().inflate(R.layout.exit_dialog, null);
-            Button cancelButton = dialogView.findViewById(R.id.button2);
-            Button exitButton = dialogView.findViewById(R.id.button5);
-            alert.setView(dialogView);
-            final AlertDialog alertDialog = alert.create();
-            alertDialog.setCanceledOnTouchOutside(false);
-            cancelButton.setOnClickListener(v1 -> alertDialog.dismiss());
-            exitButton.setOnClickListener(v12 -> {
-                finish();
-            });
-            alertDialog.show();
-        }
-        return super.onKeyDown(keyCode, event);
+        final AlertDialog.Builder alert = new AlertDialog.Builder(PermissionActivity.this);
+        dialogView = getLayoutInflater().inflate(R.layout.exit_dialog, null);
+        Button cancelButton = dialogView.findViewById(R.id.button2);
+        Button exitButton = dialogView.findViewById(R.id.button5);
+        alert.setView(dialogView);
+        final AlertDialog alertDialog = alert.create();
+        alertDialog.setCanceledOnTouchOutside(false);
+        cancelButton.setOnClickListener(v1 -> alertDialog.dismiss());
+        exitButton.setOnClickListener(v12 -> {
+            finish();
+        });
+        alertDialog.show();
+        return true;
     }
-
 
 }

@@ -127,7 +127,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
                     storageEditText.setText(storage);
                     nameEditText.setText(name);
 
-                    if(image_path.equals("")){
+                    if(image_path.isEmpty()){
                         imagePreview.setImageResource(R.mipmap.ic_launcher);
                     }else{
                         imagePreview.setImageURI(Uri.parse(image_path));

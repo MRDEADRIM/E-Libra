@@ -77,19 +77,18 @@ public class MainActivity extends AppCompatActivity {
                 ((Activity) MainActivity.this).startActivityForResult(intent, PICK_FILE_REQUEST_CODE);
 
             });
+
             imageButton.setOnClickListener(view -> {
                 Intent intent = new Intent(MainActivity.this, FileManagerActivity.class);
                 intent.putExtra("status", "add_image");
                 ((Activity) MainActivity.this).startActivityForResult(intent, PICK_IMAGE_REQUEST_CODE);
             });
+
             alert.setView(dialogView);
             final AlertDialog alertDialog = alert.create();
             alertDialog.setCanceledOnTouchOutside(false);
-
             cancelButton.setOnClickListener(v1 -> alertDialog.dismiss());
-
             saveButton.setOnClickListener(v12 -> {
-
                 isAllFieldsChecked = CheckAllFields();
                 if(isAllFieldsChecked){
                     try {
@@ -116,7 +115,6 @@ public class MainActivity extends AppCompatActivity {
         recyclerAdapter = new RecyclerAdapter(jsonArray);
         recyclerView.setAdapter(recyclerAdapter);
         recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
-
         ItemTouchHelper itemTouchHelper = getItemTouchHelper();
         itemTouchHelper.attachToRecyclerView(recyclerView);
     }
@@ -132,7 +130,6 @@ public class MainActivity extends AppCompatActivity {
         }
         return true;
     }
-
 
     @NonNull
     private ItemTouchHelper getItemTouchHelper() {
@@ -164,7 +161,6 @@ public class MainActivity extends AppCompatActivity {
         return itemTouchHelper;
     }
 
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -185,7 +181,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-
 
     private void checkPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
@@ -208,25 +203,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            final AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
-            dialogView = getLayoutInflater().inflate(R.layout.exit_dialog, null);
-            Button cancelButton = dialogView.findViewById(R.id.button2);
-            Button exitButton = dialogView.findViewById(R.id.button5);
-
-            alert.setView(dialogView);
-            final AlertDialog alertDialog = alert.create();
-            alertDialog.setCanceledOnTouchOutside(false);
-
-            cancelButton.setOnClickListener(v1 -> alertDialog.dismiss());
-
-            exitButton.setOnClickListener(v12 -> {
-                finish();
-            });
-
-            alertDialog.show();
-        }
-        return super.onKeyDown(keyCode, event);
+        final AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
+        dialogView = getLayoutInflater().inflate(R.layout.exit_dialog, null);
+        Button cancelButton = dialogView.findViewById(R.id.button2);
+        Button exitButton = dialogView.findViewById(R.id.button5);
+        alert.setView(dialogView);
+        final AlertDialog alertDialog = alert.create();
+        alertDialog.setCanceledOnTouchOutside(false);
+        cancelButton.setOnClickListener(v1 -> alertDialog.dismiss());
+        exitButton.setOnClickListener(v12 -> {
+            finish();
+        });
+        alertDialog.show();
+        return true;
     }
 
     private void save() {

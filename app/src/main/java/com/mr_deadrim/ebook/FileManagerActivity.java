@@ -4,10 +4,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Environment;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import java.io.File;
 import java.util.ArrayList;
 
@@ -48,6 +51,7 @@ public class FileManagerActivity extends AppCompatActivity {
             }
         });
     }
+
     private void displayFiles(String directoryPath) {
         path_text.setText(directoryPath);
         File directory = new File(directoryPath);
@@ -68,18 +72,16 @@ public class FileManagerActivity extends AppCompatActivity {
         listView.setAdapter(adapter);
     }
 
-
-
-
     @Override
-    public void onBackPressed() {
-        String parentPath = new File(internalStoragePath).getParent();
-        if (parentPath != null && !parentPath.equals("/storage/emulated")) {
-            internalStoragePath = parentPath;
-            displayFiles(internalStoragePath);
-        } else {
-            super.onBackPressed();
-        }
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+            String parentPath = new File(internalStoragePath).getParent();
+            if (parentPath != null && !parentPath.equals("/storage/emulated")) {
+                internalStoragePath = parentPath;
+                displayFiles(internalStoragePath);
+            }else{
+                finish();
+            }
+        return true;
     }
 }
 
