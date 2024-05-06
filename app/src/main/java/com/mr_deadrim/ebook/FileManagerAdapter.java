@@ -4,34 +4,46 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.util.LruCache;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+
 import java.io.File;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+import kotlinx.coroutines.CoroutineScope;
 
 public class FileManagerAdapter extends ArrayAdapter<String> {
-    private Context mContext;
-    private ArrayList<String> mFileList;
-    private Map<String, BitmapWorkerTask> mBitmapTasks;
-    private Map<String, Bitmap> mBitmapCache;
+    private final Context mContext;
+    private final ArrayList<String> mFileList;
+    private final Map<String, Bitmap> mBitmapCache;
+    private final ExecutorService mExecutor;
 
     public FileManagerAdapter(Context context, ArrayList<String> fileList) {
         super(context, R.layout.file_list_layout, fileList);
         this.mContext = context;
         this.mFileList = fileList;
-        this.mBitmapTasks = new HashMap<>();
         this.mBitmapCache = new HashMap<>();
+        this.mExecutor = Executors.newFixedThreadPool(5);
     }
 
+    @NonNull
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         ViewHolder viewHolder;
 
         if (convertView == null) {
@@ -42,9 +54,6 @@ public class FileManagerAdapter extends ArrayAdapter<String> {
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
-            if (viewHolder.bitmapWorkerTask != null) {
-                viewHolder.bitmapWorkerTask.cancel(true);
-            }
         }
 
         String fileName = mFileList.get(position);
@@ -55,18 +64,15 @@ public class FileManagerAdapter extends ArrayAdapter<String> {
         if (fileName.toLowerCase().endsWith(".pdf")) {
             viewHolder.imageView.setImageResource(R.drawable.pdf);
         }
-
-        if(file.isDirectory()){
+        if (file.isDirectory()) {
             viewHolder.imageView.setImageResource(R.drawable.folder);
         }
-
         if (fileName.toLowerCase().endsWith(".png") || fileName.toLowerCase().endsWith(".jpg") || fileName.toLowerCase().endsWith(".jpeg")) {
             if (mBitmapCache.containsKey(fileName)) {
                 viewHolder.imageView.setImageBitmap(mBitmapCache.get(fileName));
             } else {
-                BitmapWorkerTask task = new BitmapWorkerTask(viewHolder.imageView);
-                viewHolder.bitmapWorkerTask = task;
-                task.execute(fileName);
+                BitmapWorkerTask task = new BitmapWorkerTask(viewHolder.imageView, fileName);
+                mExecutor.execute(task);
             }
         }
 
@@ -78,31 +84,28 @@ public class FileManagerAdapter extends ArrayAdapter<String> {
     private static class ViewHolder {
         ImageView imageView;
         TextView textView;
-        BitmapWorkerTask bitmapWorkerTask;
     }
 
-    private class BitmapWorkerTask extends AsyncTask<String, Void, Bitmap> {
+    private class BitmapWorkerTask implements Runnable {
         private final WeakReference<ImageView> imageViewReference;
-        private String filePath;
+        private final String filePath;
 
-        public BitmapWorkerTask(ImageView imageView) {
-            imageViewReference = new WeakReference<>(imageView);
+        public BitmapWorkerTask(ImageView imageView, String filePath) {
+            this.imageViewReference = new WeakReference<>(imageView);
+            this.filePath = filePath;
         }
 
         @Override
-        protected Bitmap doInBackground(String... params) {
-            filePath = params[0];
-            return decodeSampledBitmapFromFile(filePath, 100, 100); // Adjust dimensions as needed
-        }
-
-        @Override
-        protected void onPostExecute(Bitmap bitmap) {
-            if (bitmap != null && imageViewReference != null) {
-                final ImageView imageView = imageViewReference.get();
-                if (imageView != null) {
-                    mBitmapCache.put(filePath, bitmap);
-                    imageView.setImageBitmap(bitmap);
-                }
+        public void run() {
+            final Bitmap bitmap = decodeSampledBitmapFromFile(filePath, 100, 100); // Adjust dimensions as needed
+            if (bitmap != null && imageViewReference.get() != null) {
+                mBitmapCache.put(filePath, bitmap);
+                ((AppCompatActivity) mContext).runOnUiThread(() -> {
+                    ImageView imageView = imageViewReference.get();
+                    if (imageView != null) {
+                        imageView.setImageBitmap(bitmap);
+                    }
+                });
             }
         }
     }

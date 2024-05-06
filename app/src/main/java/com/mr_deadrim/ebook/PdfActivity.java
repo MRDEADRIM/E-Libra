@@ -169,6 +169,7 @@ public class PdfActivity extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        Toast.makeText(this, "progress saved.", Toast.LENGTH_SHORT).show();
+        toast.setText("[ Progress Saved ]");
+        toast.show();
     }
 }

@@ -1,19 +1,18 @@
 <resources>
     <string name="app_name">E Book</string>
     <string name="permission_text">"<b>[ PERMISSION REQUEST ]</b>"\n\n
-Thank you for choosing E Book. Before we proceed, we kindly ask for your permission to access specific features on your device. This will help enhance your experience and provide you with the best service possible.\n\n
+Thank you for choosing E Book. Before we proceed, we kindly ask for your storage permission on your device.\n\n
 "<b>[ PERMISSION REQUIRED ]</b>"\n\n
 "<b>STORAGE:</b>" This permission allows us to store and access files on your device.\n\n
 "<b>[ WHY STORAGE PERMISSION IS REQUIRED ]</b>"\n\n
-E Book needs access to your device's storage to fetch PDF files and their thumbnails.\n\n
+E Book needs access to your device's storage to fetch PDF files and their thumbnails.Please note that E Book operates offline, ensuring your privacy and convenience.\n\n
 "<b>[ HOW TO GRANT PERMISSION ]</b>"\n\n
 To grant permission for storage access, please tap 'Grant Permission' below. If you choose not to grant this permission, the application may not be accessible.\n\n
     </string>
 
-    <string name="exit_title_text">[ EXIT ]</string>
+    <string name="exit_title_text">[ E X I T ]</string>
     <string name="exit_text">Are You Sure You Want To Exit ?</string>
-
-    <string name="storage_permission_title_text">[ PERMISSION REQUEST ]</string>
+    <string name="storage_permission_title_text">[ A U T H O R I Z A T I O N ]</string>
     <string name="storage_permission_text">This app requires storage permission to function properly. You can grant the permission in the app settings.</string>
 
 </resources>

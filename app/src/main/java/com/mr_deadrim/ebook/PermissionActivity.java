@@ -13,10 +13,10 @@ import android.view.View;
 import android.widget.Button;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import android.content.Intent;
 import android.app.AlertDialog;
-import android.widget.Toast;
 
 public class PermissionActivity extends AppCompatActivity {
     private static final int STORAGE_PERMISSION_REQUEST_CODE = 100;
@@ -49,8 +49,12 @@ public class PermissionActivity extends AppCompatActivity {
                 startActivity(intent);
                 finish();
             } else {
-                String[] permissions = {Manifest.permission.READ_EXTERNAL_STORAGE};
-                requestPermissions(permissions, STORAGE_PERMISSION_REQUEST_CODE);
+                if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                    String[] permissions = {Manifest.permission.READ_EXTERNAL_STORAGE};
+                    requestPermissions(permissions, STORAGE_PERMISSION_REQUEST_CODE);
+                } else {
+                    showSettingsDialog();
+                }
             }
         }
     }

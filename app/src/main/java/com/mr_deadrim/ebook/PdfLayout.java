@@ -1,13 +1,14 @@
 package com.mr_deadrim.ebook;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.util.AttributeSet;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
-import android.view.VelocityTracker;
+import android.view.ViewTreeObserver;
 
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -20,7 +21,9 @@ public class PdfLayout extends RecyclerView {
     private float scaleFactor = 1.0f;
     private static final float MIN_SCALE_FACTOR = 1.0f;
     private static final float MAX_SCALE_FACTOR = 2.0f;
-    private static final float TRANSLATION_SENSITIVITY = 1.2f; // Adjust sensitivity for smoother dragging
+    private float translationSensitivity = 1.2f;
+    private static final float HORIZONTAL_TRANSLATION_SENSITIVITY = 0.5f;
+    private static final float VERTICAL_TRANSLATION_SENSITIVITY = 1.2f;
 
     public PdfLayout(Context context) {
         super(context);
@@ -45,6 +48,15 @@ public class PdfLayout extends RecyclerView {
         setClickable(true);
         setFocusable(true);
         setFocusableInTouchMode(true);
+
+        ViewTreeObserver observer = getViewTreeObserver();
+        observer.addOnGlobalLayoutListener(() -> {
+            if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                translationSensitivity = HORIZONTAL_TRANSLATION_SENSITIVITY;
+            } else {
+                translationSensitivity = VERTICAL_TRANSLATION_SENSITIVITY;
+            }
+        });
     }
 
     @Override
@@ -64,7 +76,7 @@ public class PdfLayout extends RecyclerView {
     private class GestureListener extends GestureDetector.SimpleOnGestureListener {
         @Override
         public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-            matrix.postTranslate(-distanceX * TRANSLATION_SENSITIVITY, -distanceY * TRANSLATION_SENSITIVITY);
+            matrix.postTranslate(-distanceX * translationSensitivity, -distanceY * translationSensitivity);
             clampTranslation();
             invalidate();
             return true;
@@ -77,12 +89,10 @@ public class PdfLayout extends RecyclerView {
             float scaleFactorChange = detector.getScaleFactor();
             float newScaleFactor = scaleFactor * scaleFactorChange;
 
-            // Limit zoom out until the window border
+            // Limit zoom out until the window border and Limit zoom in
             if (newScaleFactor < MIN_SCALE_FACTOR) {
                 scaleFactorChange = MIN_SCALE_FACTOR / scaleFactor;
-            }
-            // Limit zoom in
-            else if (newScaleFactor > MAX_SCALE_FACTOR) {
+            }else if (newScaleFactor > MAX_SCALE_FACTOR) {
                 scaleFactorChange = MAX_SCALE_FACTOR / scaleFactor;
             }
 

@@ -19,17 +19,24 @@ public class FileManagerActivity extends AppCompatActivity {
     private ArrayList<String> fileList;
     private String internalStoragePath;
     private ListView listView;
-    public TextView path_text;
+    private TextView path_text;
     private String status;
+
+    private static final String KEY_INTERNAL_STORAGE_PATH = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_file_manager);
 
+        if (savedInstanceState != null) {
+            internalStoragePath = savedInstanceState.getString(KEY_INTERNAL_STORAGE_PATH);
+        } else {
+            internalStoragePath = Environment.getExternalStorageDirectory().getAbsolutePath();
+        }
+
         Intent intent = getIntent();
         status = intent.getStringExtra("status");
-        internalStoragePath = Environment.getExternalStorageDirectory().getAbsolutePath();
         fileList = new ArrayList<>();
         listView = findViewById(R.id.listView);
         path_text = findViewById(R.id.textView4);
@@ -52,6 +59,11 @@ public class FileManagerActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(KEY_INTERNAL_STORAGE_PATH, internalStoragePath);
+    }
     private void displayFiles(String directoryPath) {
         path_text.setText(directoryPath);
         File directory = new File(directoryPath);
@@ -74,14 +86,15 @@ public class FileManagerActivity extends AppCompatActivity {
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-            String parentPath = new File(internalStoragePath).getParent();
-            if (parentPath != null && !parentPath.equals("/storage/emulated")) {
-                internalStoragePath = parentPath;
-                displayFiles(internalStoragePath);
-            }else{
-                finish();
-            }
+        String parentPath = new File(internalStoragePath).getParent();
+        if (parentPath != null && !parentPath.equals("/storage/emulated")) {
+            internalStoragePath = parentPath;
+            displayFiles(internalStoragePath);
+        } else {
+            finish();
+        }
         return true;
     }
 }
+
 
