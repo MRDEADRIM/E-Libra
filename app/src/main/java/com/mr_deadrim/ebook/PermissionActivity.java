@@ -17,6 +17,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import android.content.Intent;
 import android.app.AlertDialog;
+import android.widget.TextView;
 
 public class PermissionActivity extends AppCompatActivity {
     private static final int STORAGE_PERMISSION_REQUEST_CODE = 100;
@@ -41,7 +42,7 @@ public class PermissionActivity extends AppCompatActivity {
                 startActivity(intent);
                 finish();
             } else {
-                showSettingsDialog();
+                showSettingsDialog("new");
             }
         } else {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)== PackageManager.PERMISSION_GRANTED ) {
@@ -53,17 +54,23 @@ public class PermissionActivity extends AppCompatActivity {
                     String[] permissions = {Manifest.permission.READ_EXTERNAL_STORAGE};
                     requestPermissions(permissions, STORAGE_PERMISSION_REQUEST_CODE);
                 } else {
-                    showSettingsDialog();
+                    showSettingsDialog("old");
                 }
             }
         }
     }
 
-    private void showSettingsDialog() {
+    private void showSettingsDialog(String status) {
         final AlertDialog.Builder alert = new AlertDialog.Builder(PermissionActivity.this);
         dialogView = getLayoutInflater().inflate(R.layout.storage_permission_dialog, null);
         Button goToSettingCancelButton = dialogView.findViewById(R.id.go_to_setting_cancel_button);
         Button goToSettingButton = dialogView.findViewById(R.id.go_to_setting_button);
+        TextView textview = dialogView.findViewById(R.id.textView5);
+        if(status.equals("new")){
+            textview.setText(getString(R.string.storage_permission_new_text));
+        }else{
+            textview.setText(getString(R.string.storage_permission_old_text));
+        }
         alert.setView(dialogView);
         final AlertDialog alertDialog = alert.create();
         alertDialog.setCanceledOnTouchOutside(false);
