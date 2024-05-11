@@ -2,6 +2,8 @@ package com.mr_deadrim.ebook;
 
 import android.content.Intent;
 import android.os.Bundle;
+
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Environment;
 import android.view.KeyEvent;
@@ -28,6 +30,11 @@ public class FileManagerActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_file_manager);
+
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.hide();
+        }
 
         if (savedInstanceState != null) {
             internalStoragePath = savedInstanceState.getString(KEY_INTERNAL_STORAGE_PATH);

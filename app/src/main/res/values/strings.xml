@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">E Book</string>
+    <string name="auther_name">Mr Deadrim</string>
     <string name="permission_text">"<b>[ PERMISSION REQUEST ]</b>"\n\n
 Thank you for choosing E Book. Before we proceed, we kindly ask for your storage permission on your device.\n\n
 "<b>[ PERMISSION REQUIRED ]</b>"\n\n
@@ -12,7 +13,27 @@ To grant permission for storage access, please tap 'Grant Permission' below. If 
 
     <string name="exit_title_text">[ E X I T ]</string>
     <string name="exit_text">Are You Sure You Want To Exit ?</string>
+
     <string name="storage_permission_title_text">[ A U T H O R I Z A T I O N ]</string>
     <string name="storage_permission_old_text">This app requires storage permission to function properly. You can grant the permission in the [ App Settings >> Permissions >> Storage ]</string>
     <string name="storage_permission_new_text">This app requires storage permission to function properly. You can grant the permission in \n\n [ App Settings >> File And Media >> Allow Management Of All Files ]</string>
+
+    <string name="about_title_text">[ A B O U T ]</string>
+    <string name="about_text">"Welcome to the E Book Application developed by Mr Deadrim.\n\n
+This app aims to revolutionize your reading experience by providing a seamless platform for accessing and managing your favorite books.\n\n
+With this application, you can easily add new books, update existing ones, and conveniently save your reading progress to pick up right where you left off.\n\n
+This app focus on optimization ensures smooth performance and a user-friendly interface, making reading a pleasure on any Android device.\n\n
+Dive into the world of literature with E Book Application and elevate your reading journey.\n\n
+<b>Supported Devices:</b> Android 7.0 to 14\n\n
+<b>E Book Source Code:</b> <a href="https://github.com/MRDEADRIM/E-Book">https://github.com/MRDEADRIM/E-Book</a>\n\n
+<b>Other Projects:</b> <a href="https://github.com/MRDEADRIM">https://github.com/MRDEADRIM</a>\n\n
+Thank you for using E Book.\n\n
+    </string>
+
+<!-- -view-->
+<!--Text Size-->
+<!--Orientation-->
+<!--Sort Order-->
+
+
 </resources>

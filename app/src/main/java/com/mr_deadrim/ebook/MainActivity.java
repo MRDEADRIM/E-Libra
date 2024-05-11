@@ -11,6 +11,9 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -202,7 +205,34 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu){
+        MenuInflater inflater=getMenuInflater();
+        inflater.inflate(R.menu.menu,menu);
+        return true;
+    }
+
+    public boolean onOptionsItemSelected(@NonNull MenuItem item){
+        if(item.getItemId()==R.id.item1){
+            Intent intent = new Intent(this, AboutActivity.class);
+            startActivity(intent);
+        }
+        if(item.getItemId()==R.id.item2){
+            Intent intent = new Intent(this, SettingActivity.class);
+            startActivity(intent);
+        }
+        if(item.getItemId()==R.id.item3){
+            exit();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     public boolean onKeyDown(int keyCode, KeyEvent event) {
+        exit();
+        return true;
+    }
+
+    public void exit(){
         final AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
         dialogView = getLayoutInflater().inflate(R.layout.exit_dialog, null);
         Button cancelButton = dialogView.findViewById(R.id.button2);
@@ -212,10 +242,9 @@ public class MainActivity extends AppCompatActivity {
         alertDialog.setCanceledOnTouchOutside(false);
         cancelButton.setOnClickListener(v1 -> alertDialog.dismiss());
         exitButton.setOnClickListener(v12 -> {
-            finish();
+            finishAffinity();
         });
         alertDialog.show();
-        return true;
     }
 
     private void save() {

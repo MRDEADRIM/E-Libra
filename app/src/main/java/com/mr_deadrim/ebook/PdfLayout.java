@@ -82,7 +82,6 @@ public class PdfLayout extends RecyclerView {
             return true;
         }
     }
-
     private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
         @Override
         public boolean onScale(ScaleGestureDetector detector) {

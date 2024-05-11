@@ -17,6 +17,12 @@
         android:theme="@style/Theme.EBook"
         tools:targetApi="34">
         <activity
+            android:name=".AboutActivity"
+            android:exported="false" />
+        <activity
+            android:name=".SettingActivity"
+            android:exported="false" />
+        <activity
             android:name=".PdfActivity"
             android:exported="false" />
         <activity

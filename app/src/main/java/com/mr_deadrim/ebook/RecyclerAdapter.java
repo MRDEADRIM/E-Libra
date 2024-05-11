@@ -155,7 +155,6 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
                 });
 
                 builder.setView(dialogView);
-                builder.setTitle(" [ E D I T ] ");
                 AlertDialog dialog = builder.create();
                 dialog.show();
 
