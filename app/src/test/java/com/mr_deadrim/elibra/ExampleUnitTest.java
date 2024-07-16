@@ -1,4 +1,4 @@
-package com.mr_deadrim.ebook;
+package com.mr_deadrim.elibra;
 
 import org.junit.Test;
 

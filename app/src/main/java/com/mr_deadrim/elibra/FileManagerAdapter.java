@@ -1,10 +1,8 @@
-package com.mr_deadrim.ebook;
+package com.mr_deadrim.elibra;
 
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
-import android.util.LruCache;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,11 +19,8 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
-import kotlinx.coroutines.CoroutineScope;
 
 public class FileManagerAdapter extends ArrayAdapter<String> {
     private final Context mContext;

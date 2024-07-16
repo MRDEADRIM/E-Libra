@@ -5,22 +5,17 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#FFFFFF"
     tools:context=".PdfActivity">
 
 
 
-
-    <com.mr_deadrim.ebook.PdfLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
+    <com.mr_deadrim.elibra.PdfLayout
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="8dp"
-        android:clipToPadding="false"
         android:scrollbars="vertical"
-        />
-
-
+        android:padding="8dp"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

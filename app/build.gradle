@@ -3,11 +3,11 @@ plugins {
 }
 
 android {
-    namespace 'com.mr_deadrim.ebook'
+    namespace 'com.mr_deadrim.elibra'
     compileSdk 34
 
     defaultConfig {
-        applicationId "com.mr_deadrim.ebook"
+        applicationId "com.mr_deadrim.elibra"
         minSdk 24
         targetSdk 34
         versionCode 202404

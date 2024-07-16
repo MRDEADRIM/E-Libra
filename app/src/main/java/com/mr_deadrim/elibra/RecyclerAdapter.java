@@ -1,4 +1,4 @@
-package com.mr_deadrim.ebook;
+package com.mr_deadrim.elibra;
 
 import android.app.Activity;
 import android.app.AlertDialog;

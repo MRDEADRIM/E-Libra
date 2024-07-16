@@ -1,4 +1,4 @@
-package com.mr_deadrim.ebook;
+package com.mr_deadrim.elibra;
 
 import android.content.Context;
 
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
     public void useAppContext() {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
-        assertEquals("com.mr_deadrim.ebook", appContext.getPackageName());
+        assertEquals("com.mr_deadrim.elibra", appContext.getPackageName());
     }
 }

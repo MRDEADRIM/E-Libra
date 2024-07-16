@@ -1,4 +1,4 @@
-package com.mr_deadrim.ebook;
+package com.mr_deadrim.elibra;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,6 +9,7 @@ import android.os.Environment;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,8 +22,10 @@ public class FileManagerActivity extends AppCompatActivity {
     private ArrayList<String> fileList;
     private String internalStoragePath;
     private ListView listView;
-    private TextView path_text;
+    private TextView path_text,textView21;
     private String status;
+
+    private Button button11,button15;
 
     private static final String KEY_INTERNAL_STORAGE_PATH = null;
 
@@ -47,6 +50,11 @@ public class FileManagerActivity extends AppCompatActivity {
         fileList = new ArrayList<>();
         listView = findViewById(R.id.listView);
         path_text = findViewById(R.id.textView4);
+
+        button15 = findViewById(R.id.button15);
+        textView21 = findViewById(R.id.textView21);
+        button11 = findViewById(R.id.button11);
+
         displayFiles(internalStoragePath);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -64,6 +72,24 @@ public class FileManagerActivity extends AppCompatActivity {
                 }
             }
         });
+
+        if (status.equals("select_folder")){
+            button15.setVisibility(View.VISIBLE);
+            textView21.setVisibility(View.VISIBLE);
+            button11.setVisibility(View.VISIBLE);
+
+            button15.setOnClickListener(view -> {
+               finish();
+            });
+            button11.setOnClickListener(view -> {
+//                Toast.makeText(this, internalStoragePath, Toast.LENGTH_SHORT).show();
+
+                Intent resultIntent = new Intent();
+                resultIntent.putExtra("path", internalStoragePath);
+                setResult(RESULT_OK, resultIntent);
+                finish();
+            });
+        }
     }
 
     @Override
@@ -85,6 +111,15 @@ public class FileManagerActivity extends AppCompatActivity {
                 if (status.equals("add_image") && (file.isDirectory() || file.getName().toLowerCase().endsWith(".png") || file.getName().toLowerCase().endsWith(".jpg") || file.getName().toLowerCase().endsWith(".jpeg"))) {
                     fileList.add(String.valueOf(file));
                 }
+
+                if(status.equals("select_folder") && file.isDirectory()){
+                    fileList.add(String.valueOf(file));
+                }
+
+                if(status.equals("select_zip_file") && (file.isDirectory() || file.getName().toLowerCase().endsWith(".zip"))){
+                    fileList.add(String.valueOf(file));
+                }
+
             }
         }
         FileManagerAdapter adapter = new FileManagerAdapter(this, fileList);

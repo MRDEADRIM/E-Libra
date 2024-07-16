@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
@@ -9,29 +9,27 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent">
 
         <androidx.cardview.widget.CardView
-            android:id="@+id/base_cardview"
+            android:id="@+id/base_cardview1"
             style="@style/Base.CardView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_margin="10dp"
-
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            android:layout_marginTop="8dp"
+            app:layout_constraintTop_toBottomOf="@+id/textView22"
+            tools:layout_editor_absoluteX="10dp">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/fixed_layout"
+                    android:id="@+id/fixed_layout1"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@color/dark_blue_gray">
-
 
                     <TextView
                         android:id="@+id/textView8"
@@ -43,36 +41,49 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
+
+                    <ImageView
+                        android:id="@+id/imageButton4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        app:layout_constraintBottom_toBottomOf="@+id/textView8"
+                        app:layout_constraintEnd_toEndOf="@+id/textView8"
+                        app:layout_constraintTop_toTopOf="@+id/textView8"
+                        app:srcCompat="@android:drawable/arrow_up_float" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/hidden_view"
+                    android:id="@+id/hidden_view1"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/fixed_layout">
-
+                    app:layout_constraintTop_toBottomOf="@+id/fixed_layout1">
 
                     <EditText
                         android:id="@+id/editTextText"
-                        android:layout_width="50dp"
+                        android:layout_width="100dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="24dp"
+                        android:layout_marginStart="100dp"
                         android:ems="10"
-                        android:inputType="text"
+                        android:inputType="number"
+                        android:minWidth="40dp"
+                        android:text="30"
+                        android:textAlignment="center"
                         app:layout_constraintBottom_toBottomOf="@+id/textView18"
                         app:layout_constraintStart_toEndOf="@+id/textView18"
                         app:layout_constraintTop_toTopOf="@+id/textView18" />
+
 
                     <TextView
                         android:id="@+id/textView18"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
-                        android:layout_marginTop="24dp"
-                        android:layout_marginBottom="32dp"
-                        android:text="Size"
+                        android:layout_marginTop="30dp"
+                        android:layout_marginBottom="30dp"
+                        android:text="Adjust Size"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/textView19" />
@@ -82,23 +93,57 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
-                        android:layout_marginTop="32dp"
+                        android:layout_marginTop="30dp"
                         android:text="Style"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
-                    <Spinner
-                        android:id="@+id/spinner"
-                        android:layout_width="wrap_content"
+
+                    <AutoCompleteTextView
+                        android:id="@+id/autoCompleteTextView"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="24dp"
+                        android:background="@color/dark_blue_gray"
+                        android:dropDownHeight="200dp"
+                        android:hint="sans-serif"
+                        android:inputType="none"
+                        android:singleLine="true"
+                        android:textAlignment="center"
                         app:layout_constraintBottom_toBottomOf="@+id/textView19"
-                        app:layout_constraintStart_toEndOf="@+id/textView19"
+                        app:layout_constraintEnd_toEndOf="@+id/button19"
+                        app:layout_constraintStart_toStartOf="@+id/button18"
                         app:layout_constraintTop_toTopOf="@+id/textView19" />
 
+                    <Button
+                        android:id="@+id/button13"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Set Default"
+                        android:visibility="gone"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent" />
+
+                    <Button
+                        android:id="@+id/button18"
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        android:text="-"
+                        app:layout_constraintBottom_toBottomOf="@+id/editTextText"
+                        app:layout_constraintEnd_toStartOf="@+id/editTextText"
+                        app:layout_constraintTop_toBottomOf="@+id/autoCompleteTextView" />
+
+                    <Button
+                        android:id="@+id/button19"
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:text="+"
+                        app:layout_constraintBottom_toBottomOf="@+id/editTextText"
+                        app:layout_constraintStart_toEndOf="@+id/editTextText"
+                        app:layout_constraintTop_toBottomOf="@+id/autoCompleteTextView" />
+
                 </androidx.constraintlayout.widget.ConstraintLayout>
-
-
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.cardview.widget.CardView>
 
@@ -110,12 +155,11 @@
             android:layout_margin="10dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/base_cardview">
+            app:layout_constraintTop_toBottomOf="@+id/base_cardview1">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
-
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/fixed_layout2"
@@ -123,17 +167,26 @@
                     android:layout_height="match_parent"
                     android:background="@color/dark_blue_gray">
 
-
                     <TextView
                         android:id="@+id/parent2"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
                         android:text="[ ORIENTATION ]"
                         android:textAlignment="center"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
+
+                    <ImageView
+                        android:id="@+id/imageButton2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintBottom_toBottomOf="@+id/parent2"
+                        app:layout_constraintEnd_toEndOf="@+id/parent2"
+                        app:layout_constraintTop_toTopOf="@+id/parent2"
+                        app:srcCompat="@android:drawable/arrow_up_float" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <androidx.constraintlayout.widget.ConstraintLayout
@@ -144,43 +197,63 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/fixed_layout2">
 
-                    <RadioButton
-                        android:id="@+id/radioButton"
+                    <RadioGroup
+                        android:id="@+id/radioGroup2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginTop="8dp"
-                        android:text="Sensor"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <RadioButton
-                        android:id="@+id/radioButton2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginTop="8dp"
-                        android:text="Portrate"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/radioButton" />
-
-                    <RadioButton
-                        android:id="@+id/radioButton3"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginBottom="8dp"
-                        android:text="Landscape"
+                        android:layout_centerInParent="true"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/radioButton2" />
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <RadioButton
+                            android:id="@+id/radioButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:layout_marginTop="8dp"
+                            android:checked="true"
+                            android:text="Sensor"
+                            android:textColorLink="#4E586E"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <RadioButton
+                            android:id="@+id/radioButton2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:layout_marginTop="8dp"
+                            android:text="Portrate"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/radioButton" />
+
+                        <RadioButton
+                            android:id="@+id/radioButton3"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:layout_marginTop="8dp"
+                            android:layout_marginBottom="8dp"
+                            android:text="Landscape"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/radioButton2" />
+
+                    </RadioGroup>
+
+                    <Button
+                        android:id="@+id/button12"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Set Default"
+                        android:visibility="gone"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent" />
+
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
-
-
             </androidx.constraintlayout.widget.ConstraintLayout>
-
         </androidx.cardview.widget.CardView>
 
 
@@ -188,7 +261,7 @@
             android:id="@+id/base_cardview3"
             style="@style/Base.CardView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_margin="10dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -198,13 +271,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/fixed_layout3"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@color/dark_blue_gray">
-
 
                     <TextView
                         android:id="@+id/parent3"
@@ -216,6 +287,16 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
+
+                    <ImageView
+                        android:id="@+id/imageButton3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        app:layout_constraintBottom_toBottomOf="@+id/parent3"
+                        app:layout_constraintEnd_toEndOf="@+id/parent3"
+                        app:layout_constraintTop_toTopOf="@+id/parent3"
+                        app:srcCompat="@android:drawable/arrow_up_float" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <androidx.constraintlayout.widget.ConstraintLayout
@@ -226,34 +307,50 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/fixed_layout3">
 
-                    <RadioButton
-                        android:id="@+id/radioButtonSortBYName"
+                    <RadioGroup
+                        android:id="@+id/radioGroup"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginTop="8dp"
-                        android:text="Sort BY Name"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <RadioButton
-                        android:id="@+id/radioButtonSortBYDate"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginBottom="8dp"
-                        android:text="Sort By Date"
+                        android:layout_centerInParent="true"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/radioButtonSortBYName" />
+                        app:layout_constraintTop_toTopOf="parent">
 
+                        <RadioButton
+                            android:id="@+id/radioButtonSortBYName"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:layout_marginTop="8dp"
+                            android:text="Sort BY Name"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <RadioButton
+                            android:id="@+id/radioButtonSortBYDate"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:layout_marginTop="8dp"
+                            android:layout_marginBottom="8dp"
+                            android:checked="true"
+                            android:text="Sort By Date"
+                            android:textColorLink="#4E586E"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/radioButtonSortBYName" />
+                    </RadioGroup>
+                    <Button
+                        android:id="@+id/button14"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Set Default"
+                        android:visibility="gone"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
-
-
             </androidx.constraintlayout.widget.ConstraintLayout>
-
         </androidx.cardview.widget.CardView>
 
 
@@ -273,19 +370,15 @@
                 app:layout_constraintBottom_toBottomOf="@+id/base_cardview4"
                 app:layout_constraintTop_toTopOf="parent">
 
-
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/fixed_layout4"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@color/dark_blue_gray"
-                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.0">
-
+                    app:layout_constraintTop_toTopOf="parent">
 
                     <TextView
                         android:id="@+id/parent4"
@@ -297,6 +390,16 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
+
+                    <ImageView
+                        android:id="@+id/imageButton5"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        app:layout_constraintBottom_toBottomOf="@+id/parent4"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="@+id/parent4"
+                        app:srcCompat="@android:drawable/arrow_up_float" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <androidx.constraintlayout.widget.ConstraintLayout
@@ -321,6 +424,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:text="Export"
+                        android:enabled="false"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toEndOf="@+id/textView17"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -329,34 +433,34 @@
                         android:id="@+id/textView17"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
+                        android:layout_marginTop="16dp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <EditText
                         android:id="@+id/editTextText2"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
-                        android:layout_marginTop="100dp"
-                        android:layout_marginBottom="100dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="8dp"
                         android:ems="10"
                         android:inputType="text"
-                        android:text="Name"
-                        app:layout_constraintBottom_toBottomOf="parent"
+                        android:text="/sdcard/Downloads/elibra.zip"
+                        app:layout_constraintEnd_toStartOf="@+id/imageView3"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/button6" />
+                        app:layout_constraintTop_toBottomOf="@+id/editTextText3" />
 
                     <ImageView
                         android:id="@+id/imageView3"
                         android:layout_width="50dp"
                         android:layout_height="50dp"
-                        android:layout_marginStart="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:src="@drawable/file_manager"
                         app:layout_constraintBottom_toBottomOf="@+id/editTextText2"
-                        app:layout_constraintStart_toEndOf="@+id/editTextText2"
-                        app:layout_constraintTop_toTopOf="@+id/editTextText2"
-                        tools:srcCompat="@tools:sample/avatars" />
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="@+id/editTextText2" />
 
                     <Button
                         android:id="@+id/button8"
@@ -366,7 +470,103 @@
                         android:layout_marginBottom="8dp"
                         android:text="Proceed"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent" />
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/checkBox" />
+
+
+                    <androidx.core.widget.NestedScrollView
+                        android:id="@+id/textView20"
+                        android:layout_width="0dp"
+                        android:layout_height="150dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="24dp"
+                        android:layout_marginEnd="8dp"
+                        android:background="#80000000"
+                        android:scrollbars="vertical"
+                        android:visibility="gone"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/textView17">
+
+                        <HorizontalScrollView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginStart="10dp"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginEnd="10dp"
+                            android:scrollbars="horizontal">
+
+                            <TextView
+                                android:id="@+id/textViewoutput"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:textIsSelectable="true"
+                                android:textSize="10sp" />
+
+                        </HorizontalScrollView>
+
+                    </androidx.core.widget.NestedScrollView>
+
+
+
+
+                    <Button
+                        android:id="@+id/button9"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:text="V"
+                        android:textSize="10dp"
+                        android:visibility="gone"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/textView20" />
+
+                    <Button
+                        android:id="@+id/button10"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_marginEnd="10dp"
+                        android:text="C"
+                        android:visibility="gone"
+                        app:layout_constraintEnd_toStartOf="@+id/button9"
+                        app:layout_constraintTop_toBottomOf="@+id/textView20" />
+
+                    <CheckBox
+                        android:id="@+id/checkBox"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="Remove the existing data and import."
+                        app:layout_constraintStart_toStartOf="@+id/editTextText2"
+                        app:layout_constraintTop_toBottomOf="@+id/editTextText2" />
+
+
+
+
+
+                    <EditText
+                        android:id="@+id/editTextText3"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:ems="10"
+                        android:inputType="text"
+                        android:text="Books"
+                        app:layout_constraintEnd_toStartOf="@+id/textView23"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/textView20" />
+
+                    <TextView
+                        android:id="@+id/textView23"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        android:text=".zip"
+                        android:textSize="20sp"
+                        app:layout_constraintBottom_toBottomOf="@+id/editTextText3"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="@+id/editTextText3" />
 
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
@@ -377,6 +577,31 @@
         </androidx.cardview.widget.CardView>
 
 
+        <TextView
+            android:id="@+id/textView22"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:text="[ S E T T I N G S ]"
+            android:textAlignment="center"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+<!--        <TextView-->
+<!--            android:id="@+id/textView23"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="Reset everyting including (Settings ,libery)"-->
+<!--            app:layout_constraintBottom_toBottomOf="parent"-->
+<!--            app:layout_constraintStart_toStartOf="@+id/base_cardview4"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/base_cardview4" />-->
+
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-</ScrollView>
+</androidx.core.widget.NestedScrollView>
