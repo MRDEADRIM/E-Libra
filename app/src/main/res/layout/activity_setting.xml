@@ -34,9 +34,9 @@
                     <TextView
                         android:id="@+id/textView8"
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="40dp"
+                        android:gravity="center"
                         android:text="[ TEXT ]"
-                        android:textAlignment="center"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -69,8 +69,9 @@
                         android:ems="10"
                         android:inputType="number"
                         android:minWidth="40dp"
-                        android:text="30"
+                        android:text="40"
                         android:textAlignment="center"
+                        android:textSize="14sp"
                         app:layout_constraintBottom_toBottomOf="@+id/textView18"
                         app:layout_constraintStart_toEndOf="@+id/textView18"
                         app:layout_constraintTop_toTopOf="@+id/textView18" />
@@ -102,13 +103,14 @@
                     <AutoCompleteTextView
                         android:id="@+id/autoCompleteTextView"
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="30dp"
                         android:background="@color/dark_blue_gray"
                         android:dropDownHeight="200dp"
                         android:hint="sans-serif"
                         android:inputType="none"
                         android:singleLine="true"
                         android:textAlignment="center"
+                        android:textSize="14sp"
                         app:layout_constraintBottom_toBottomOf="@+id/textView19"
                         app:layout_constraintEnd_toEndOf="@+id/button19"
                         app:layout_constraintStart_toStartOf="@+id/button18"
@@ -170,10 +172,10 @@
                     <TextView
                         android:id="@+id/parent2"
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="40dp"
+                        android:gravity="center"
                         android:layout_marginEnd="8dp"
                         android:text="[ ORIENTATION ]"
-                        android:textAlignment="center"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -257,101 +259,101 @@
         </androidx.cardview.widget.CardView>
 
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/base_cardview3"
-            style="@style/Base.CardView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_margin="10dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/base_cardview2">
+<!--        <androidx.cardview.widget.CardView-->
+<!--            android:id="@+id/base_cardview3"-->
+<!--            style="@style/Base.CardView"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:layout_margin="10dp"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/base_cardview2">-->
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+<!--            <androidx.constraintlayout.widget.ConstraintLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="match_parent">-->
 
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/fixed_layout3"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@color/dark_blue_gray">
+<!--                <androidx.constraintlayout.widget.ConstraintLayout-->
+<!--                    android:id="@+id/fixed_layout3"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="match_parent"-->
+<!--                    android:background="@color/dark_blue_gray">-->
 
-                    <TextView
-                        android:id="@+id/parent3"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:text="[ SORT ORDER ]"
-                        android:textAlignment="center"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+<!--                    <TextView-->
+<!--                        android:id="@+id/parent3"-->
+<!--                        android:layout_width="0dp"-->
+<!--                        android:text="[ SORT ORDER ]"-->
+<!--                        android:layout_height="40dp"-->
+<!--                        android:gravity="center"-->
+<!--                        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--                        app:layout_constraintEnd_toEndOf="parent"-->
+<!--                        app:layout_constraintStart_toStartOf="parent"-->
+<!--                        app:layout_constraintTop_toTopOf="parent" />-->
 
-                    <ImageView
-                        android:id="@+id/imageButton3"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="8dp"
-                        app:layout_constraintBottom_toBottomOf="@+id/parent3"
-                        app:layout_constraintEnd_toEndOf="@+id/parent3"
-                        app:layout_constraintTop_toTopOf="@+id/parent3"
-                        app:srcCompat="@android:drawable/arrow_up_float" />
-                </androidx.constraintlayout.widget.ConstraintLayout>
+<!--                    <ImageView-->
+<!--                        android:id="@+id/imageButton3"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:layout_marginEnd="8dp"-->
+<!--                        app:layout_constraintBottom_toBottomOf="@+id/parent3"-->
+<!--                        app:layout_constraintEnd_toEndOf="@+id/parent3"-->
+<!--                        app:layout_constraintTop_toTopOf="@+id/parent3"-->
+<!--                        app:srcCompat="@android:drawable/arrow_up_float" />-->
+<!--                </androidx.constraintlayout.widget.ConstraintLayout>-->
 
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/hidden_view3"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/fixed_layout3">
+<!--                <androidx.constraintlayout.widget.ConstraintLayout-->
+<!--                    android:id="@+id/hidden_view3"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="match_parent"-->
+<!--                    app:layout_constraintEnd_toEndOf="parent"-->
+<!--                    app:layout_constraintStart_toStartOf="parent"-->
+<!--                    app:layout_constraintTop_toBottomOf="@+id/fixed_layout3">-->
 
-                    <RadioGroup
-                        android:id="@+id/radioGroup"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerInParent="true"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent">
+<!--                    <RadioGroup-->
+<!--                        android:id="@+id/radioGroup"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:layout_centerInParent="true"-->
+<!--                        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--                        app:layout_constraintStart_toStartOf="parent"-->
+<!--                        app:layout_constraintTop_toTopOf="parent">-->
 
-                        <RadioButton
-                            android:id="@+id/radioButtonSortBYName"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="8dp"
-                            android:layout_marginTop="8dp"
-                            android:text="Sort BY Name"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
+<!--                        <RadioButton-->
+<!--                            android:id="@+id/radioButtonSortBYName"-->
+<!--                            android:layout_width="wrap_content"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:layout_marginStart="8dp"-->
+<!--                            android:layout_marginTop="8dp"-->
+<!--                            android:text="Sort By Name"-->
+<!--                            app:layout_constraintStart_toStartOf="parent"-->
+<!--                            app:layout_constraintTop_toTopOf="parent" />-->
 
-                        <RadioButton
-                            android:id="@+id/radioButtonSortBYDate"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="8dp"
-                            android:layout_marginTop="8dp"
-                            android:layout_marginBottom="8dp"
-                            android:checked="true"
-                            android:text="Sort By Date"
-                            android:textColorLink="#4E586E"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/radioButtonSortBYName" />
-                    </RadioGroup>
-                    <Button
-                        android:id="@+id/button14"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Set Default"
-                        android:visibility="gone"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent" />
+<!--                        <RadioButton-->
+<!--                            android:id="@+id/radioButtonSortBYDate"-->
+<!--                            android:layout_width="wrap_content"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:layout_marginStart="8dp"-->
+<!--                            android:layout_marginTop="8dp"-->
+<!--                            android:layout_marginBottom="8dp"-->
+<!--                            android:checked="true"-->
+<!--                            android:text="Sort By Date"-->
+<!--                            android:textColorLink="#4E586E"-->
+<!--                            app:layout_constraintBottom_toBottomOf="parent"-->
+<!--                            app:layout_constraintStart_toStartOf="parent"-->
+<!--                            app:layout_constraintTop_toBottomOf="@+id/radioButtonSortBYName" />-->
+<!--                    </RadioGroup>-->
+<!--                    <Button-->
+<!--                        android:id="@+id/button14"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:text="Set Default"-->
+<!--                        android:visibility="gone"-->
+<!--                        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--                        app:layout_constraintEnd_toEndOf="parent" />-->
 
-                </androidx.constraintlayout.widget.ConstraintLayout>
-            </androidx.constraintlayout.widget.ConstraintLayout>
-        </androidx.cardview.widget.CardView>
+<!--                </androidx.constraintlayout.widget.ConstraintLayout>-->
+<!--            </androidx.constraintlayout.widget.ConstraintLayout>-->
+<!--        </androidx.cardview.widget.CardView>-->
 
 
         <androidx.cardview.widget.CardView
@@ -362,7 +364,7 @@
             android:layout_margin="10dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/base_cardview3">
+            app:layout_constraintTop_toBottomOf="@+id/base_cardview2">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -383,9 +385,9 @@
                     <TextView
                         android:id="@+id/parent4"
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="40dp"
+                        android:gravity="center"
                         android:text="[ MIGRATION ]"
-                        android:textAlignment="center"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -443,11 +445,12 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
-                        android:layout_marginTop="8dp"
+                        android:layout_marginTop="24dp"
                         android:layout_marginEnd="8dp"
                         android:ems="10"
                         android:inputType="text"
                         android:text="/sdcard/Downloads/elibra.zip"
+                        android:textSize="14sp"
                         app:layout_constraintEnd_toStartOf="@+id/imageView3"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/editTextText3" />
@@ -466,12 +469,13 @@
                         android:id="@+id/button8"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
                         android:layout_marginEnd="8dp"
                         android:layout_marginBottom="8dp"
                         android:text="Proceed"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/checkBox" />
+                        app:layout_constraintTop_toTopOf="@+id/checkBox2" />
 
 
                     <androidx.core.widget.NestedScrollView
@@ -500,8 +504,7 @@
                                 android:id="@+id/textViewoutput"
                                 android:layout_width="wrap_content"
                                 android:layout_height="match_parent"
-                                android:textIsSelectable="true"
-                                android:textSize="10sp" />
+                                android:textIsSelectable="true" />
 
                         </HorizontalScrollView>
 
@@ -515,32 +518,19 @@
                         android:layout_width="50dp"
                         android:layout_height="50dp"
                         android:text="V"
-                        android:textSize="10dp"
                         android:visibility="gone"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/textView20" />
 
-                    <Button
-                        android:id="@+id/button10"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:layout_marginEnd="10dp"
-                        android:text="C"
-                        android:visibility="gone"
-                        app:layout_constraintEnd_toStartOf="@+id/button9"
-                        app:layout_constraintTop_toBottomOf="@+id/textView20" />
 
                     <CheckBox
                         android:id="@+id/checkBox"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:text="Remove the existing data and import."
+                        android:text="Remove the existing data and import.( including settings and Books )"
+                        app:layout_constraintEnd_toEndOf="@+id/editTextText2"
                         app:layout_constraintStart_toStartOf="@+id/editTextText2"
                         app:layout_constraintTop_toBottomOf="@+id/editTextText2" />
-
-
-
 
 
                     <EditText
@@ -548,11 +538,12 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
-                        android:layout_marginTop="8dp"
+                        android:layout_marginTop="24dp"
                         android:layout_marginEnd="8dp"
                         android:ems="10"
                         android:inputType="text"
                         android:text="Books"
+                        android:textSize="14sp"
                         app:layout_constraintEnd_toStartOf="@+id/textView23"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/textView20" />
@@ -563,10 +554,18 @@
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="8dp"
                         android:text=".zip"
-                        android:textSize="20sp"
                         app:layout_constraintBottom_toBottomOf="@+id/editTextText3"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="@+id/editTextText3" />
+
+                    <CheckBox
+                        android:id="@+id/checkBox2"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:text="Don't Import Settings"
+                        app:layout_constraintEnd_toStartOf="@+id/button8"
+                        app:layout_constraintStart_toStartOf="@+id/editTextText2"
+                        app:layout_constraintTop_toBottomOf="@+id/checkBox" />
 
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
@@ -586,7 +585,6 @@
             android:layout_marginEnd="8dp"
             android:text="[ S E T T I N G S ]"
             android:textAlignment="center"
-            android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"

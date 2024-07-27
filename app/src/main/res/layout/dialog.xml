@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="80dp"
-        android:text="N a m e :"
+        android:text="Name :"
         android:textAlignment="center"
         android:textSize="14sp"
         android:textStyle="bold"
@@ -88,7 +88,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="40dp"
-        android:text="I c o n :"
+        android:text="Icon :"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

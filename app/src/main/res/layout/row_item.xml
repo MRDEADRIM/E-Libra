@@ -25,7 +25,6 @@
         android:layout_marginBottom="8dp"
         android:text=" - - -"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
-        android:textSize="14sp"
         app:layout_constraintBottom_toBottomOf="@+id/imageView"
         app:layout_constraintEnd_toStartOf="@+id/btn_update"
         app:layout_constraintStart_toEndOf="@+id/imageView"
@@ -63,7 +62,6 @@
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:text="[ - - - | - - - ]"
-        android:textSize="10sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textViewName" />

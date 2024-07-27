@@ -5,9 +5,11 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Handler;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,13 +28,17 @@ import java.io.File;
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHolder> {
 
     private static JSONArray jsonArray;
+    private static JSONArray json2Array;
     public EditText nameEditText,storageEditText;
+    TextView textView3,textView2;
     public ImageView imagePreview;
     public View dialogView;
-    public String image_path;
+    public String image_path,style="sans-serif";
+    int size=40;
 
-    public RecyclerAdapter(JSONArray jsonArray) {
+    public RecyclerAdapter(JSONArray jsonArray,JSONArray json2Array) {
         this.jsonArray = jsonArray;
+        this.json2Array = json2Array;
     }
 
     @NonNull
@@ -68,7 +74,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
                 holder.imageView.setImageURI(Uri.parse(image_path));
             }
             holder.name.setText(name);
-            holder.pages.setText(" [ " + page + " | " + total_pages + " ] ");
+            holder.pages.setText(" [ " + page + " | " + total_pages +" ] ");
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -84,9 +90,12 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
         private TextView name,pages;
         private ImageView updateButton, deleteButton;
         private String storage;
+        private Button cancelButton;
+        private Button saveButton;
         private static final int PICK_FILE_REQUEST_CODE = 2,PICK_IMAGE_REQUEST=22;
 
         boolean isAllFieldsChecked = false;
+
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -96,6 +105,15 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
             pages = itemView.findViewById(R.id.textViewPages);
             updateButton = itemView.findViewById(R.id.btn_update);
             deleteButton = itemView.findViewById(R.id.btn_delete);
+
+
+            try{
+                JSONObject jsonObject0 = json2Array.getJSONObject(0);
+                style=jsonObject0.getString("style");
+                size= jsonObject0.getInt("size");
+            }catch(Exception e){
+                Toast.makeText(itemView.getContext(), "error in retreating json2array", Toast.LENGTH_SHORT).show();
+            }
 
             Handler handler = new Handler();
             itemView.setOnClickListener(this);
@@ -112,6 +130,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
             });
 
             updateButton.setOnClickListener(v -> {
+
                 Context context = itemView.getContext();
                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
                 LayoutInflater inflater = LayoutInflater.from(context);
@@ -119,8 +138,11 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
                 nameEditText = dialogView.findViewById(R.id.name);
                 storageEditText = dialogView.findViewById(R.id.storage);
                 imagePreview = dialogView.findViewById(R.id.imageButton);
+                textView3 = dialogView.findViewById(R.id.textView3);
+                textView2 = dialogView.findViewById(R.id.textView2);
                 try {
                     JSONObject jsonObject = jsonArray.getJSONObject(getAdapterPosition());
+
                     String name = jsonObject.getString("name");
                     storage = jsonObject.getString("storage");
                     String image_path=jsonObject.getString("image_path");
@@ -137,8 +159,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
                     e.printStackTrace();
                 }
 
-                Button cancelButton = dialogView.findViewById(R.id.btn_cancel);
-                Button saveButton = dialogView.findViewById(R.id.btn_okay);
+                cancelButton = dialogView.findViewById(R.id.btn_cancel);
+                saveButton = dialogView.findViewById(R.id.btn_okay);
                 ImageView fileManager = dialogView.findViewById(R.id.button);
                 ImageView imageButton =dialogView.findViewById(R.id.button3);
 
@@ -153,7 +175,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
                     intent.putExtra("status", "add_image");
                     ((Activity) context).startActivityForResult(intent, PICK_IMAGE_REQUEST);
                 });
-
+                dialog_text_change();
                 builder.setView(dialogView);
                 AlertDialog dialog = builder.create();
                 dialog.show();
@@ -183,7 +205,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
                         image_path = null;
                     }
                 });
-
+                
                 cancelButton.setOnClickListener(v12 -> dialog.dismiss());
             });
 
@@ -192,6 +214,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
                 notifyItemRemoved(getAdapterPosition());
                 save();
             });
+
+            main_text_change();
         }
 
         private boolean CheckAllFields() {
@@ -231,6 +255,30 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 
         }
 
+        public void dialog_text_change(){
+            Typeface typeface = Typeface.create(style, Typeface.NORMAL);
+            nameEditText.setTypeface(typeface);
+            storageEditText.setTypeface(typeface);
+            cancelButton.setTypeface(typeface);
+            saveButton.setTypeface(typeface);
+            textView3.setTypeface(typeface);
+            textView2.setTypeface(typeface);
+
+            nameEditText.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
+            storageEditText.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
+            cancelButton.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
+            saveButton.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
+            textView3.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
+            textView2.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
+        }
+
+        public void main_text_change(){
+            Typeface typeface = Typeface.create(style, Typeface.NORMAL);
+            name.setTypeface(typeface);
+            pages.setTypeface(typeface);
+            name.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
+            pages.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
+        }
         private void save() {
             SharedPreferences prefs = itemView.getContext().getSharedPreferences("MySharedPref", Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = prefs.edit();

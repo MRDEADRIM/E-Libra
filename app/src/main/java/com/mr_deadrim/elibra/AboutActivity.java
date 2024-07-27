@@ -2,8 +2,11 @@ package com.mr_deadrim.elibra;
 
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Typeface;
 import android.os.Bundle;
+import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -15,18 +18,36 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.pm.PackageInfo;
+import android.widget.Toast;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 public class AboutActivity extends AppCompatActivity {
     private View dialogView;
+    TextView versionTextView,appNameTextView,autherTextView,textView12,textView16,textView9,textView10,textView14;
+    JSONArray json2Array;
+    String style;
+    int size;
+    TextView textView7;
+    TextView textView5;
+
+    Button button2;
+    Button button5;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about);
 
-        TextView versionTextView = findViewById(R.id.textView11);
-        TextView appNameTextView = findViewById(R.id.textView13);
-        TextView autherTextView = findViewById(R.id.textView15);
-
+        versionTextView = findViewById(R.id.textView11);
+        appNameTextView = findViewById(R.id.textView13);
+        autherTextView = findViewById(R.id.textView15);
+        textView12 = findViewById(R.id.textView12);
+        textView16=findViewById(R.id.textView16);
+        textView9=findViewById(R.id.textView9);
+        textView10=findViewById(R.id.textView10);
+        textView14=findViewById(R.id.textView14);
 
         try {
             PackageInfo packageInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
@@ -36,6 +57,19 @@ public class AboutActivity extends AppCompatActivity {
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
+
+        SharedPreferences prefs = getSharedPreferences("MySharedPref", MODE_PRIVATE);
+
+        try{
+            json2Array = new JSONArray(prefs.getString("key2", "[]"));
+            JSONObject jsonObject0 = json2Array.getJSONObject(0);
+            style = jsonObject0.getString("style");
+            size = jsonObject0.getInt("size");
+        }catch(Exception e){
+            Toast.makeText(AboutActivity.this, "error in retreating json2array", Toast.LENGTH_SHORT).show();
+        }
+
+        load();
     }
 
     @Override
@@ -76,19 +110,50 @@ public class AboutActivity extends AppCompatActivity {
     public void exit(){
         final AlertDialog.Builder alert = new AlertDialog.Builder(AboutActivity.this);
         dialogView = getLayoutInflater().inflate(R.layout.exit_dialog, null);
-        Button cancelButton = dialogView.findViewById(R.id.button2);
-        Button exitButton = dialogView.findViewById(R.id.button5);
+
+        textView7 = dialogView.findViewById(R.id.textView7);
+        textView5 = dialogView.findViewById(R.id.textView5);
+        button2 = dialogView.findViewById(R.id.button2);
+        button5 = dialogView.findViewById(R.id.button5);
         alert.setView(dialogView);
         final AlertDialog alertDialog = alert.create();
         alertDialog.setCanceledOnTouchOutside(false);
-        cancelButton.setOnClickListener(v1 -> alertDialog.dismiss());
-        exitButton.setOnClickListener(v12 -> {
+        button2.setOnClickListener(v1 -> alertDialog.dismiss());
+        button5.setOnClickListener(v12 -> {
             finishAffinity();
         });
         alertDialog.show();
     }
+public void load(){
+    Typeface typeface = Typeface.create(style, Typeface.NORMAL);
+    versionTextView.setTypeface(typeface);
+    appNameTextView.setTypeface(typeface);
+    autherTextView.setTypeface(typeface);
+    textView12.setTypeface(typeface);
+    textView16.setTypeface(typeface);
+    textView9.setTypeface(typeface);
+    textView10.setTypeface(typeface);
+    textView14.setTypeface(typeface);
 
+    textView7.setTypeface(typeface);
+    textView5.setTypeface(typeface);
+    button2.setTypeface(typeface);
+    button5.setTypeface(typeface);
 
+    versionTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
+    appNameTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
+    autherTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
+    textView12.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
+    textView16.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
+    textView9.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
+    textView10.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
+    textView14.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
+
+    textView7.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
+    textView5.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
+    button2.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
+    button5.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
+    }
 
 
 }
