@@ -11,6 +11,13 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.AbsoluteSizeSpan;
+import android.text.style.RelativeSizeSpan;
+import android.text.style.StyleSpan;
+import android.text.style.TextAppearanceSpan;
+import android.text.style.TypefaceSpan;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.KeyEvent;
@@ -238,7 +245,24 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu){
         MenuInflater inflater=getMenuInflater();
         inflater.inflate(R.menu.menu,menu);
+
+        MenuItem item1 = menu.findItem(R.id.item1);
+        MenuItem item2 = menu.findItem(R.id.item2);
+        MenuItem item3 = menu.findItem(R.id.item3);
+
+        setMenuItemStyle(item1, selectedItem, size);
+        setMenuItemStyle(item2, selectedItem, size);
+        setMenuItemStyle(item3, selectedItem, size);
         return true;
+    }
+
+    private void setMenuItemStyle(MenuItem item, String fontFamily, int textSize) {
+        SpannableString spanString = new SpannableString(item.getTitle().toString());
+
+        spanString.setSpan(new TypefaceSpan(fontFamily), 0, spanString.length(), 0);
+        spanString.setSpan(new TextAppearanceSpan(null, 0, textSize, null, null), 0, spanString.length(), 0);
+
+        item.setTitle(spanString);
     }
 
     public boolean onOptionsItemSelected(@NonNull MenuItem item){
@@ -270,6 +294,7 @@ public class MainActivity extends AppCompatActivity {
         textView5 = dialogView.findViewById(R.id.textView5);
         button2 = dialogView.findViewById(R.id.button2);
         button5 = dialogView.findViewById(R.id.button5);
+        exit_text_change();
         alert.setView(dialogView);
         final AlertDialog alertDialog = alert.create();
         alertDialog.setCanceledOnTouchOutside(false);
@@ -327,10 +352,6 @@ public class MainActivity extends AppCompatActivity {
         textView3.setTypeface(typeface);
         textView2.setTypeface(typeface);
 
-        textView7.setTypeface(typeface);
-        textView5.setTypeface(typeface);
-        button2.setTypeface(typeface);
-        button5.setTypeface(typeface);
 
         nameEditText.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
         storageEditText.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
@@ -339,11 +360,22 @@ public class MainActivity extends AppCompatActivity {
         textView3.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
         textView2.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
 
+
+    }
+    public void exit_text_change(){
+        Typeface typeface = Typeface.create(selectedItem, Typeface.NORMAL);
+        textView7.setTypeface(typeface);
+        textView5.setTypeface(typeface);
+        button2.setTypeface(typeface);
+        button5.setTypeface(typeface);
+
         textView7.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
         textView5.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
         button2.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
         button5.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
+
     }
+
     public void main_text_change(){
         Typeface typeface = Typeface.create(selectedItem, Typeface.NORMAL);
         addButton.setTypeface(typeface);

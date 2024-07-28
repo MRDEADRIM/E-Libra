@@ -71,7 +71,6 @@
                         android:minWidth="40dp"
                         android:text="40"
                         android:textAlignment="center"
-                        android:textSize="14sp"
                         app:layout_constraintBottom_toBottomOf="@+id/textView18"
                         app:layout_constraintStart_toEndOf="@+id/textView18"
                         app:layout_constraintTop_toTopOf="@+id/textView18" />
@@ -110,7 +109,6 @@
                         android:inputType="none"
                         android:singleLine="true"
                         android:textAlignment="center"
-                        android:textSize="14sp"
                         app:layout_constraintBottom_toBottomOf="@+id/textView19"
                         app:layout_constraintEnd_toEndOf="@+id/button19"
                         app:layout_constraintStart_toStartOf="@+id/button18"
@@ -450,7 +448,6 @@
                         android:ems="10"
                         android:inputType="text"
                         android:text="/sdcard/Downloads/elibra.zip"
-                        android:textSize="14sp"
                         app:layout_constraintEnd_toStartOf="@+id/imageView3"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/editTextText3" />
@@ -543,7 +540,6 @@
                         android:ems="10"
                         android:inputType="text"
                         android:text="Books"
-                        android:textSize="14sp"
                         app:layout_constraintEnd_toStartOf="@+id/textView23"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/textView20" />

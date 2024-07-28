@@ -45,8 +45,8 @@
                 android:id="@+id/textView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/permission_text"
-                android:padding="16dp" />
+                android:padding="20dp"
+                android:text="@string/permission_text" />
 
         </LinearLayout>
 

@@ -50,7 +50,6 @@
         android:layout_marginTop="8dp"
         android:text="@string/exit_title_text"
         android:textAlignment="center"
-        android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"

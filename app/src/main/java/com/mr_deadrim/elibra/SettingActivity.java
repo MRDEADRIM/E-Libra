@@ -10,7 +10,10 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Environment;
 import android.text.Editable;
+import android.text.SpannableString;
 import android.text.TextWatcher;
+import android.text.style.TextAppearanceSpan;
+import android.text.style.TypefaceSpan;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Menu;
@@ -89,6 +92,10 @@ public class SettingActivity extends AppCompatActivity {
 
     Button button2;
     Button button5;
+
+    MenuItem item1;
+    MenuItem item2;
+    MenuItem item3;
 
 
     @Override
@@ -602,13 +609,25 @@ public class SettingActivity extends AppCompatActivity {
         MenuInflater inflater=getMenuInflater();
         inflater.inflate(R.menu.menu,menu);
 
-        MenuItem item1 = menu.findItem(R.id.item1);
-        MenuItem item2 = menu.findItem(R.id.item2);
-        MenuItem item3 = menu.findItem(R.id.item3);
+        item1 = menu.findItem(R.id.item1);
+        item2 = menu.findItem(R.id.item2);
+        item3 = menu.findItem(R.id.item3);
 
+        setMenuItemStyle(item1, selectedItem, Integer.parseInt(editText.getText().toString()));
+        setMenuItemStyle(item2, selectedItem, Integer.parseInt(editText.getText().toString()));
+        setMenuItemStyle(item3, selectedItem, Integer.parseInt(editText.getText().toString()));
 
         item2.setEnabled(false);
         return true;
+    }
+
+    private void setMenuItemStyle(MenuItem item, String fontFamily, int textSize) {
+        SpannableString spanString = new SpannableString(item.getTitle().toString());
+
+        spanString.setSpan(new TypefaceSpan(fontFamily), 0, spanString.length(), 0);
+        spanString.setSpan(new TextAppearanceSpan(null, 0, textSize, null, null), 0, spanString.length(), 0);
+
+        item.setTitle(spanString);
     }
     public boolean onOptionsItemSelected(@NonNull MenuItem item){
         if(item.getItemId()==R.id.item1){
@@ -634,6 +653,7 @@ public class SettingActivity extends AppCompatActivity {
         textView5 = dialogView.findViewById(R.id.textView5);
         button2 = dialogView.findViewById(R.id.button2);
         button5 = dialogView.findViewById(R.id.button5);
+        exit_text_change();
         alert.setView(dialogView);
         final AlertDialog alertDialog = alert.create();
         alertDialog.setCanceledOnTouchOutside(false);
@@ -644,6 +664,11 @@ public class SettingActivity extends AppCompatActivity {
         alertDialog.show();
     }
     public void settings_text_change(){
+
+        SpannableString spanString1 = null;
+        SpannableString spanString2 = null;
+        SpannableString spanString3 = null;
+
         Typeface typeface = Typeface.create(selectedItem, Typeface.NORMAL);
         textView.setTypeface(typeface);
         textView18.setTypeface(typeface);
@@ -665,11 +690,28 @@ public class SettingActivity extends AppCompatActivity {
         editTextText.setTypeface(typeface);
         editTextText2.setTypeface(typeface);
         editTextText3.setTypeface(typeface);
+        textView23.setTypeface(typeface);
 
-        textView7.setTypeface(typeface);
-        textView5.setTypeface(typeface);
-        button2.setTypeface(typeface);
-        button5.setTypeface(typeface);
+        if (item1 != null && item1.getTitle() != null) {
+            spanString1 = new SpannableString(item1.getTitle().toString());
+        }
+        if (item2 != null && item2.getTitle() != null) {
+            spanString2 = new SpannableString(item2.getTitle().toString());
+        }
+        if (item3 != null && item3.getTitle() != null) {
+            spanString3 = new SpannableString(item3.getTitle().toString());
+        }
+
+        if (spanString1 != null) {
+            spanString1.setSpan(new TypefaceSpan(selectedItem), 0, spanString1.length(), 0);
+        }
+        if (spanString2 != null) {
+            spanString2.setSpan(new TypefaceSpan(selectedItem), 0, spanString2.length(), 0);
+        }
+        if (spanString3 != null) {
+            spanString3.setSpan(new TypefaceSpan(selectedItem), 0, spanString3.length(), 0);
+        }
+
         int newTextSize = Integer.parseInt(editText.getText().toString());
         if(newTextSize>=10) {
             textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, newTextSize);
@@ -692,12 +734,37 @@ public class SettingActivity extends AppCompatActivity {
             editTextText.setTextSize(TypedValue.COMPLEX_UNIT_PX, newTextSize);
             editTextText2.setTextSize(TypedValue.COMPLEX_UNIT_PX, newTextSize);
             editTextText3.setTextSize(TypedValue.COMPLEX_UNIT_PX, newTextSize);
+            textView23.setTextSize(TypedValue.COMPLEX_UNIT_PX, newTextSize);
+            if (spanString1 != null) {
+                spanString1.setSpan(new TextAppearanceSpan(null, 0, newTextSize, null, null), 0, spanString1.length(), 0);
+            }
+            if (spanString2 != null) {
+                spanString2.setSpan(new TextAppearanceSpan(null, 0, newTextSize, null, null), 0, spanString2.length(), 0);
+            }
+            if (spanString3 != null) {
+                spanString3.setSpan(new TextAppearanceSpan(null, 0, newTextSize, null, null), 0, spanString3.length(), 0);
+            }
 
+        }
+
+        item1.setTitle(spanString1);
+        item2.setTitle(spanString2);
+        item3.setTitle(spanString3);
+    }
+    public void exit_text_change(){
+        Typeface typeface = Typeface.create(selectedItem, Typeface.NORMAL);
+        textView7.setTypeface(typeface);
+        textView5.setTypeface(typeface);
+        button2.setTypeface(typeface);
+        button5.setTypeface(typeface);
+        int newTextSize = Integer.parseInt(editText.getText().toString());
+        if(newTextSize>=10) {
             textView7.setTextSize(TypedValue.COMPLEX_UNIT_PX, newTextSize);
             textView5.setTextSize(TypedValue.COMPLEX_UNIT_PX, newTextSize);
             button2.setTextSize(TypedValue.COMPLEX_UNIT_PX, newTextSize);
             button5.setTextSize(TypedValue.COMPLEX_UNIT_PX, newTextSize);
         }
+
     }
     public void copyFile(String sourcePath, String destPath) {
         File source = new File(sourcePath);

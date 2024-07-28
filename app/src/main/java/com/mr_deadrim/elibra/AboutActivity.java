@@ -6,6 +6,9 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.style.TextAppearanceSpan;
+import android.text.style.TypefaceSpan;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -83,10 +86,21 @@ public class AboutActivity extends AppCompatActivity {
         MenuItem item2 = menu.findItem(R.id.item2);
         MenuItem item3 = menu.findItem(R.id.item3);
 
+        setMenuItemStyle(item1, style, size);
+        setMenuItemStyle(item2, style, size);
+        setMenuItemStyle(item3, style, size);
 
         item1.setEnabled(false);
 
         return true;
+    }
+    private void setMenuItemStyle(MenuItem item, String fontFamily, int textSize) {
+        SpannableString spanString = new SpannableString(item.getTitle().toString());
+
+        spanString.setSpan(new TypefaceSpan(fontFamily), 0, spanString.length(), 0);
+        spanString.setSpan(new TextAppearanceSpan(null, 0, textSize, null, null), 0, spanString.length(), 0);
+
+        item.setTitle(spanString);
     }
 
     public boolean onOptionsItemSelected(@NonNull MenuItem item){
@@ -115,6 +129,7 @@ public class AboutActivity extends AppCompatActivity {
         textView5 = dialogView.findViewById(R.id.textView5);
         button2 = dialogView.findViewById(R.id.button2);
         button5 = dialogView.findViewById(R.id.button5);
+        exit_text_change();
         alert.setView(dialogView);
         final AlertDialog alertDialog = alert.create();
         alertDialog.setCanceledOnTouchOutside(false);
@@ -135,10 +150,6 @@ public void load(){
     textView10.setTypeface(typeface);
     textView14.setTypeface(typeface);
 
-    textView7.setTypeface(typeface);
-    textView5.setTypeface(typeface);
-    button2.setTypeface(typeface);
-    button5.setTypeface(typeface);
 
     versionTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
     appNameTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
@@ -149,10 +160,20 @@ public void load(){
     textView10.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
     textView14.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
 
-    textView7.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
-    textView5.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
-    button2.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
-    button5.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
+    }
+
+    public void exit_text_change(){
+        Typeface typeface = Typeface.create(style, Typeface.NORMAL);
+        textView7.setTypeface(typeface);
+        textView5.setTypeface(typeface);
+        button2.setTypeface(typeface);
+        button5.setTypeface(typeface);
+
+        textView7.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
+        textView5.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
+        button2.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
+        button5.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
+
     }
 
 
