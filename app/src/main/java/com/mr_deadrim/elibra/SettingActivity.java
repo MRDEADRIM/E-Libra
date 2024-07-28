@@ -259,7 +259,7 @@ public class SettingActivity extends AppCompatActivity {
             }
         });
 
-        autoCompleteTextView = findViewById(R.id.autoCompleteTextView);
+
         String[] fonts = getResources().getStringArray(R.array.android_fonts);
         adapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, fonts);
         autoCompleteTextView.setAdapter(adapter);
@@ -295,13 +295,11 @@ public class SettingActivity extends AppCompatActivity {
 
 
         textbutton.setOnClickListener(v -> {
-
             type="import";
             migration(type);
         });
 
         button7.setOnClickListener(v -> {
-
             type="export";
             migration(type);
         });
@@ -746,10 +744,15 @@ public class SettingActivity extends AppCompatActivity {
             }
 
         }
-
-        item1.setTitle(spanString1);
-        item2.setTitle(spanString2);
-        item3.setTitle(spanString3);
+        if (item1 != null && item1.getTitle() != null) {
+            item1.setTitle(spanString1);
+        }
+        if (item2 != null && item2.getTitle() != null) {
+            item2.setTitle(spanString2);
+        }
+        if (item3 != null && item3.getTitle() != null) {
+            item3.setTitle(spanString3);
+        }
     }
     public void exit_text_change(){
         Typeface typeface = Typeface.create(selectedItem, Typeface.NORMAL);
@@ -904,6 +907,7 @@ public class SettingActivity extends AppCompatActivity {
     }
 
     private void load() {
+
         SharedPreferences prefs = getSharedPreferences("MySharedPref", MODE_PRIVATE);
        try {
            json2Array = new JSONArray(prefs.getString("key2", "[]"));
@@ -911,8 +915,8 @@ public class SettingActivity extends AppCompatActivity {
 
             text_selected = jsonObject0.getInt("selected");
             selectedItem=jsonObject0.getString("style");
+            autoCompleteTextView.setText(selectedItem,false);
             editText.setText(String.valueOf(jsonObject0.getInt("size")));
-
             JSONObject jsonObject1 = json2Array.getJSONObject(1);
             orientation_selected = jsonObject1.getInt("selected");
             orientation_value = jsonObject1.getString("value");
@@ -960,6 +964,7 @@ public class SettingActivity extends AppCompatActivity {
                 radioButton3.setChecked(true);
                 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
             }
+
 
             if(remove_existing_data_status==1){
                 checkbox.setChecked(true);

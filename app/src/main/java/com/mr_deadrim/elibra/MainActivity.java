@@ -89,6 +89,7 @@ public class MainActivity extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        load();
 
 
         addButton.setOnClickListener(v -> {
@@ -155,7 +156,7 @@ public class MainActivity extends AppCompatActivity {
         ItemTouchHelper itemTouchHelper = getItemTouchHelper();
         itemTouchHelper.attachToRecyclerView(recyclerView);
 
-        load();
+
     }
     private boolean CheckAllFields() {
         if (nameEditText.length() == 0) {
