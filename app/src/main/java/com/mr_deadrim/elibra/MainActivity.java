@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Build;
@@ -158,6 +159,8 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
+
+
     private boolean CheckAllFields() {
         if (nameEditText.length() == 0) {
             nameEditText.setError("This field is required");
@@ -270,6 +273,7 @@ public class MainActivity extends AppCompatActivity {
         if(item.getItemId()==R.id.item1){
             Intent intent = new Intent(this, AboutActivity.class);
             startActivity(intent);
+            finish();
         }
         if(item.getItemId()==R.id.item2){
             Intent intent = new Intent(this, SettingActivity.class);
@@ -335,7 +339,7 @@ public class MainActivity extends AppCompatActivity {
                 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
             }
             if(orientation_value.equals("Landscape")){
-                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
             }
             main_text_change();
         }catch (Exception e){

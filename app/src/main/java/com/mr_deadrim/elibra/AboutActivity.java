@@ -3,6 +3,7 @@ package com.mr_deadrim.elibra;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -37,6 +38,7 @@ public class AboutActivity extends AppCompatActivity {
 
     Button button2;
     Button button5;
+    String orientation_value;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +70,9 @@ public class AboutActivity extends AppCompatActivity {
             JSONObject jsonObject0 = json2Array.getJSONObject(0);
             style = jsonObject0.getString("style");
             size = jsonObject0.getInt("size");
+            JSONObject jsonObject1 = json2Array.getJSONObject(1);
+            orientation_value = jsonObject1.getString("value");
+
         }catch(Exception e){
             Toast.makeText(AboutActivity.this, "error in retreating json2array", Toast.LENGTH_SHORT).show();
         }
@@ -140,6 +145,18 @@ public class AboutActivity extends AppCompatActivity {
         alertDialog.show();
     }
 public void load(){
+
+    if(orientation_value.equals("Sensor")){
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+    }
+    if(orientation_value.equals("Portrate")){
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+    }
+    if(orientation_value.equals("Landscape")){
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
+    }
+
+
     Typeface typeface = Typeface.create(style, Typeface.NORMAL);
     versionTextView.setTypeface(typeface);
     appNameTextView.setTypeface(typeface);

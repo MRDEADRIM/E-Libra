@@ -18,21 +18,27 @@
         tools:targetApi="34">
         <activity
             android:name=".AboutActivity"
+            android:screenOrientation="sensor"
             android:exported="false" />
         <activity
             android:name=".SettingActivity"
-            android:exported="false" />
+            android:screenOrientation="sensor"
+            android:exported="false"/>
         <activity
             android:name=".PdfActivity"
+            android:screenOrientation="sensor"
             android:exported="false" />
         <activity
             android:name=".PermissionActivity"
+            android:screenOrientation="sensor"
             android:exported="false" />
         <activity
             android:name=".FileManagerActivity"
+            android:screenOrientation="sensor"
             android:exported="false" />
         <activity
             android:name=".MainActivity"
+            android:screenOrientation="sensor"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

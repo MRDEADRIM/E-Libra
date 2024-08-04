@@ -2,6 +2,7 @@ package com.mr_deadrim.elibra;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.pdf.PdfRenderer;
 import android.os.Bundle;
@@ -28,7 +29,7 @@ public class PdfActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
     private PdfRenderer pdfRenderer;
-    public String storage;
+    public String storage,orientation;
     public int position, current_page = 1, total_pages;
     private Toast toast;
     private LinearLayoutManager layoutManager;
@@ -39,15 +40,24 @@ public class PdfActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pdf);
 
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.hide();
-        }
 
         Intent intent = getIntent();
+        orientation = intent.getStringExtra("orientation");
         storage = intent.getStringExtra("storage");
         position = intent.getIntExtra("position", 0);
         current_page = intent.getIntExtra("page", 0);
+
+        if(orientation.equals("Sensor")){
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+        }
+        if(orientation.equals("Portrate")){
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        }
+        if(orientation.equals("Landscape")){
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
+        }
+
+
         recyclerView = findViewById(R.id.recyclerView);
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);

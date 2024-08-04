@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Environment;
@@ -27,9 +28,11 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.PopupWindow;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.ScrollView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.transition.TransitionManager;
@@ -57,6 +60,7 @@ import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
+import android.os.Handler;
 
 public class SettingActivity extends AppCompatActivity {
 
@@ -102,7 +106,6 @@ public class SettingActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting);
-
         cardView = findViewById(R.id.base_cardview1);
         arrow = findViewById(R.id.fixed_layout1);
         arrowimage = findViewById(R.id.imageButton4);
@@ -240,7 +243,7 @@ public class SettingActivity extends AppCompatActivity {
         incrementButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                 text_size = Integer.parseInt(editText.getText().toString());
+                text_size = Integer.parseInt(editText.getText().toString());
                 if (text_size < 200) {
                     text_size = text_size + 10;
                     editText.setText(String.valueOf(text_size));
@@ -318,7 +321,7 @@ public class SettingActivity extends AppCompatActivity {
                     setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
                 }
                 if(orientation_value.equals("Landscape")){
-                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
                 }
             }
         });
@@ -491,6 +494,7 @@ public class SettingActivity extends AppCompatActivity {
             }
 
         });
+
 
         checkbox.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -915,7 +919,7 @@ public class SettingActivity extends AppCompatActivity {
 
             text_selected = jsonObject0.getInt("selected");
             selectedItem=jsonObject0.getString("style");
-            autoCompleteTextView.setText(selectedItem,false);
+            autoCompleteTextView.setText(selectedItem, false);
             editText.setText(String.valueOf(jsonObject0.getInt("size")));
             JSONObject jsonObject1 = json2Array.getJSONObject(1);
             orientation_selected = jsonObject1.getInt("selected");
@@ -962,7 +966,7 @@ public class SettingActivity extends AppCompatActivity {
             }
             if(orientation_value.equals("Landscape")){
                 radioButton3.setChecked(true);
-                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
             }
 
 

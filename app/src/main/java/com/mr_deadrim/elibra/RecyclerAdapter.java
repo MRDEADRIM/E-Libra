@@ -33,7 +33,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
     TextView textView3,textView2;
     public ImageView imagePreview;
     public View dialogView;
-    public String image_path,style="sans-serif";
+    public String image_path,style="sans-serif",orientation_value;
     int size=40;
 
     public RecyclerAdapter(JSONArray jsonArray,JSONArray json2Array) {
@@ -109,8 +109,10 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 
             try{
                 JSONObject jsonObject0 = json2Array.getJSONObject(0);
-                style=jsonObject0.getString("style");
-                size= jsonObject0.getInt("size");
+                style = jsonObject0.getString("style");
+                size = jsonObject0.getInt("size");
+                JSONObject jsonObject1 = json2Array.getJSONObject(1);
+                orientation_value = jsonObject1.getString("value");
             }catch(Exception e){
                 Toast.makeText(itemView.getContext(), "error in retreating json2array", Toast.LENGTH_SHORT).show();
             }
@@ -241,6 +243,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
                 if (file.exists()) {
                     Context context = itemView.getContext();
                     Intent intent = new Intent(context, PdfActivity.class);
+                    intent.putExtra("orientation", orientation_value);
                     intent.putExtra("position",getAdapterPosition());
                     intent.putExtra("storage", storagePath);
                     intent.putExtra("page",page);
