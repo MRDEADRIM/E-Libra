@@ -82,8 +82,6 @@ public class FileManagerActivity extends AppCompatActivity {
                finish();
             });
             button11.setOnClickListener(view -> {
-//                Toast.makeText(this, internalStoragePath, Toast.LENGTH_SHORT).show();
-
                 Intent resultIntent = new Intent();
                 resultIntent.putExtra("path", internalStoragePath);
                 setResult(RESULT_OK, resultIntent);

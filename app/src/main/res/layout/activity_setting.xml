@@ -442,11 +442,11 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
-                        android:layout_marginTop="24dp"
+                        android:layout_marginTop="8dp"
                         android:layout_marginEnd="8dp"
                         android:ems="10"
                         android:inputType="text"
-                        android:text="/sdcard/Downloads/elibra.zip"
+                        android:text="/sdcard/Downloads/"
                         app:layout_constraintEnd_toStartOf="@+id/imageView3"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/editTextText3" />
@@ -461,18 +461,16 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="@+id/editTextText2" />
 
+
                     <Button
                         android:id="@+id/button8"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
                         android:layout_marginEnd="8dp"
                         android:layout_marginBottom="8dp"
                         android:text="Proceed"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="@+id/checkBox2" />
-
+                        app:layout_constraintEnd_toEndOf="parent" />
 
                     <androidx.core.widget.NestedScrollView
                         android:id="@+id/textView20"
@@ -523,10 +521,11 @@
                         android:id="@+id/checkBox"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
                         android:text="Remove the existing data and import.( including settings and Books )"
-                        app:layout_constraintEnd_toEndOf="@+id/editTextText2"
-                        app:layout_constraintStart_toStartOf="@+id/editTextText2"
-                        app:layout_constraintTop_toBottomOf="@+id/editTextText2" />
+                        app:layout_constraintEnd_toEndOf="@+id/editTextText6"
+                        app:layout_constraintStart_toStartOf="@+id/editTextText6"
+                        app:layout_constraintTop_toBottomOf="@+id/editTextText6" />
 
 
                     <EditText
@@ -534,7 +533,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
-                        android:layout_marginTop="24dp"
+                        android:layout_marginTop="16dp"
                         android:layout_marginEnd="8dp"
                         android:ems="10"
                         android:inputType="text"
@@ -557,10 +556,45 @@
                         android:id="@+id/checkBox2"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:text="Don't Import Settings"
+                        android:text="Import Settings"
                         app:layout_constraintEnd_toStartOf="@+id/button8"
-                        app:layout_constraintStart_toStartOf="@+id/editTextText2"
+                        app:layout_constraintStart_toStartOf="@+id/checkBox"
                         app:layout_constraintTop_toBottomOf="@+id/checkBox" />
+
+                    <EditText
+                        android:id="@+id/editTextText6"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="250dp"
+                        android:layout_marginEnd="8dp"
+                        android:ems="10"
+                        android:inputType="text"
+                        android:text="/sdcard/Downloads/elibra.zip"
+                        app:layout_constraintEnd_toStartOf="@+id/imageView6"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/textView20" />
+
+                    <ImageView
+                        android:id="@+id/imageView6"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_marginEnd="8dp"
+                        app:layout_constraintBottom_toBottomOf="@+id/editTextText6"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="@+id/editTextText6"
+                        app:srcCompat="@drawable/file_manager" />
+
+                    <CheckBox
+                        android:id="@+id/checkBox3"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="16dp"
+                        android:text="Export Settings"
+                        app:layout_constraintEnd_toStartOf="@+id/button8"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/editTextText2" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -2,11 +2,9 @@ package com.mr_deadrim.elibra;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
-import android.content.res.Configuration;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Environment;
@@ -28,11 +26,8 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.PopupWindow;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.ScrollView;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.transition.TransitionManager;
@@ -51,6 +46,7 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -60,7 +56,6 @@ import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
-import android.os.Handler;
 
 public class SettingActivity extends AppCompatActivity {
 
@@ -68,7 +63,7 @@ public class SettingActivity extends AppCompatActivity {
     ConstraintLayout arrow,arrow2,arrow4;
     ConstraintLayout hiddenView,hiddenView2,hiddenView4;
     CardView cardView,cardView2,cardView4;
-    ImageView arrowimage,arrowimage2,arrowimage4;
+    ImageView arrowimage,arrowimage2,arrowimage4,fileManager,imageView6;
     EditText editText;
     Button incrementButton,decrementButton;
     String selectedItem="sans-serif";
@@ -78,7 +73,7 @@ public class SettingActivity extends AppCompatActivity {
     Button textbutton,button7,button8;
     TextView textView,textView18,setting_title,parent2,parent4,button18,button19,textView8,textView23,textViewoutput;
     RadioButton radioButton,radioButton2,radioButton3;
-    CheckBox checkbox,checkbox2;
+    CheckBox checkbox,checkbox2,checkBox3;
     EditText editTextText,editTextText2,editTextText3;
     NestedScrollView textView20;
     public JSONArray jsonArray, jsonImportArray;
@@ -87,7 +82,7 @@ public class SettingActivity extends AppCompatActivity {
     private static final int BUFFER_SIZE = 4096;
     int equal=0,not_equal=0;
     String orientation_value="Sensor";
-    int text_selected=1,orientation_selected=1,migration_selected=1,remove_existing_data_status,dont_import_status;
+    int text_selected=1,orientation_selected=1,migration_selected=1,remove_existing_data_status,dont_import_status,dont_export_status;
     int text_size=40;
     JSONArray json2Array;
 
@@ -100,7 +95,7 @@ public class SettingActivity extends AppCompatActivity {
     MenuItem item1;
     MenuItem item2;
     MenuItem item3;
-
+    EditText editTextText6;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -137,12 +132,14 @@ public class SettingActivity extends AppCompatActivity {
         editTextText =findViewById(R.id.editTextText);
         button8=findViewById(R.id.button8);
         editTextText2 =findViewById(R.id.editTextText2);
-        ImageView fileManager = findViewById(R.id.imageView3);
+        fileManager = findViewById(R.id.imageView3);
         textView23=findViewById(R.id.textView23);
         textView20=findViewById(R.id.textView20);
         textViewoutput=findViewById(R.id.textViewoutput);
         editTextText3=findViewById(R.id.editTextText3);
-
+        editTextText6=findViewById(R.id.editTextText6);
+        imageView6=findViewById(R.id.imageView6);
+        checkBox3=findViewById(R.id.checkBox3);
         arrow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -328,17 +325,19 @@ public class SettingActivity extends AppCompatActivity {
 
         fileManager.setOnClickListener(view -> {
             Intent intent = new Intent(SettingActivity.this, FileManagerActivity.class);
-            if(type.equals("import")){
-                intent.putExtra("status", "select_zip_file");
-            }
-            if(type.equals("export")){
-                intent.putExtra("status", "select_folder");
-            }
+            intent.putExtra("status", "select_folder");
+            ((Activity) SettingActivity.this).startActivityForResult(intent, CHOOSE_REQUEST_CODE);
+        });
+
+        imageView6.setOnClickListener(view -> {
+            Intent intent = new Intent(SettingActivity.this, FileManagerActivity.class);
+            intent.putExtra("status", "select_zip_file");
+            intent.putExtra("path", "/sdcard/Downloads");
             ((Activity) SettingActivity.this).startActivityForResult(intent, CHOOSE_REQUEST_CODE);
         });
 
         button8.setOnClickListener(view -> {
-            textView20.setVisibility(View.VISIBLE);
+
             File folderToZip = new File(editTextText2.getText().toString(), "/" + editTextText3.getText().toString() + "/");
             File zippedFile = new File(editTextText2.getText().toString(), "/" + editTextText3.getText().toString() + ".zip");
             SharedPreferences prefs = getSharedPreferences("MySharedPref", MODE_PRIVATE);
@@ -356,6 +355,7 @@ public class SettingActivity extends AppCompatActivity {
 
 
             if(type.equals("export")) {
+                textView20.setVisibility(View.VISIBLE);
                 import_path = editTextText2.getText().toString();
                 File folder = new File(Environment.getExternalStorageDirectory(), "E Libra");
                 if (!folder.exists()) {
@@ -374,7 +374,7 @@ public class SettingActivity extends AppCompatActivity {
                         JSONObject json = jsonArray.getJSONObject(i);
                         JSONObject newJson = new JSONObject();
                         newJson.put("image_path", json.getString("image_path"));
-                        newJson.put("name",json.getString("name"));
+                        newJson.put("name", json.getString("name"));
                         newJson.put("storage", json.getString("storage"));
                         copyFile(json.getString("storage"), editTextText2.getText().toString() + "/" + editTextText3.getText().toString() + "/" + json.getString("name") + "/" + json.getString("storage").substring(json.getString("storage").lastIndexOf("/") + 1));
                         copyFile(json.getString("image_path"), editTextText2.getText().toString() + "/" + editTextText3.getText().toString() + "/" + json.getString("name") + "/" + json.getString("image_path").substring(json.getString("image_path").lastIndexOf("/") + 1));
@@ -383,27 +383,38 @@ public class SettingActivity extends AppCompatActivity {
                         jsonImportArray.put(newJson);
                     }
 
-                    migrationOutput("[ LIBRARY DATA STRUCTURE ]\n",type);
-                    migrationOutput("\n\n"+formatJson(jsonImportArray)+"\n\n",type);
-                    migrationOutput("[ SETTING DATA STRUCTURE ]\n",type);
-                    migrationOutput("\n\n"+formatJson(json2Array)+"\n\n",type);
+                    migrationOutput("[ LIBRARY DATA STRUCTURE ]\n", type);
+                    migrationOutput("\n\n" + formatJson(jsonImportArray) + "\n\n", type);
+                    migrationOutput("[ SETTING DATA STRUCTURE ]\n", type);
+                    migrationOutput("\n\n" + formatJson(json2Array) + "\n\n", type);
 
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
 
                 File file1 = new File(editTextText2.getText().toString(), "/" + editTextText3.getText().toString() + "/library-structure.json");
-                File file2 = new File(editTextText2.getText().toString(), "/" + editTextText3.getText().toString() + "/setting-structure.json");
 
-                try (FileWriter fileWriter1 = new FileWriter(file1);
-                     FileWriter fileWriter2 = new FileWriter(file2)) {
+
+                try {
+                    FileWriter fileWriter1 = new FileWriter(file1);
                     fileWriter1.write(jsonImportArray.toString());
                     fileWriter1.flush();
-                    fileWriter2.write(json2Array.toString());
-                    fileWriter2.flush();
+
                 } catch (IOException e) {
                     e.printStackTrace();
                     Toast.makeText(this, "Failed to write or empty data to file", Toast.LENGTH_SHORT).show();
+                }
+
+                if (checkBox3.isChecked()){
+                    File file2 = new File(editTextText2.getText().toString(), "/" + editTextText3.getText().toString() + "/setting-structure.json");
+                    try {
+                        FileWriter fileWriter2 = new FileWriter(file2);
+                        fileWriter2.write(json2Array.toString());
+                        fileWriter2.flush();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        Toast.makeText(this, "Failed to write or empty data to file", Toast.LENGTH_SHORT).show();
+                    }
                 }
 
                 if (zippedFile.exists()) {
@@ -423,13 +434,27 @@ public class SettingActivity extends AppCompatActivity {
             }
 
             if(type.equals("import")){
-                export_path =editTextText2.getText().toString();
-                String modifiedFilePath = editTextText2.getText().toString().replace(".zip","");
-                Toast.makeText(this, modifiedFilePath, Toast.LENGTH_SHORT).show();
+                export_path =editTextText6.getText().toString();
+                Toast.makeText(this, export_path, Toast.LENGTH_SHORT).show();
+
+                if(checkbox.isChecked()){
+                    jsonArray = new JSONArray();
+                }
+                if(!checkbox2.isChecked()){
+                    json2Array = new JSONArray();
+                }
+
                 try {
 
-                    unzip(new File(editTextText2.getText().toString()), new File("/sdcard/E Libra/"));
-                    Toast.makeText(this, modifiedFilePath.substring(modifiedFilePath.lastIndexOf('/') + 1), Toast.LENGTH_SHORT).show();
+
+
+                    if (unzip(new File(editTextText6.getText().toString()), new File("/sdcard/E Libra/"))) {
+                        textView20.setVisibility(View.VISIBLE);
+
+
+
+
+
 
                     StringBuilder jsonData = new StringBuilder();
                     BufferedReader reader = new BufferedReader(new FileReader("/sdcard/E Libra/library-structure.json"));
@@ -440,54 +465,45 @@ public class SettingActivity extends AppCompatActivity {
                     reader.close();
                     JSONArray importjsonArray = new JSONArray(jsonData.toString());
 
-                    Set<String> uniqueKeys = new HashSet<>();
 
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        JSONObject json = jsonArray.getJSONObject(i);
-                        String key = json.getString("image_path") + "|" +
-                                json.getString("name") + "|" +
-                                json.getString("storage") + "|" +
-                                json.getString("page") + "|" +
-                                json.getString("total_pages");
-                        uniqueKeys.add(key);
-                    }
+
 
                     for (int i = 0; i < importjsonArray.length(); i++) {
                         JSONObject json = importjsonArray.getJSONObject(i);
-                        String key = json.getString("image_path") + "|" +
-                                json.getString("name") + "|" +
-                                json.getString("storage") + "|" +
-                                json.getString("page") + "|" +
-                                json.getString("total_pages");
-
-                        if (!uniqueKeys.contains(key)) {
-
-                            uniqueKeys.add(key);
-                            JSONObject newJson = new JSONObject();
-
-                            if (json.getString("image_path").isEmpty()){
-                                newJson.put("image_path", json.getString("image_path"));
-                            }else{
-                                newJson.put("image_path", "/sdcard/E Libra/Library/" + json.getString("name") + "/" + json.getString("image_path").substring(json.getString("image_path").lastIndexOf("/") + 1));
-                            }
-                            newJson.put("name",json.getString("name"));
-                            if (json.getString("storage").isEmpty()) {
-                                newJson.put("storage", json.getString("storage"));
-                            }else{
-                                newJson.put("storage", "/sdcard/E Libra/Library/" + json.getString("name") + "/" + json.getString("storage").substring(json.getString("storage").lastIndexOf("/") + 1));
-                            }
-
-                            equal++;
-                            jsonArray.put(newJson);
+                        JSONObject newJson = new JSONObject();
+                        if (json.getString("image_path").isEmpty()){
+                            newJson.put("image_path", json.getString("image_path"));
+                        }else{
+                            newJson.put("image_path", "/sdcard/E Libra/Library/" + json.getString("name") + "/" + json.getString("image_path").substring(json.getString("image_path").lastIndexOf("/") + 1));
                         }
+                        newJson.put("name",json.getString("name"));
+                        if (json.getString("storage").isEmpty()) {
+                            newJson.put("storage", json.getString("storage"));
+                        }else{
+                            newJson.put("storage", "/sdcard/E Libra/Library/" + json.getString("name") + "/" + json.getString("storage").substring(json.getString("storage").lastIndexOf("/") + 1));
+                        }
+
+                        newJson.put("page", json.getString("page"));
+                        newJson.put("total_pages", json.getString("total_pages"));
+
+                        equal++;
+                        jsonArray.put(newJson);
+
                     }
 
-                    not_equal=importjsonArray.length()-equal;
                     migrationOutput("[ ANALYSED DATA ]",type);
                     migrationOutput("\n\n"+formatJson(importjsonArray),type);
+                    migrationOutput("[ SETTINGS DATA ]",type);
                     migrationOutput("\n\n"+formatJson(json2Array),type);
-                    migrationOutput("[ STATUS ]\n\nDUPLICATION - "+not_equal+"\n"+"ADDED - "+equal+"\n"+"TOTAL -"+importjsonArray.length()+"\n",type);
+                    migrationOutput("[ STATUS ]\n\nADDED - "+equal+"\n"+"TOTAL -"+importjsonArray.length()+"\n",type);
 
+
+
+                    save();
+
+                    } else {
+                        Toast.makeText(this, "Path Not Found", Toast.LENGTH_SHORT).show();
+                    }
                 } catch (IOException | JSONException e) {
                     throw new RuntimeException(e);
                 }
@@ -517,6 +533,19 @@ public class SettingActivity extends AppCompatActivity {
                 }
             }
         });
+
+        checkBox3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (checkBox3.isChecked()) {
+                    dont_export_status=1;
+                } else {
+                    dont_export_status=0;
+
+                }
+            }
+        });
+
 
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
@@ -567,26 +596,38 @@ public class SettingActivity extends AppCompatActivity {
 
     public void migration(String type){
         if(type.equals("import")){
-            export_path =editTextText2.getText().toString();
-            editTextText2.setText(import_path);
-            textViewoutput.setText(export_output);
+            import_path =editTextText2.getText().toString();
+
+            textViewoutput.setText(import_output);
             textbutton.setEnabled(false);
             button7.setEnabled(true);
-            textView23.setVisibility(View.INVISIBLE);
+            textView23.setVisibility(View.GONE);
             editTextText3.setVisibility(View.GONE);
+            editTextText2.setVisibility(View.GONE);
+            fileManager.setVisibility(View.GONE);
             checkbox.setVisibility(View.VISIBLE);
             checkbox2.setVisibility(View.VISIBLE);
+
+            editTextText6.setVisibility(View.VISIBLE);
+            imageView6.setVisibility(View.VISIBLE);
+            checkBox3.setVisibility(View.GONE);
         }
         if(type.equals("export")){
-            import_path =editTextText2.getText().toString();
-            editTextText2.setText(export_path);
+            export_path =editTextText6.getText().toString();
+
             textViewoutput.setText(export_output);
             button7.setEnabled(false);
             textbutton.setEnabled(true);
             textView23.setVisibility(View.VISIBLE);
             editTextText3.setVisibility(View.VISIBLE);
+            editTextText2.setVisibility(View.VISIBLE);
+            fileManager.setVisibility(View.VISIBLE);
             checkbox.setVisibility(View.GONE);
             checkbox2.setVisibility(View.GONE);
+
+            editTextText6.setVisibility(View.GONE);
+            imageView6.setVisibility(View.GONE);
+            checkBox3.setVisibility(View.VISIBLE);
         }
     }
     public void migrationOutput(String string,String type){
@@ -693,6 +734,9 @@ public class SettingActivity extends AppCompatActivity {
         editTextText2.setTypeface(typeface);
         editTextText3.setTypeface(typeface);
         textView23.setTypeface(typeface);
+        checkBox3.setTypeface(typeface);
+        editTextText6.setTypeface(typeface);
+        textViewoutput.setTypeface(typeface);
 
         if (item1 != null && item1.getTitle() != null) {
             spanString1 = new SpannableString(item1.getTitle().toString());
@@ -737,6 +781,9 @@ public class SettingActivity extends AppCompatActivity {
             editTextText2.setTextSize(TypedValue.COMPLEX_UNIT_PX, newTextSize);
             editTextText3.setTextSize(TypedValue.COMPLEX_UNIT_PX, newTextSize);
             textView23.setTextSize(TypedValue.COMPLEX_UNIT_PX, newTextSize);
+            checkBox3.setTextSize(TypedValue.COMPLEX_UNIT_PX, newTextSize);
+            editTextText6.setTextSize(TypedValue.COMPLEX_UNIT_PX, newTextSize);
+            textViewoutput.setTextSize(TypedValue.COMPLEX_UNIT_PX, newTextSize);
             if (spanString1 != null) {
                 spanString1.setSpan(new TextAppearanceSpan(null, 0, newTextSize, null, null), 0, spanString1.length(), 0);
             }
@@ -817,7 +864,12 @@ public class SettingActivity extends AppCompatActivity {
             String filePath = data.getStringExtra("path");
 
             if (requestCode == 1){
-                editTextText2.setText(filePath);
+                if(type.equals("import")){
+                    editTextText6.setText(filePath);
+                }
+                if(type.equals("export")){
+                    editTextText2.setText(filePath);
+                }
             }
 
         }
@@ -864,35 +916,54 @@ public class SettingActivity extends AppCompatActivity {
             }
         }
     }
-    private void unzip(File zipFile, File destDir) throws IOException {
+    public boolean unzip(File zipFile, File destDir) {
         if (!destDir.exists()) {
-            destDir.mkdirs();
+            if (!destDir.mkdirs()) {
+                Toast.makeText(this, "Failed to create destination directory.", Toast.LENGTH_SHORT).show();
+                return false;
+            }
         }
         try (FileInputStream fis = new FileInputStream(zipFile);
              ZipInputStream zis = new ZipInputStream(fis)) {
+
             ZipEntry entry = zis.getNextEntry();
             while (entry != null) {
-                File newFile = newFile(destDir, entry);
-                if (entry.isDirectory()) {
-                    newFile.mkdirs();
-                } else {
-                    File parent = newFile.getParentFile();
-                    if (!parent.isDirectory()) {
-                        parent.mkdirs();
-                    }
-                    try (FileOutputStream fos = new FileOutputStream(newFile)) {
-                        byte[] buffer = new byte[BUFFER_SIZE];
-                        int length;
-                        while ((length = zis.read(buffer)) > 0) {
-                            fos.write(buffer, 0, length);
+                try {
+                    File newFile = newFile(destDir, entry);
+                    if (entry.isDirectory()) {
+                        if (!newFile.mkdirs()) {
+                            throw new IOException("Failed to create directory: " + newFile.getAbsolutePath());
+                        }
+                    } else {
+                        File parent = newFile.getParentFile();
+                        if (!parent.isDirectory()) {
+                            throw new IOException("Failed to create directory: " + parent.getAbsolutePath());
+                        }
+                        try (FileOutputStream fos = new FileOutputStream(newFile)) {
+                            byte[] buffer = new byte[BUFFER_SIZE];
+                            int length;
+                            while ((length = zis.read(buffer)) > 0) {
+                                fos.write(buffer, 0, length);
+                            }
                         }
                     }
+                } catch (IOException e) {
+                    Toast.makeText(this, "Error processing entry: " + entry.getName() + " - " + e.getMessage(), Toast.LENGTH_SHORT).show();
+//                    return false;
                 }
                 zis.closeEntry();
                 entry = zis.getNextEntry();
             }
+            return true;
+        } catch (FileNotFoundException e) {
+            Toast.makeText(this, "Zip file not found: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            return false;
+        } catch (IOException e) {
+            Toast.makeText(this, "Error reading zip file: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            return false;
         }
     }
+
     private File newFile(File destDir, ZipEntry zipEntry) throws IOException {
         File destFile = new File(destDir, zipEntry.getName());
         String destDirPath = destDir.getCanonicalPath();
@@ -906,7 +977,7 @@ public class SettingActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        save();
+        save_setting();
 
     }
 
@@ -930,8 +1001,11 @@ public class SettingActivity extends AppCompatActivity {
             type = jsonObject2.getString("type");
             editTextText3.setText(jsonObject2.getString("export_name"));
             export_path = jsonObject2.getString("export_path");
+            editTextText2.setText(export_path);
+            dont_export_status = jsonObject2.getInt("export_setting_status");
 
             import_path = jsonObject2.getString("import_path");
+            editTextText6.setText(import_path);
             dont_import_status = jsonObject2.getInt("import_setting_status");
             remove_existing_data_status = jsonObject2.getInt("remove_existing_data_status");
 
@@ -982,13 +1056,19 @@ public class SettingActivity extends AppCompatActivity {
                 checkbox2.setChecked(false);
             }
 
+           if(dont_export_status==1){
+               checkBox3.setChecked(true);
+           }else{
+               checkBox3.setChecked(false);
+           }
+
        }catch (Exception e){
            e.printStackTrace();
        }
 
     }
 
-    private void save() {
+    private void save_setting() {
         json2Array = new JSONArray();
         int textSize = Integer.parseInt(editText.getText().toString());
         if (textSize < 10) {
@@ -1011,8 +1091,9 @@ public class SettingActivity extends AppCompatActivity {
             jsonObject3.put("selected", migration_selected);
             jsonObject3.put("type", type);
             jsonObject3.put("export_name", editTextText3.getText().toString());
-            jsonObject3.put("export_path", export_path);
-            jsonObject3.put("import_path", import_path);
+            jsonObject3.put("export_path", editTextText2.getText().toString());
+            jsonObject3.put("export_setting_status", dont_export_status);
+            jsonObject3.put("import_path", editTextText6.getText().toString());
             jsonObject3.put("import_setting_status", dont_import_status);
             jsonObject3.put("remove_existing_data_status", remove_existing_data_status);
             json2Array.put(2, jsonObject3);
@@ -1024,6 +1105,16 @@ public class SettingActivity extends AppCompatActivity {
         editor.putString("key2", json2Array.toString());
         editor.apply();
     }
+
+    private void save() {
+        Log.d("book_array",jsonArray.toString());
+        SharedPreferences prefs = getSharedPreferences("MySharedPref", MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString("key", jsonArray.toString());
+        editor.apply();
+        Log.d("array_data", "save array data: " + jsonArray.toString());
+    }
+
 
 }
 
