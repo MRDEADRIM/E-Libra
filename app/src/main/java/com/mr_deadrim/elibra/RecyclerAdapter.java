@@ -24,6 +24,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.io.File;
+import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
 
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHolder> {
 
@@ -100,7 +103,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            imageView = itemView.findViewById(R.id.imageView);
+            imageView = itemView.findViewById(R.id.imageViewAppIcon);
             name = itemView.findViewById(R.id.textViewName);
             pages = itemView.findViewById(R.id.textViewPages);
             updateButton = itemView.findViewById(R.id.btn_update);
@@ -137,11 +140,11 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
                 LayoutInflater inflater = LayoutInflater.from(context);
                 dialogView = inflater.inflate(R.layout.dialog, null);
-                nameEditText = dialogView.findViewById(R.id.name);
-                storageEditText = dialogView.findViewById(R.id.storage);
-                imagePreview = dialogView.findViewById(R.id.imageButton);
-                textView3 = dialogView.findViewById(R.id.textView3);
-                textView2 = dialogView.findViewById(R.id.textView2);
+                nameEditText = dialogView.findViewById(R.id.textViewBookName);
+                storageEditText = dialogView.findViewById(R.id.textViewBookPath);
+                imagePreview = dialogView.findViewById(R.id.imageButtonBookIcon);
+                textView3 = dialogView.findViewById(R.id.textViewBookIconLabel);
+                textView2 = dialogView.findViewById(R.id.textViewBookNameLabel);
                 try {
                     JSONObject jsonObject = jsonArray.getJSONObject(getAdapterPosition());
 
@@ -161,10 +164,10 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
                     e.printStackTrace();
                 }
 
-                cancelButton = dialogView.findViewById(R.id.btn_cancel);
-                saveButton = dialogView.findViewById(R.id.btn_okay);
-                ImageView fileManager = dialogView.findViewById(R.id.button);
-                ImageView imageButton =dialogView.findViewById(R.id.button3);
+                cancelButton = dialogView.findViewById(R.id.buttonBookCancel);
+                saveButton = dialogView.findViewById(R.id.buttonBookSave);
+                ImageView fileManager = dialogView.findViewById(R.id.textViewBookPick);
+                ImageView imageButton =dialogView.findViewById(R.id.buttonBookIconEdit);
 
                 fileManager.setOnClickListener(view -> {
                     Intent intent = new Intent(context, FileManagerActivity.class);
@@ -212,9 +215,14 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
             });
 
             deleteButton.setOnClickListener(v -> {
-                jsonArray.remove(getAdapterPosition());
+                JSONObject jsonObject = (JSONObject) jsonArray.remove(getAdapterPosition());
+
+
                 notifyItemRemoved(getAdapterPosition());
+
                 save();
+                delete(jsonObject);
+
             });
 
             main_text_change();
@@ -225,6 +233,22 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
                 nameEditText.setError("This field is required");
                 return false;
             }
+
+            Set<String> existingNames = new HashSet<>();
+            for (int i = 0; i < jsonArray.length(); i++) {
+                try {
+                    JSONObject json = jsonArray.getJSONObject(i);
+                    existingNames.add(json.getString("name"));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            if (existingNames.contains(name)) {
+                nameEditText.setError("This name already exists");
+                return false;
+            }
+
 
             if (storageEditText.length() == 0) {
                 storageEditText.setError("This field is required");
@@ -258,6 +282,52 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 
         }
 
+        public boolean deleteDirectory(File directory) {
+            if (!directory.exists()) {
+                Toast.makeText(itemView.getContext(), "Folder not found", Toast.LENGTH_SHORT).show();
+                return false;
+            }
+
+            Set<String> existingStorage = new HashSet<>();
+            for (int i = 0; i < jsonArray.length(); i++) {
+                try {
+                    JSONObject json = jsonArray.getJSONObject(i);
+                    existingStorage.add(json.getString("storage"));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            if (existingStorage.contains(storage)) {
+                Toast.makeText(itemView.getContext(), " path unique found", Toast.LENGTH_SHORT).show();
+            } else {
+                if (directory.isDirectory()) {
+                    File[] files = directory.listFiles();
+                    if (files != null) {
+                        for (File file : files) {
+                            if (!deleteDirectory(file)) {
+                                return false;
+                            }
+                        }
+                    }
+
+                }
+            }
+
+            return directory.delete();
+
+        }
+        private boolean isInsideDirectory(File file, File baseDirectory) {
+
+                try {
+                    String filePath = file.getCanonicalPath();
+                    String baseDirPath = baseDirectory.getCanonicalPath();
+                    return filePath.startsWith(baseDirPath);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    return false;
+                }
+        }
         public void dialog_text_change(){
             Typeface typeface = Typeface.create(style, Typeface.NORMAL);
             nameEditText.setTypeface(typeface);
@@ -281,6 +351,32 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
             pages.setTypeface(typeface);
             name.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
             pages.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
+        }
+        private void delete(JSONObject jsonObject){
+            String storage = jsonObject.optString("storage");
+
+            File file = new File(storage);
+            File parentDir = file.getParentFile();
+            File baseDirectory = new File("/sdcard/E Libra/Library/");
+            if (isInsideDirectory(file, baseDirectory)) {
+                if (parentDir != null && parentDir.exists()) {
+                    boolean success = deleteDirectory(parentDir);
+                    if (success) {
+                        Toast.makeText(itemView.getContext(), "Deleting folder ", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(itemView.getContext(), "Failed to delete directory.", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(itemView.getContext(), "Parent directory does not exist.", Toast.LENGTH_SHORT).show();
+                }
+            }else{
+                Toast.makeText(itemView.getContext(), "Outside path", Toast.LENGTH_SHORT).show();
+            }
+
+
+
+
+
         }
         private void save() {
             SharedPreferences prefs = itemView.getContext().getSharedPreferences("MySharedPref", Context.MODE_PRIVATE);

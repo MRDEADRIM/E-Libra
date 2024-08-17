@@ -18,6 +18,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -45,14 +46,14 @@ public class AboutActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about);
 
-        versionTextView = findViewById(R.id.textView11);
-        appNameTextView = findViewById(R.id.textView13);
-        autherTextView = findViewById(R.id.textView15);
-        textView12 = findViewById(R.id.textView12);
-        textView16=findViewById(R.id.textView16);
-        textView9=findViewById(R.id.textView9);
-        textView10=findViewById(R.id.textView10);
-        textView14=findViewById(R.id.textView14);
+        versionTextView = findViewById(R.id.textViewAppVersion);
+        appNameTextView = findViewById(R.id.textViewAppName);
+        autherTextView = findViewById(R.id.textViewAuthorName);
+        textView12 = findViewById(R.id.textViewAboutDetail);
+        textView16=findViewById(R.id.textViewAbout);
+        textView9=findViewById(R.id.textViewAppNameLabel);
+        textView10=findViewById(R.id.textViewAppVersionLabel);
+        textView14=findViewById(R.id.textViewAuthorNameLabel);
 
         try {
             PackageInfo packageInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
@@ -78,6 +79,16 @@ public class AboutActivity extends AppCompatActivity {
         }
 
         load();
+
+
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                Intent intent = new Intent(AboutActivity.this, MainActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
     }
 
     @Override
@@ -130,10 +141,10 @@ public class AboutActivity extends AppCompatActivity {
         final AlertDialog.Builder alert = new AlertDialog.Builder(AboutActivity.this);
         dialogView = getLayoutInflater().inflate(R.layout.exit_dialog, null);
 
-        textView7 = dialogView.findViewById(R.id.textView7);
-        textView5 = dialogView.findViewById(R.id.textView5);
-        button2 = dialogView.findViewById(R.id.button2);
-        button5 = dialogView.findViewById(R.id.button5);
+        textView7 = dialogView.findViewById(R.id.textViewExit);
+        textView5 = dialogView.findViewById(R.id.textViewExitMessage);
+        button2 = dialogView.findViewById(R.id.buttonExitNo);
+        button5 = dialogView.findViewById(R.id.buttonExitYes);
         exit_text_change();
         alert.setView(dialogView);
         final AlertDialog alertDialog = alert.create();
@@ -149,7 +160,7 @@ public void load(){
     if(orientation_value.equals("Sensor")){
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
     }
-    if(orientation_value.equals("Portrate")){
+    if(orientation_value.equals("Portrait")){
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     }
     if(orientation_value.equals("Landscape")){

@@ -11,7 +11,7 @@
 
 
     <com.mr_deadrim.elibra.PdfLayout
-        android:id="@+id/recyclerView"
+        android:id="@+id/recyclerViewPdf"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scrollbars="vertical"

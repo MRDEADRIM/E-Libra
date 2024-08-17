@@ -6,17 +6,12 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
-import android.content.res.Configuration;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.text.Spannable;
 import android.text.SpannableString;
-import android.text.style.AbsoluteSizeSpan;
-import android.text.style.RelativeSizeSpan;
-import android.text.style.StyleSpan;
 import android.text.style.TextAppearanceSpan;
 import android.text.style.TypefaceSpan;
 import android.util.Log;
@@ -43,34 +38,37 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import android.app.Activity;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class MainActivity extends AppCompatActivity {
 
-    private JSONArray jsonArray;
+    private JSONArray liberaryjsonArray;
     private View dialogView;
-    public EditText nameEditText,storageEditText;
+    public EditText textViewBookName, textViewBookPath;
     private static final int PICK_FILE_REQUEST_CODE = 1, PICK_IMAGE_REQUEST_CODE =21;
     RecyclerAdapter recyclerAdapter;
-    private ImageView imageView;
+    private ImageView imageButtonBookIcon;
     public String image_path="";
     boolean isAllFieldsChecked = false;
-    JSONArray json2Array;
+    JSONArray settingJsonArray;
     String orientation_value="Sensor";
 
     String selectedItem="sans-serif";
 
     int size=40;
 
-    Button cancelButton;
-    Button saveButton;
-    ImageView fileManager,imageButton;
-    TextView textView3,textView2;
-    Button addButton;
+    Button buttonButtonCancel;
+    Button buttonButtonSave;
+    ImageView textViewBookPick, buttonButtonIconEdit;
+    TextView textViewBookIconLabel, textViewBookNameLabel;
+    Button buttonAddBook;
 
-    TextView textView7;
-    TextView textView5;
+    TextView textViewExit;
+    TextView textViewExitMessage;
 
-    Button button2;
-    Button button5;
+    Button buttonExitNo;
+    Button buttonExitYes;
 
 
     @Override
@@ -80,44 +78,44 @@ public class MainActivity extends AppCompatActivity {
 
         checkPermission();
 
-        addButton = findViewById(R.id.add);
-        RecyclerView recyclerView = findViewById(R.id.recyclerView);
+        buttonAddBook = findViewById(R.id.buttonAddBook);
+        RecyclerView recyclerView = findViewById(R.id.recyclerViewBookList);
 
         SharedPreferences prefs = getSharedPreferences("MySharedPref", MODE_PRIVATE);
         try {
-            jsonArray = new JSONArray(prefs.getString("key", "[]"));
-            json2Array = new JSONArray(prefs.getString("key2", "[]"));
+            liberaryjsonArray = new JSONArray(prefs.getString("key", "[]"));
+            settingJsonArray = new JSONArray(prefs.getString("key2", "[]"));
         } catch (JSONException e) {
             e.printStackTrace();
         }
         load();
 
 
-        addButton.setOnClickListener(v -> {
+        buttonAddBook.setOnClickListener(v -> {
             final AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
             dialogView = getLayoutInflater().inflate(R.layout.dialog, null);
-            textView3 = dialogView.findViewById(R.id.textView3);
-            textView2 = dialogView.findViewById(R.id.textView2);
-            nameEditText = dialogView.findViewById(R.id.name);
-            storageEditText = dialogView.findViewById(R.id.storage);
-            cancelButton = dialogView.findViewById(R.id.btn_cancel);
-            saveButton = dialogView.findViewById(R.id.btn_okay);
-            fileManager = dialogView.findViewById(R.id.button);
-            imageButton = dialogView.findViewById(R.id.button3);
-            imageView = dialogView.findViewById(R.id.imageButton);
+            textViewBookIconLabel = dialogView.findViewById(R.id.textViewBookIconLabel);
+            textViewBookNameLabel = dialogView.findViewById(R.id.textViewBookNameLabel);
+            textViewBookName = dialogView.findViewById(R.id.textViewBookName);
+            textViewBookPath = dialogView.findViewById(R.id.textViewBookPath);
+            buttonButtonCancel = dialogView.findViewById(R.id.buttonBookCancel);
+            buttonButtonSave = dialogView.findViewById(R.id.buttonBookSave);
+            textViewBookPick = dialogView.findViewById(R.id.textViewBookPick);
+            buttonButtonIconEdit = dialogView.findViewById(R.id.buttonBookIconEdit);
+            imageButtonBookIcon = dialogView.findViewById(R.id.imageButtonBookIcon);
 
             if(image_path.isEmpty()){
-                imageView.setImageResource(R.mipmap.ic_launcher);
+                imageButtonBookIcon.setImageResource(R.mipmap.ic_launcher);
             }
 
-            fileManager.setOnClickListener(view -> {
+            textViewBookPick.setOnClickListener(view -> {
                 Intent intent = new Intent(MainActivity.this, FileManagerActivity.class);
                 intent.putExtra("status", "add_document");
                 ((Activity) MainActivity.this).startActivityForResult(intent, PICK_FILE_REQUEST_CODE);
 
             });
 
-            imageButton.setOnClickListener(view -> {
+            buttonButtonIconEdit.setOnClickListener(view -> {
                 Intent intent = new Intent(MainActivity.this, FileManagerActivity.class);
                 intent.putExtra("status", "add_image");
                 ((Activity) MainActivity.this).startActivityForResult(intent, PICK_IMAGE_REQUEST_CODE);
@@ -126,18 +124,18 @@ public class MainActivity extends AppCompatActivity {
             alert.setView(dialogView);
             final AlertDialog alertDialog = alert.create();
             alertDialog.setCanceledOnTouchOutside(false);
-            cancelButton.setOnClickListener(v1 -> alertDialog.dismiss());
-            saveButton.setOnClickListener(v12 -> {
+            buttonButtonCancel.setOnClickListener(v1 -> alertDialog.dismiss());
+            buttonButtonSave.setOnClickListener(v12 -> {
                 isAllFieldsChecked = CheckAllFields();
                 if(isAllFieldsChecked){
                     try {
                         JSONObject json = new JSONObject();
                         json.put("image_path",image_path);
-                        json.put("name", nameEditText.getText().toString());
-                        json.put("storage", storageEditText.getText().toString());
+                        json.put("name", textViewBookName.getText().toString());
+                        json.put("storage", textViewBookPath.getText().toString());
                         json.put("page",0);
                         json.put("total_pages",0);
-                        jsonArray.put(json);
+                        liberaryjsonArray.put(json);
                         save();
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -151,7 +149,7 @@ public class MainActivity extends AppCompatActivity {
             alertDialog.show();
         });
 
-        recyclerAdapter = new RecyclerAdapter(jsonArray,json2Array);
+        recyclerAdapter = new RecyclerAdapter(liberaryjsonArray, settingJsonArray);
         recyclerView.setAdapter(recyclerAdapter);
         recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
         ItemTouchHelper itemTouchHelper = getItemTouchHelper();
@@ -162,15 +160,36 @@ public class MainActivity extends AppCompatActivity {
 
 
     private boolean CheckAllFields() {
-        if (nameEditText.length() == 0) {
-            nameEditText.setError("This field is required");
+        String bookName = textViewBookName.getText().toString().trim();
+        String bookPath = textViewBookPath.getText().toString().trim();
+
+        if (bookName.isEmpty()) {
+            textViewBookName.setError("This field is required");
             return false;
         }
 
-        if (storageEditText.length() == 0) {
-            storageEditText.setError("This field is required");
+        Set<String> existingNames = new HashSet<>();
+        for (int i = 0; i < liberaryjsonArray.length(); i++) {
+            try {
+                JSONObject json = liberaryjsonArray.getJSONObject(i);
+                existingNames.add(json.getString("name"));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        if (existingNames.contains(bookName)) {
+            textViewBookName.setError("This name already exists");
             return false;
         }
+
+
+        if (bookPath.isEmpty()) {
+            textViewBookPath.setError("This field is required");
+            return false;
+        }
+
+
         return true;
     }
 
@@ -182,9 +201,9 @@ public class MainActivity extends AppCompatActivity {
                 int fromPosition = viewHolder.getAdapterPosition();
                 int toPosition = target.getAdapterPosition();
                 try {
-                    JSONObject temp = jsonArray.getJSONObject(fromPosition);
-                    jsonArray.put(fromPosition, jsonArray.get(toPosition));
-                    jsonArray.put(toPosition, temp);
+                    JSONObject temp = liberaryjsonArray.getJSONObject(fromPosition);
+                    liberaryjsonArray.put(fromPosition, liberaryjsonArray.get(toPosition));
+                    liberaryjsonArray.put(toPosition, temp);
                     recyclerView.getAdapter().notifyItemMoved(fromPosition, toPosition);
                     save();
                 } catch (JSONException e) {
@@ -210,13 +229,13 @@ public class MainActivity extends AppCompatActivity {
         if (data != null) {
             String filePath = data.getStringExtra("path");
             if (requestCode == 1){
-                storageEditText.setText(filePath);
+                textViewBookPath.setText(filePath);
             }
             if(requestCode == 2) {
                 recyclerAdapter.setFilePath(filePath);
             }
             if (requestCode == 21) {
-                imageView.setImageURI(Uri.parse(filePath));
+                imageButtonBookIcon.setImageURI(Uri.parse(filePath));
                 image_path=filePath;
             }
             if(requestCode == 22){
@@ -295,16 +314,16 @@ public class MainActivity extends AppCompatActivity {
         final AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
         dialogView = getLayoutInflater().inflate(R.layout.exit_dialog, null);
 
-        textView7 = dialogView.findViewById(R.id.textView7);
-        textView5 = dialogView.findViewById(R.id.textView5);
-        button2 = dialogView.findViewById(R.id.button2);
-        button5 = dialogView.findViewById(R.id.button5);
+        textViewExit = dialogView.findViewById(R.id.textViewExit);
+        textViewExitMessage = dialogView.findViewById(R.id.textViewExitMessage);
+        buttonExitNo = dialogView.findViewById(R.id.buttonExitNo);
+        buttonExitYes = dialogView.findViewById(R.id.buttonExitYes);
         exit_text_change();
         alert.setView(dialogView);
         final AlertDialog alertDialog = alert.create();
         alertDialog.setCanceledOnTouchOutside(false);
-        button2.setOnClickListener(v1 -> alertDialog.dismiss());
-        button5.setOnClickListener(v12 -> {
+        buttonExitNo.setOnClickListener(v1 -> alertDialog.dismiss());
+        buttonExitYes.setOnClickListener(v12 -> {
         finishAffinity();
         });
         alertDialog.show();
@@ -314,9 +333,9 @@ public class MainActivity extends AppCompatActivity {
     private void save() {
         SharedPreferences prefs = getSharedPreferences("MySharedPref", MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
-        editor.putString("key", jsonArray.toString());
+        editor.putString("key", liberaryjsonArray.toString());
         editor.apply();
-        Log.d("array_data", "save array data: " + jsonArray.toString());
+        Log.d("array_data", "save array data: " + liberaryjsonArray.toString());
     }
 
 
@@ -324,18 +343,18 @@ public class MainActivity extends AppCompatActivity {
 
         try {
 
-            JSONObject jsonObject0 = json2Array.getJSONObject(0);
+            JSONObject jsonObject0 = settingJsonArray.getJSONObject(0);
 
             selectedItem=jsonObject0.getString("style");
             size=jsonObject0.getInt("size");
 
-            JSONObject jsonObject1 = json2Array.getJSONObject(1);
+            JSONObject jsonObject1 = settingJsonArray.getJSONObject(1);
             orientation_value = jsonObject1.getString("value");
 
             if(orientation_value.equals("Sensor")){
                 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
             }
-            if(orientation_value.equals("Portrate")){
+            if(orientation_value.equals("Portrait")){
                 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
             }
             if(orientation_value.equals("Landscape")){
@@ -350,42 +369,42 @@ public class MainActivity extends AppCompatActivity {
 
     public void dialog_text_change(){
         Typeface typeface = Typeface.create(selectedItem, Typeface.NORMAL);
-        nameEditText.setTypeface(typeface);
-        storageEditText.setTypeface(typeface);
-        cancelButton.setTypeface(typeface);
-        saveButton.setTypeface(typeface);
-        textView3.setTypeface(typeface);
-        textView2.setTypeface(typeface);
+        textViewBookName.setTypeface(typeface);
+        textViewBookPath.setTypeface(typeface);
+        buttonButtonCancel.setTypeface(typeface);
+        buttonButtonSave.setTypeface(typeface);
+        textViewBookIconLabel.setTypeface(typeface);
+        textViewBookNameLabel.setTypeface(typeface);
 
 
-        nameEditText.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
-        storageEditText.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
-        cancelButton.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
-        saveButton.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
-        textView3.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
-        textView2.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
+        textViewBookName.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
+        textViewBookPath.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
+        buttonButtonCancel.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
+        buttonButtonSave.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
+        textViewBookIconLabel.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
+        textViewBookNameLabel.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
 
 
     }
     public void exit_text_change(){
         Typeface typeface = Typeface.create(selectedItem, Typeface.NORMAL);
-        textView7.setTypeface(typeface);
-        textView5.setTypeface(typeface);
-        button2.setTypeface(typeface);
-        button5.setTypeface(typeface);
+        textViewExit.setTypeface(typeface);
+        textViewExitMessage.setTypeface(typeface);
+        buttonExitNo.setTypeface(typeface);
+        buttonExitYes.setTypeface(typeface);
 
-        textView7.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
-        textView5.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
-        button2.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
-        button5.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
+        textViewExit.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
+        textViewExitMessage.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
+        buttonExitNo.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
+        buttonExitYes.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
 
     }
 
     public void main_text_change(){
         Typeface typeface = Typeface.create(selectedItem, Typeface.NORMAL);
-        addButton.setTypeface(typeface);
+        buttonAddBook.setTypeface(typeface);
 
-        addButton.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
+        buttonAddBook.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
     }
     
 

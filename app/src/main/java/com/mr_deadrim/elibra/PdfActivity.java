@@ -17,7 +17,6 @@ import android.widget.Toast;
 import java.io.File;
 import java.io.IOException;
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -50,7 +49,7 @@ public class PdfActivity extends AppCompatActivity {
         if(orientation.equals("Sensor")){
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
         }
-        if(orientation.equals("Portrate")){
+        if(orientation.equals("Portrait")){
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         }
         if(orientation.equals("Landscape")){
@@ -58,7 +57,7 @@ public class PdfActivity extends AppCompatActivity {
         }
 
 
-        recyclerView = findViewById(R.id.recyclerView);
+        recyclerView = findViewById(R.id.recyclerViewPdf);
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
         try {
@@ -120,7 +119,7 @@ public class PdfActivity extends AppCompatActivity {
 
             PdfViewHolder(View itemView) {
                 super(itemView);
-                imageView = itemView.findViewById(R.id.imageView);
+                imageView = itemView.findViewById(R.id.imageViewPdf);
             }
 
             void bind(int position) {

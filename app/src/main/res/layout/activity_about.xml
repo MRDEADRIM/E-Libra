@@ -15,7 +15,7 @@
 
 
         <ImageView
-            android:id="@+id/imageView2"
+            android:id="@+id/imageViewAppIcon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -23,32 +23,32 @@
             android:scaleType="fitCenter"
             android:src="@mipmap/ic_launcher"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView16" />
+            app:layout_constraintTop_toBottomOf="@+id/textViewAbout" />
 
         <TextView
-            android:id="@+id/textView10"
+            android:id="@+id/textViewAppVersionLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
             android:text="Version :"
             android:textIsSelectable="true"
-            app:layout_constraintStart_toEndOf="@+id/imageView2"
-            app:layout_constraintTop_toBottomOf="@+id/textView9" />
+            app:layout_constraintStart_toEndOf="@+id/imageViewAppIcon"
+            app:layout_constraintTop_toBottomOf="@+id/textViewAppNameLabel" />
 
         <TextView
-            android:id="@+id/textView11"
+            android:id="@+id/textViewAppVersion"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:text="- - -"
             android:textIsSelectable="true"
-            app:layout_constraintBottom_toBottomOf="@+id/textView10"
-            app:layout_constraintStart_toEndOf="@+id/textView10"
-            app:layout_constraintTop_toTopOf="@+id/textView10" />
+            app:layout_constraintBottom_toBottomOf="@+id/textViewAppVersionLabel"
+            app:layout_constraintStart_toEndOf="@+id/textViewAppVersionLabel"
+            app:layout_constraintTop_toTopOf="@+id/textViewAppVersionLabel" />
 
         <TextView
-            android:id="@+id/textView12"
+            android:id="@+id/textViewAboutDetail"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -61,53 +61,53 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView14" />
+            app:layout_constraintTop_toBottomOf="@+id/textViewAuthorNameLabel" />
 
         <TextView
-            android:id="@+id/textView9"
+            android:id="@+id/textViewAppNameLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:text="Name :"
             android:textIsSelectable="true"
-            app:layout_constraintStart_toEndOf="@+id/imageView2"
-            app:layout_constraintTop_toTopOf="@+id/imageView2" />
+            app:layout_constraintStart_toEndOf="@+id/imageViewAppIcon"
+            app:layout_constraintTop_toTopOf="@+id/imageViewAppIcon" />
 
         <TextView
-            android:id="@+id/textView13"
+            android:id="@+id/textViewAppName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:text="- - -"
             android:textIsSelectable="true"
-            app:layout_constraintBottom_toBottomOf="@+id/textView9"
-            app:layout_constraintStart_toEndOf="@+id/textView9"
-            app:layout_constraintTop_toTopOf="@+id/textView9" />
+            app:layout_constraintBottom_toBottomOf="@+id/textViewAppNameLabel"
+            app:layout_constraintStart_toEndOf="@+id/textViewAppNameLabel"
+            app:layout_constraintTop_toTopOf="@+id/textViewAppNameLabel" />
 
         <TextView
-            android:id="@+id/textView14"
+            android:id="@+id/textViewAuthorNameLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
             android:text="Author :"
             android:textIsSelectable="true"
-            app:layout_constraintStart_toEndOf="@+id/imageView2"
-            app:layout_constraintTop_toBottomOf="@+id/textView10" />
+            app:layout_constraintStart_toEndOf="@+id/imageViewAppIcon"
+            app:layout_constraintTop_toBottomOf="@+id/textViewAppVersionLabel" />
 
         <TextView
-            android:id="@+id/textView15"
+            android:id="@+id/textViewAuthorName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:text="- - -"
             android:textIsSelectable="true"
-            app:layout_constraintBottom_toBottomOf="@+id/textView14"
-            app:layout_constraintStart_toEndOf="@+id/textView14"
-            app:layout_constraintTop_toTopOf="@+id/textView14" />
+            app:layout_constraintBottom_toBottomOf="@+id/textViewAuthorNameLabel"
+            app:layout_constraintStart_toEndOf="@+id/textViewAuthorNameLabel"
+            app:layout_constraintTop_toTopOf="@+id/textViewAuthorNameLabel" />
 
         <TextView
-            android:id="@+id/textView16"
+            android:id="@+id/textViewAbout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"

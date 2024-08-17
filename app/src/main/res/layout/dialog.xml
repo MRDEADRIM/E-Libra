@@ -7,7 +7,7 @@
 
 
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/textViewBookNameLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -16,21 +16,21 @@
         android:textAlignment="center"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView3" />
+        app:layout_constraintTop_toBottomOf="@+id/textViewBookIconLabel" />
 
     <EditText
-        android:id="@+id/name"
+        android:id="@+id/textViewBookName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        app:layout_constraintBottom_toBottomOf="@+id/textView2"
+        app:layout_constraintBottom_toBottomOf="@+id/textViewBookNameLabel"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/textView2"
-        app:layout_constraintTop_toTopOf="@+id/textView2" />
+        app:layout_constraintStart_toEndOf="@+id/textViewBookNameLabel"
+        app:layout_constraintTop_toTopOf="@+id/textViewBookNameLabel" />
 
     <Button
-        android:id="@+id/btn_cancel"
+        android:id="@+id/buttonBookCancel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
@@ -38,11 +38,11 @@
         android:layout_weight="1"
         android:text="Cancel"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/storage"
-        app:layout_constraintTop_toBottomOf="@+id/storage" />
+        app:layout_constraintStart_toStartOf="@+id/textViewBookPath"
+        app:layout_constraintTop_toBottomOf="@+id/textViewBookPath" />
 
     <Button
-        android:id="@+id/btn_okay"
+        android:id="@+id/buttonBookSave"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
@@ -52,10 +52,10 @@
         android:text="save"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/storage" />
+        app:layout_constraintTop_toBottomOf="@+id/textViewBookPath" />
 
     <EditText
-        android:id="@+id/storage"
+        android:id="@+id/textViewBookPath"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -64,22 +64,22 @@
         android:ems="10"
         android:hint="/sdcard/book.pdf"
         android:inputType="textPersonName"
-        app:layout_constraintEnd_toStartOf="@+id/button"
+        app:layout_constraintEnd_toStartOf="@+id/textViewBookPick"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView2" />
+        app:layout_constraintTop_toBottomOf="@+id/textViewBookNameLabel" />
 
     <ImageView
-        android:id="@+id/button"
+        android:id="@+id/textViewBookPick"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_marginEnd="8dp"
         android:src="@drawable/file_manager"
-        app:layout_constraintBottom_toBottomOf="@+id/storage"
+        app:layout_constraintBottom_toBottomOf="@+id/textViewBookPath"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/storage" />
+        app:layout_constraintTop_toTopOf="@+id/textViewBookPath" />
 
     <TextView
-        android:id="@+id/textView3"
+        android:id="@+id/textViewBookIconLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -90,26 +90,26 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageButton
-        android:id="@+id/imageButton"
+        android:id="@+id/imageButtonBookIcon"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="8dp"
         android:scaleType="centerCrop"
-        app:layout_constraintBottom_toTopOf="@+id/name"
+        app:layout_constraintBottom_toTopOf="@+id/textViewBookName"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:srcCompat="@tools:sample/avatars" />
 
     <ImageView
-        android:id="@+id/button3"
+        android:id="@+id/buttonBookIconEdit"
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:layout_marginStart="80dp"
         android:layout_marginBottom="80dp"
-        app:layout_constraintBottom_toBottomOf="@+id/imageButton"
-        app:layout_constraintStart_toStartOf="@+id/imageButton"
+        app:layout_constraintBottom_toBottomOf="@+id/imageButtonBookIcon"
+        app:layout_constraintStart_toStartOf="@+id/imageButtonBookIcon"
         app:srcCompat="@android:drawable/ic_menu_edit" />
 
 

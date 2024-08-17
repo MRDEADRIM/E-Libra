@@ -12,7 +12,6 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -49,11 +48,11 @@ public class FileManagerActivity extends AppCompatActivity {
         status = intent.getStringExtra("status");
         fileList = new ArrayList<>();
         listView = findViewById(R.id.listView);
-        path_text = findViewById(R.id.textView4);
+        path_text = findViewById(R.id.textViewPath);
 
-        button15 = findViewById(R.id.button15);
-        textView21 = findViewById(R.id.textView21);
-        button11 = findViewById(R.id.button11);
+        button15 = findViewById(R.id.buttonFileManagerCancel);
+        textView21 = findViewById(R.id.textViewFileManagerDivider);
+        button11 = findViewById(R.id.buttonFileManagerSelect);
 
         displayFiles(internalStoragePath);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

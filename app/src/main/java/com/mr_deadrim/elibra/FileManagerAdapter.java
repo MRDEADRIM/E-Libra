@@ -44,8 +44,8 @@ public class FileManagerAdapter extends ArrayAdapter<String> {
         if (convertView == null) {
             convertView = LayoutInflater.from(mContext).inflate(R.layout.file_list_layout, parent, false);
             viewHolder = new ViewHolder();
-            viewHolder.imageView = convertView.findViewById(R.id.item_image);
-            viewHolder.textView = convertView.findViewById(R.id.item_name);
+            viewHolder.imageView = convertView.findViewById(R.id.textViewItemImage);
+            viewHolder.textView = convertView.findViewById(R.id.textViewItemName);
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
@@ -69,6 +69,9 @@ public class FileManagerAdapter extends ArrayAdapter<String> {
                 BitmapWorkerTask task = new BitmapWorkerTask(viewHolder.imageView, fileName);
                 mExecutor.execute(task);
             }
+        }
+        if (fileName.toLowerCase().endsWith(".zip")) {
+            viewHolder.imageView.setImageResource(R.drawable.zip);
         }
 
         viewHolder.textView.setText(file.getName());

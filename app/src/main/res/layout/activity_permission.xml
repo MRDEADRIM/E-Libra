@@ -8,7 +8,7 @@
     tools:context=".PermissionActivity">
 
     <Button
-        android:id="@+id/button4"
+        android:id="@+id/buttonGrandPermission"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -24,7 +24,7 @@
         android:layout_height="0dp"
         android:layout_marginTop="16dp"
         android:layout_marginBottom="16dp"
-        app:layout_constraintBottom_toTopOf="@+id/button4"
+        app:layout_constraintBottom_toTopOf="@+id/buttonGrandPermission"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -35,14 +35,14 @@
             android:orientation="vertical">
 
             <ImageView
-                android:id="@+id/imageView"
+                android:id="@+id/imageViewAppIcon"
                 android:layout_width="match_parent"
                 android:layout_height="150dp"
                 android:scaleType="fitCenter"
                 android:src="@mipmap/ic_launcher" />
 
             <TextView
-                android:id="@+id/textView"
+                android:id="@+id/textViewPermissionDescription"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="20dp"

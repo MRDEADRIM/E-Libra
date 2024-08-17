@@ -3,6 +3,7 @@ package com.mr_deadrim.elibra;
 import android.Manifest;
 import android.app.Activity;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Typeface;
 import android.net.Uri;
@@ -33,7 +34,7 @@ public class PermissionActivity extends AppCompatActivity {
     private View dialogView;
 
     TextView textView7;
-    TextView textView5,textView;
+    TextView textView5,textView,textView6;
 
     Button button2;
     Button button5;
@@ -46,12 +47,18 @@ public class PermissionActivity extends AppCompatActivity {
     Button goToSettingButton;
     TextView textview;
 
+    String orientation_value="Sensor";
+
+    String selectedItem="sans-serif";
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_permission);
-        textView=findViewById(R.id.textView);
-        permission_btn = findViewById(R.id.button4);
+        textView=findViewById(R.id.textViewPermissionDescription);
+
+        permission_btn = findViewById(R.id.buttonGrandPermission);
         permission_btn.setOnClickListener(v -> {
             checkPermission();
         });
@@ -67,7 +74,35 @@ public class PermissionActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        main_text_change();
+        load();
+
+    }
+    private void load() {
+
+        try {
+
+            JSONObject jsonObject0 = json2Array.getJSONObject(0);
+
+            selectedItem=jsonObject0.getString("style");
+            size=jsonObject0.getInt("size");
+
+            JSONObject jsonObject1 = json2Array.getJSONObject(1);
+            orientation_value = jsonObject1.getString("value");
+
+            if(orientation_value.equals("Sensor")){
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+            }
+            if(orientation_value.equals("Portrait")){
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+            }
+            if(orientation_value.equals("Landscape")){
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
+            }
+            main_text_change();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
     }
 
     private void checkPermission() {
@@ -98,9 +133,10 @@ public class PermissionActivity extends AppCompatActivity {
     private void showSettingsDialog(String status) {
         final AlertDialog.Builder alert = new AlertDialog.Builder(PermissionActivity.this);
         dialogView = getLayoutInflater().inflate(R.layout.storage_permission_dialog, null);
-        goToSettingCancelButton = dialogView.findViewById(R.id.go_to_setting_cancel_button);
-        goToSettingButton = dialogView.findViewById(R.id.go_to_setting_button);
-        textview = dialogView.findViewById(R.id.textView5);
+        goToSettingCancelButton = dialogView.findViewById(R.id.buttonGoToSettingCancel);
+        goToSettingButton = dialogView.findViewById(R.id.buttonGoToSetting);
+        textview = dialogView.findViewById(R.id.textViewExitMessage);
+        textView6 = dialogView.findViewById(R.id.textViewAuthorization);
         if(status.equals("new")){
             textview.setText(getString(R.string.storage_permission_new_text));
         }else{
@@ -144,10 +180,10 @@ public class PermissionActivity extends AppCompatActivity {
         final AlertDialog.Builder alert = new AlertDialog.Builder(PermissionActivity.this);
         dialogView = getLayoutInflater().inflate(R.layout.exit_dialog, null);
 
-        textView7 = dialogView.findViewById(R.id.textView7);
-        textView5 = dialogView.findViewById(R.id.textView5);
-        button2 = dialogView.findViewById(R.id.button2);
-        button5 = dialogView.findViewById(R.id.button5);
+        textView7 = dialogView.findViewById(R.id.textViewExit);
+        textView5 = dialogView.findViewById(R.id.textViewExitMessage);
+        button2 = dialogView.findViewById(R.id.buttonExitNo);
+        button5 = dialogView.findViewById(R.id.buttonExitYes);
         exit_text_change();
         alert.setView(dialogView);
         final AlertDialog alertDialog = alert.create();
@@ -164,11 +200,12 @@ public class PermissionActivity extends AppCompatActivity {
         goToSettingCancelButton.setTypeface(typeface);
         goToSettingButton.setTypeface(typeface);
         textview.setTypeface(typeface);
+        textView6.setTypeface(typeface);
 
         goToSettingCancelButton.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
         goToSettingButton.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
         textview.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
-
+        textView6.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
 
     }
     public void exit_text_change(){
