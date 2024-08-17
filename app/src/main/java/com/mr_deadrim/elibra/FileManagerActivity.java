@@ -1,17 +1,25 @@
 package com.mr_deadrim.elibra;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
+import android.graphics.Typeface;
 import android.os.Bundle;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Environment;
+import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -27,6 +35,11 @@ public class FileManagerActivity extends AppCompatActivity {
     private Button button11,button15;
 
     private static final String KEY_INTERNAL_STORAGE_PATH = null;
+
+    JSONArray settingJsonArray;
+    String selectedItem="sans-serif",orientation_value;
+
+    int size=40;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +67,7 @@ public class FileManagerActivity extends AppCompatActivity {
         textView21 = findViewById(R.id.textViewFileManagerDivider);
         button11 = findViewById(R.id.buttonFileManagerSelect);
 
-        displayFiles(internalStoragePath);
+
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -87,6 +100,9 @@ public class FileManagerActivity extends AppCompatActivity {
                 finish();
             });
         }
+        load();
+        displayFiles(internalStoragePath);
+        settings_text_change();
     }
 
     @Override
@@ -119,8 +135,19 @@ public class FileManagerActivity extends AppCompatActivity {
 
             }
         }
-        FileManagerAdapter adapter = new FileManagerAdapter(this, fileList);
+        FileManagerAdapter adapter = new FileManagerAdapter(this, fileList,settingJsonArray);
         listView.setAdapter(adapter);
+    }
+
+    public void settings_text_change(){
+        Typeface typeface = Typeface.create(selectedItem, Typeface.NORMAL);
+        path_text.setTypeface(typeface);
+        button11.setTypeface(typeface);
+        button15.setTypeface(typeface);
+
+        path_text.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
+        button11.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
+        button15.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
     }
 
     @Override
@@ -133,6 +160,34 @@ public class FileManagerActivity extends AppCompatActivity {
             finish();
         }
         return true;
+    }
+
+    private void load() {
+
+        SharedPreferences prefs = getSharedPreferences("MySharedPref", MODE_PRIVATE);
+        try {
+            settingJsonArray = new JSONArray(prefs.getString("key2", "[]"));
+            JSONObject jsonObject0 = settingJsonArray.getJSONObject(0);
+
+            selectedItem = jsonObject0.getString("style");
+            size = jsonObject0.getInt("size");
+
+            JSONObject jsonObject1 = settingJsonArray.getJSONObject(1);
+            orientation_value = jsonObject1.getString("value");
+
+            if(orientation_value.equals("Sensor")){
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+            }
+            if(orientation_value.equals("Portrait")){
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+            }
+            if(orientation_value.equals("Landscape")){
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
+            }
+
+        }catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 }
 

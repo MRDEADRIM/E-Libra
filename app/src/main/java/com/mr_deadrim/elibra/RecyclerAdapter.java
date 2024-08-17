@@ -318,15 +318,14 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 
         }
         private boolean isInsideDirectory(File file, File baseDirectory) {
-
-                try {
-                    String filePath = file.getCanonicalPath();
-                    String baseDirPath = baseDirectory.getCanonicalPath();
-                    return filePath.startsWith(baseDirPath);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    return false;
-                }
+            try {
+                String filePath = file.getCanonicalPath();
+                String baseDirPath = baseDirectory.getCanonicalPath();
+                return filePath.startsWith(baseDirPath);
+            } catch (IOException e) {
+                e.printStackTrace();
+                return false;
+            }
         }
         public void dialog_text_change(){
             Typeface typeface = Typeface.create(style, Typeface.NORMAL);
@@ -354,8 +353,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
         }
         private void delete(JSONObject jsonObject){
             String storage = jsonObject.optString("storage");
+            String image_path = jsonObject.optString("image_path");
 
-            File file = new File(storage);
+            File file = !storage.isEmpty() ? new File(storage) : new File(image_path);
             File parentDir = file.getParentFile();
             File baseDirectory = new File("/sdcard/E Libra/Library/");
             if (isInsideDirectory(file, baseDirectory)) {
@@ -372,11 +372,6 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
             }else{
                 Toast.makeText(itemView.getContext(), "Outside path", Toast.LENGTH_SHORT).show();
             }
-
-
-
-
-
         }
         private void save() {
             SharedPreferences prefs = itemView.getContext().getSharedPreferences("MySharedPref", Context.MODE_PRIVATE);

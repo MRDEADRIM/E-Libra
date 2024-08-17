@@ -3,16 +3,22 @@ package com.mr_deadrim.elibra;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Typeface;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
@@ -27,13 +33,19 @@ public class FileManagerAdapter extends ArrayAdapter<String> {
     private final ArrayList<String> mFileList;
     private final Map<String, Bitmap> mBitmapCache;
     private final ExecutorService mExecutor;
+    private static JSONArray json2Array;
 
-    public FileManagerAdapter(Context context, ArrayList<String> fileList) {
+    String style="sans-serif";
+    int size=40;
+
+    public FileManagerAdapter(Context context, ArrayList<String> fileList, JSONArray json2Array) {
         super(context, R.layout.file_list_layout, fileList);
         this.mContext = context;
         this.mFileList = fileList;
         this.mBitmapCache = new HashMap<>();
         this.mExecutor = Executors.newFixedThreadPool(5);
+
+        this.json2Array = json2Array;
     }
 
     @NonNull
@@ -74,7 +86,24 @@ public class FileManagerAdapter extends ArrayAdapter<String> {
             viewHolder.imageView.setImageResource(R.drawable.zip);
         }
 
+
+        try{
+            JSONObject jsonObject0 = json2Array.getJSONObject(0);
+            style = jsonObject0.getString("style");
+            size = jsonObject0.getInt("size");
+
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+
+
         viewHolder.textView.setText(file.getName());
+        Typeface typeface = Typeface.create(style, Typeface.NORMAL);
+        viewHolder.textView.setTypeface(typeface);
+
+        viewHolder.textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
+
+
 
         return convertView;
     }
@@ -82,6 +111,7 @@ public class FileManagerAdapter extends ArrayAdapter<String> {
     private static class ViewHolder {
         ImageView imageView;
         TextView textView;
+
     }
 
     private class BitmapWorkerTask implements Runnable {
