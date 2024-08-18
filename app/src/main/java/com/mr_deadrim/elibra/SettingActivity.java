@@ -58,48 +58,29 @@ import java.util.zip.ZipOutputStream;
 public class SettingActivity extends AppCompatActivity {
 
     private View dialogView;
-    ConstraintLayout constraintLayoutTextFixedLayout, constraintLayoutOrientationFixedLayout, constraintLayoutMigrationFixedLayout;
-    ConstraintLayout constraintLayoutHiddenView, constraintLayoutOrientationHiddenView, constraintLayoutMigrationHiddenView;
+    ConstraintLayout constraintLayoutTextFixedLayout, constraintLayoutOrientationFixedLayout, constraintLayoutMigrationFixedLayout, constraintLayoutHiddenView, constraintLayoutOrientationHiddenView, constraintLayoutMigrationHiddenView;
     CardView cardViewText, cardViewOrientation, cardViewMigration;
     ImageView imageViewTextToggle, imageViewOrientationToggle, imageViewMigrationToggle, imageViewFolderPicker, imageViewFilePicker;
-    EditText editTextSize;
-    Button buttonSizeDecrement, buttonSizeIncrement;
-    String selectedItem="sans-serif";
+    EditText editTextSize,editTextExportPath, editTextExportFile,editTextImportPath;
+    Button buttonSizeDecrement, buttonSizeIncrement,buttonImport, buttonExport, buttonProceed, buttonExitNo, buttonExitYes;
+    String textStyle="sans-serif", orientationValue ="Sensor",type="export",import_output="",export_output="",export_path="/sdcard/Downloads/", import_path ="";
     private AutoCompleteTextView autoCompleteTextViewStyle;
     private ArrayAdapter<String> adapter;
     private static final int CHOOSE_REQUEST_CODE = 1;
-    Button buttonImport, buttonExport, buttonProceed;
-    TextView textViewStyle, textViewAdjustSize, textViewSettings, textViewOrientation, textViewMigration, textViewText, textViewZip, textViewOutputPreview;
+    TextView textViewStyle, textViewAdjustSize, textViewSettings, textViewOrientation, textViewMigration, textViewText, textViewZip, textViewOutputPreview, textViewExit, textViewExitMessage;
     RadioButton radioButtonSensor, radioButtonPortrait, radioButtonLandscape;
     CheckBox checkBoxRemoveExisting, checkBoxImportSettings, checkBoxExportSettings;
-    EditText editTextExportPath, editTextExportFile;
     NestedScrollView nestedScrollViewStatusOutput;
     public JSONArray liberaryJsonArray, jsonImportArray;
-    String type="export",import_output="",export_output="";
-    String export_path="/sdcard/Downloads/", import_path ="";
     private static final int BUFFER_SIZE = 4096;
-    int added =0;
-    String orientation_value="Sensor";
-    int text_selected=1,orientation_selected=1,migration_selected=1,remove_existing_data_status,dont_import_status,dont_export_status;
-    int text_size=40;
+    int added=0, text_size =40,text_selected=1,orientation_selected=1,migration_selected=1,remove_existing_data_status,dont_import_status,dont_export_status;
     JSONArray settingJsonArray;
-
-    TextView textView7;
-    TextView textView5;
-
-    Button button2;
-    Button button5;
-
-    MenuItem item1;
-    MenuItem item2;
-    MenuItem item3;
-    EditText editTextImportPath;
+    MenuItem item1,item2,item3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting);
-
         cardViewText = findViewById(R.id.cardViewText);
         constraintLayoutTextFixedLayout = findViewById(R.id.constraintLayoutTextFixedLayout);
         imageViewTextToggle = findViewById(R.id.imageViewTextToggle);
@@ -147,88 +128,65 @@ public class SettingActivity extends AppCompatActivity {
                     imageViewTextToggle.setImageResource(android.R.drawable.arrow_down_float);
                     text_selected=0;
                 }else {
-                    TransitionManager.beginDelayedTransition(cardViewText,
-                            new AutoTransition());
+                    TransitionManager.beginDelayedTransition(cardViewText, new AutoTransition());
                     constraintLayoutHiddenView.setVisibility(View.VISIBLE);
                     imageViewTextToggle.setImageResource(android.R.drawable.arrow_up_float);
                     text_selected=1;
                 }
             }
         });
-
-
         constraintLayoutOrientationFixedLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (constraintLayoutOrientationHiddenView.getVisibility() == View.VISIBLE) {
-
                     constraintLayoutOrientationHiddenView.setVisibility(View.GONE);
                     imageViewOrientationToggle.setImageResource(android.R.drawable.arrow_down_float);
                     orientation_selected=0;
                 }else {
-                    TransitionManager.beginDelayedTransition(cardViewOrientation,
-                            new AutoTransition());
+                    TransitionManager.beginDelayedTransition(cardViewOrientation,new AutoTransition());
                     constraintLayoutOrientationHiddenView.setVisibility(View.VISIBLE);
                     imageViewOrientationToggle.setImageResource(android.R.drawable.arrow_up_float);
                     orientation_selected=1;
                 }
             }
         });
-
-
-
         constraintLayoutMigrationFixedLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (constraintLayoutMigrationHiddenView.getVisibility() == View.VISIBLE) {
-
                     constraintLayoutMigrationHiddenView.setVisibility(View.GONE);
                     imageViewMigrationToggle.setImageResource(android.R.drawable.arrow_down_float);
                     migration_selected=0;
                 }else {
-
-                    TransitionManager.beginDelayedTransition(cardViewMigration,
-                            new AutoTransition());
+                    TransitionManager.beginDelayedTransition(cardViewMigration, new AutoTransition());
                     constraintLayoutMigrationHiddenView.setVisibility(View.VISIBLE);
                     imageViewMigrationToggle.setImageResource(android.R.drawable.arrow_up_float);
                     migration_selected=1;
                 }
             }
         });
-
         editTextSize.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 // Not used
             }
-
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 // Not used
             }
-
             @Override
             public void afterTextChanged(Editable editable) {
                 String text = editable.toString();
-
                 try {
                     int value = Integer.parseInt(text);
-
                     buttonSizeDecrement.setVisibility(value >= 200 ? View.INVISIBLE : View.VISIBLE);
                     buttonSizeIncrement.setVisibility(value <= 11 ? View.INVISIBLE : View.VISIBLE);
-
                     settings_text_change();
-
-
                 } catch (NumberFormatException e) {
                     e.printStackTrace();
                 }
-
-
-
             }
         });
-
         buttonSizeDecrement.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -239,7 +197,6 @@ public class SettingActivity extends AppCompatActivity {
                 }
             }
         });
-
         buttonSizeIncrement.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -250,8 +207,6 @@ public class SettingActivity extends AppCompatActivity {
                 }
             }
         });
-
-
         String[] fonts = getResources().getStringArray(R.array.android_fonts);
         adapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, fonts);
         autoCompleteTextViewStyle.setAdapter(adapter);
@@ -267,30 +222,23 @@ public class SettingActivity extends AppCompatActivity {
                 autoCompleteTextViewStyle.showDropDown();
             }
         });
-
-
         autoCompleteTextViewStyle.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
 
             }
         });
-
-
         autoCompleteTextViewStyle.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                selectedItem = (String) parent.getItemAtPosition(position);
+                textStyle = (String) parent.getItemAtPosition(position);
                 settings_text_change();
             }
         });
-
-
         buttonImport.setOnClickListener(v -> {
             type="import";
             migration(type);
         });
-
         buttonExport.setOnClickListener(v -> {
             type="export";
             migration(type);
@@ -301,35 +249,29 @@ public class SettingActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 RadioButton radioButton = findViewById(checkedId);
-                orientation_value = radioButton.getText().toString();
-
-                if(orientation_value.equals("Sensor")){
+                orientationValue = radioButton.getText().toString();
+                if(orientationValue.equals("Sensor")){
                     setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
                 }
-                if(orientation_value.equals("Portrait")){
+                if(orientationValue.equals("Portrait")){
                     setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
                 }
-                if(orientation_value.equals("Landscape")){
+                if(orientationValue.equals("Landscape")){
                     setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
                 }
             }
         });
-
         imageViewFolderPicker.setOnClickListener(view -> {
             Intent intent = new Intent(SettingActivity.this, FileManagerActivity.class);
             intent.putExtra("status", "select_folder");
             ((Activity) SettingActivity.this).startActivityForResult(intent, CHOOSE_REQUEST_CODE);
         });
-
         imageViewFilePicker.setOnClickListener(view -> {
             Intent intent = new Intent(SettingActivity.this, FileManagerActivity.class);
             intent.putExtra("status", "select_zip_file");
             ((Activity) SettingActivity.this).startActivityForResult(intent, CHOOSE_REQUEST_CODE);
         });
-
         buttonProceed.setOnClickListener(view -> {
-
-
             File folderToZip = new File(editTextExportPath.getText().toString(), "/" + editTextExportFile.getText().toString() + "/");
             File zippedFile = new File(editTextExportPath.getText().toString(), "/" + editTextExportFile.getText().toString() + ".zip");
             SharedPreferences prefs = getSharedPreferences("MySharedPref", MODE_PRIVATE);
@@ -344,8 +286,6 @@ public class SettingActivity extends AppCompatActivity {
             } catch (JSONException e) {
                 throw new RuntimeException(e);
             }
-
-
             File folder = new File(Environment.getExternalStorageDirectory(), "E Libra");
             if (!folder.exists()) {
                 if (folder.mkdirs()) {
@@ -356,11 +296,9 @@ public class SettingActivity extends AppCompatActivity {
             } else {
                 Toast.makeText(this, "Folder already exists", Toast.LENGTH_SHORT).show();
             }
-
             if(type.equals("export")) {
                 nestedScrollViewStatusOutput.setVisibility(View.VISIBLE);
                 import_path = editTextExportPath.getText().toString();
-
                 try {
                     jsonImportArray = new JSONArray();
                     for (int i = 0; i < liberaryJsonArray.length(); i++) {
@@ -375,19 +313,14 @@ public class SettingActivity extends AppCompatActivity {
                         newJson.put("total_pages", json.getString("total_pages"));
                         jsonImportArray.put(newJson);
                     }
-
                     migrationOutput("[ LIBRARY DATA STRUCTURE ]\n", type);
                     migrationOutput("\n\n" + formatJson(jsonImportArray) + "\n\n", type);
                     migrationOutput("[ SETTING DATA STRUCTURE ]\n", type);
                     migrationOutput("\n\n" + formatJson(settingJsonArray) + "\n\n", type);
-
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-
                 File file1 = new File(editTextExportPath.getText().toString(), "/" + editTextExportFile.getText().toString() + "/library-structure.json");
-
-
                 try {
                     FileWriter fileWriter1 = new FileWriter(file1);
                     fileWriter1.write(jsonImportArray.toString());
@@ -397,7 +330,6 @@ public class SettingActivity extends AppCompatActivity {
                     e.printStackTrace();
                     Toast.makeText(this, "Failed to write or empty data to file", Toast.LENGTH_SHORT).show();
                 }
-
                 if (checkBoxExportSettings.isChecked()){
                     File file2 = new File(editTextExportPath.getText().toString(), "/" + editTextExportFile.getText().toString() + "/setting-structure.json");
                     try {
@@ -409,7 +341,6 @@ public class SettingActivity extends AppCompatActivity {
                         Toast.makeText(this, "Failed to write or empty data to file", Toast.LENGTH_SHORT).show();
                     }
                 }
-
                 if (zippedFile.exists()) {
                     Toast.makeText(getApplicationContext(), "File already exists", Toast.LENGTH_SHORT).show();
                 } else {
@@ -423,25 +354,19 @@ public class SettingActivity extends AppCompatActivity {
                 }
                 deleteFolder(folderToZip);
                 migrationOutput("[ STATUS ]-( SUCCESS )\n\n[ PATH ] - "+zippedFile+"\n",type);
-
             }
-
             if(type.equals("import")){
                 export_path = editTextImportPath.getText().toString();
                 Toast.makeText(this, export_path, Toast.LENGTH_SHORT).show();
-
                 if(checkBoxRemoveExisting.isChecked()){
                     liberaryJsonArray = new JSONArray();
                 }
                 if(!checkBoxImportSettings.isChecked()){
                     settingJsonArray = new JSONArray();
                 }
-
                 try {
-
                     if (unzip(new File(editTextImportPath.getText().toString()), new File("/sdcard/E Libra/Library"))) {
                         nestedScrollViewStatusOutput.setVisibility(View.VISIBLE);
-
                         StringBuilder jsonData = new StringBuilder();
                         BufferedReader reader = new BufferedReader(new FileReader("/sdcard/E Libra/Library/library-structure.json"));
                         String line;
@@ -464,22 +389,17 @@ public class SettingActivity extends AppCompatActivity {
                             }else{
                                 newJson.put("storage", "/sdcard/E Libra/Library/" + json.getString("name") + "/" + json.getString("storage").substring(json.getString("storage").lastIndexOf("/") + 1));
                             }
-
                             newJson.put("page", json.getString("page"));
                             newJson.put("total_pages", json.getString("total_pages"));
-
                             added++;
                             liberaryJsonArray.put(newJson);
-
                         }
-
                         migrationOutput("[ ANALYSED DATA ]",type);
                         migrationOutput("\n\n"+formatJson(importjsonArray),type);
                         migrationOutput("[ SETTINGS DATA ]",type);
                         migrationOutput("\n\n"+formatJson(settingJsonArray),type);
                         migrationOutput("[ STATUS ]\n\nADDED - "+ added +"\n"+"TOTAL -"+importjsonArray.length()+"\n",type);
                         save();
-
                     } else {
                         Toast.makeText(this, "Path Not Found", Toast.LENGTH_SHORT).show();
                     }
@@ -487,10 +407,7 @@ public class SettingActivity extends AppCompatActivity {
                     throw new RuntimeException(e);
                 }
             }
-
         });
-
-
         checkBoxRemoveExisting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -501,7 +418,6 @@ public class SettingActivity extends AppCompatActivity {
                 }
             }
         });
-
         checkBoxImportSettings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -512,7 +428,6 @@ public class SettingActivity extends AppCompatActivity {
                 }
             }
         });
-
         checkBoxExportSettings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -520,12 +435,9 @@ public class SettingActivity extends AppCompatActivity {
                     dont_export_status=1;
                 } else {
                     dont_export_status=0;
-
                 }
             }
         });
-
-
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
@@ -534,14 +446,9 @@ public class SettingActivity extends AppCompatActivity {
                 finish();
             }
         });
-
         load();
-
         migration(type);
-
     }
-
-
     private String formatJson(JSONArray jsonArray) throws JSONException {
         StringBuilder formattedJson = new StringBuilder();
         for (int i = 0; i < jsonArray.length(); i++) {
@@ -560,7 +467,6 @@ public class SettingActivity extends AppCompatActivity {
         }
         return formattedJson.toString();
     }
-
     private boolean deleteFolder(File folder) {
         if (folder.isDirectory()) {
             File[] children = folder.listFiles();
@@ -576,7 +482,6 @@ public class SettingActivity extends AppCompatActivity {
     public void migration(String type){
         if(type.equals("import")){
             import_path = editTextExportPath.getText().toString();
-
             textViewOutputPreview.setText(import_output);
             buttonImport.setEnabled(false);
             buttonExport.setEnabled(true);
@@ -586,14 +491,12 @@ public class SettingActivity extends AppCompatActivity {
             imageViewFolderPicker.setVisibility(View.GONE);
             checkBoxRemoveExisting.setVisibility(View.VISIBLE);
             checkBoxImportSettings.setVisibility(View.VISIBLE);
-
             editTextImportPath.setVisibility(View.VISIBLE);
             imageViewFilePicker.setVisibility(View.VISIBLE);
             checkBoxExportSettings.setVisibility(View.GONE);
         }
         if(type.equals("export")){
             export_path = editTextImportPath.getText().toString();
-
             textViewOutputPreview.setText(export_output);
             buttonExport.setEnabled(false);
             buttonImport.setEnabled(true);
@@ -603,7 +506,6 @@ public class SettingActivity extends AppCompatActivity {
             imageViewFolderPicker.setVisibility(View.VISIBLE);
             checkBoxRemoveExisting.setVisibility(View.GONE);
             checkBoxImportSettings.setVisibility(View.GONE);
-
             editTextImportPath.setVisibility(View.GONE);
             imageViewFilePicker.setVisibility(View.GONE);
             checkBoxExportSettings.setVisibility(View.VISIBLE);
@@ -619,36 +521,29 @@ public class SettingActivity extends AppCompatActivity {
             import_output+=string;
             textViewOutputPreview.setText(import_output);
         }
-
         if(type.equals("export")){
             export_output+=string;
             textViewOutputPreview.setText(export_output);
         }
     }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu){
         MenuInflater inflater=getMenuInflater();
         inflater.inflate(R.menu.menu,menu);
-
         item1 = menu.findItem(R.id.item1);
         item2 = menu.findItem(R.id.item2);
         item3 = menu.findItem(R.id.item3);
-
-        setMenuItemStyle(item1, selectedItem, Integer.parseInt(editTextSize.getText().toString()));
-        setMenuItemStyle(item2, selectedItem, Integer.parseInt(editTextSize.getText().toString()));
-        setMenuItemStyle(item3, selectedItem, Integer.parseInt(editTextSize.getText().toString()));
-
+        setMenuItemStyle(item1, textStyle, Integer.parseInt(editTextSize.getText().toString()));
+        setMenuItemStyle(item2, textStyle, Integer.parseInt(editTextSize.getText().toString()));
+        setMenuItemStyle(item3, textStyle, Integer.parseInt(editTextSize.getText().toString()));
         item2.setEnabled(false);
         return true;
     }
 
     private void setMenuItemStyle(MenuItem item, String fontFamily, int textSize) {
         SpannableString spanString = new SpannableString(item.getTitle().toString());
-
         spanString.setSpan(new TypefaceSpan(fontFamily), 0, spanString.length(), 0);
         spanString.setSpan(new TextAppearanceSpan(null, 0, textSize, null, null), 0, spanString.length(), 0);
-
         item.setTitle(spanString);
     }
     public boolean onOptionsItemSelected(@NonNull MenuItem item){
@@ -670,28 +565,25 @@ public class SettingActivity extends AppCompatActivity {
     public void exit(){
         final AlertDialog.Builder alert = new AlertDialog.Builder(SettingActivity.this);
         dialogView = getLayoutInflater().inflate(R.layout.exit_dialog, null);
-
-        textView7 = dialogView.findViewById(R.id.textViewExit);
-        textView5 = dialogView.findViewById(R.id.textViewExitMessage);
-        button2 = dialogView.findViewById(R.id.buttonExitNo);
-        button5 = dialogView.findViewById(R.id.buttonExitYes);
+        textViewExit = dialogView.findViewById(R.id.textViewExit);
+        textViewExitMessage = dialogView.findViewById(R.id.textViewExitMessage);
+        buttonExitNo = dialogView.findViewById(R.id.buttonExitNo);
+        buttonExitYes = dialogView.findViewById(R.id.buttonExitYes);
         exit_text_change();
         alert.setView(dialogView);
         final AlertDialog alertDialog = alert.create();
         alertDialog.setCanceledOnTouchOutside(false);
-        button2.setOnClickListener(v1 -> alertDialog.dismiss());
-        button5.setOnClickListener(v12 -> {
+        buttonExitNo.setOnClickListener(v1 -> alertDialog.dismiss());
+        buttonExitYes.setOnClickListener(v12 -> {
             finishAffinity();
         });
         alertDialog.show();
     }
     public void settings_text_change(){
-
         SpannableString spanString1 = null;
         SpannableString spanString2 = null;
         SpannableString spanString3 = null;
-
-        Typeface typeface = Typeface.create(selectedItem, Typeface.NORMAL);
+        Typeface typeface = Typeface.create(textStyle, Typeface.NORMAL);
         textViewStyle.setTypeface(typeface);
         textViewAdjustSize.setTypeface(typeface);
         buttonImport.setTypeface(typeface);
@@ -716,7 +608,6 @@ public class SettingActivity extends AppCompatActivity {
         checkBoxExportSettings.setTypeface(typeface);
         editTextImportPath.setTypeface(typeface);
         textViewOutputPreview.setTypeface(typeface);
-
         if (item1 != null && item1.getTitle() != null) {
             spanString1 = new SpannableString(item1.getTitle().toString());
         }
@@ -726,17 +617,15 @@ public class SettingActivity extends AppCompatActivity {
         if (item3 != null && item3.getTitle() != null) {
             spanString3 = new SpannableString(item3.getTitle().toString());
         }
-
         if (spanString1 != null) {
-            spanString1.setSpan(new TypefaceSpan(selectedItem), 0, spanString1.length(), 0);
+            spanString1.setSpan(new TypefaceSpan(textStyle), 0, spanString1.length(), 0);
         }
         if (spanString2 != null) {
-            spanString2.setSpan(new TypefaceSpan(selectedItem), 0, spanString2.length(), 0);
+            spanString2.setSpan(new TypefaceSpan(textStyle), 0, spanString2.length(), 0);
         }
         if (spanString3 != null) {
-            spanString3.setSpan(new TypefaceSpan(selectedItem), 0, spanString3.length(), 0);
+            spanString3.setSpan(new TypefaceSpan(textStyle), 0, spanString3.length(), 0);
         }
-
         int newTextSize = Integer.parseInt(editTextSize.getText().toString());
         if(newTextSize>=10) {
             textViewStyle.setTextSize(TypedValue.COMPLEX_UNIT_PX, newTextSize);
@@ -772,7 +661,6 @@ public class SettingActivity extends AppCompatActivity {
             if (spanString3 != null) {
                 spanString3.setSpan(new TextAppearanceSpan(null, 0, newTextSize, null, null), 0, spanString3.length(), 0);
             }
-
         }
         if (item1 != null && item1.getTitle() != null) {
             item1.setTitle(spanString1);
@@ -785,33 +673,29 @@ public class SettingActivity extends AppCompatActivity {
         }
     }
     public void exit_text_change(){
-        Typeface typeface = Typeface.create(selectedItem, Typeface.NORMAL);
-        textView7.setTypeface(typeface);
-        textView5.setTypeface(typeface);
-        button2.setTypeface(typeface);
-        button5.setTypeface(typeface);
+        Typeface typeface = Typeface.create(textStyle, Typeface.NORMAL);
+        textViewExit.setTypeface(typeface);
+        textViewExitMessage.setTypeface(typeface);
+        buttonExitNo.setTypeface(typeface);
+        buttonExitYes.setTypeface(typeface);
         int newTextSize = Integer.parseInt(editTextSize.getText().toString());
         if(newTextSize>=10) {
-            textView7.setTextSize(TypedValue.COMPLEX_UNIT_PX, newTextSize);
-            textView5.setTextSize(TypedValue.COMPLEX_UNIT_PX, newTextSize);
-            button2.setTextSize(TypedValue.COMPLEX_UNIT_PX, newTextSize);
-            button5.setTextSize(TypedValue.COMPLEX_UNIT_PX, newTextSize);
+            textViewExit.setTextSize(TypedValue.COMPLEX_UNIT_PX, newTextSize);
+            textViewExitMessage.setTextSize(TypedValue.COMPLEX_UNIT_PX, newTextSize);
+            buttonExitNo.setTextSize(TypedValue.COMPLEX_UNIT_PX, newTextSize);
+            buttonExitYes.setTextSize(TypedValue.COMPLEX_UNIT_PX, newTextSize);
         }
-
     }
     public void copyFile(String sourcePath, String destPath) {
         File source = new File(sourcePath);
         File destination = new File(destPath);
         destination.getParentFile().mkdirs();
-
         if (!source.exists()) {
             Toast.makeText(SettingActivity.this, "Source file does not exist", Toast.LENGTH_SHORT).show();
             return;
         }
-
         FileInputStream fis = null;
         FileOutputStream fos = null;
-
         try {
             fis = new FileInputStream(source);
             fos = new FileOutputStream(destination);
@@ -841,7 +725,6 @@ public class SettingActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (data != null) {
             String filePath = data.getStringExtra("path");
-
             if (requestCode == 1){
                 if(type.equals("import")){
                     editTextImportPath.setText(filePath);
@@ -850,19 +733,17 @@ public class SettingActivity extends AppCompatActivity {
                     editTextExportPath.setText(filePath);
                 }
             }
-
         }
     }
     private void zip(File folder, File zipFile) throws IOException {
         try (FileOutputStream fos = new FileOutputStream(zipFile);
              ZipOutputStream zos = new ZipOutputStream(fos)) {
-
-            File[] files = folder.listFiles();
-            if (files != null) {
-                for (File file : files) {
-                    zipFile(file, file.getName(), zos);
+                File[] files = folder.listFiles();
+                if (files != null) {
+                    for (File file : files) {
+                        zipFile(file, file.getName(), zos);
+                    }
                 }
-            }
         }
     }
     private void zipFile(File fileToZip, String fileName, ZipOutputStream zos) throws IOException {
@@ -896,21 +777,18 @@ public class SettingActivity extends AppCompatActivity {
         }
     }
     public boolean unzip(File zipFile, File destDir) {
-
         boolean hasRequiredFiles = false;
-
         try (FileInputStream fis = new FileInputStream(zipFile);
              ZipInputStream zis = new ZipInputStream(fis)) {
-
-            ZipEntry entry = zis.getNextEntry();
-            while (entry != null) {
-                String fileName = entry.getName();
-                if (fileName.equals("library-structure.json") || fileName.equals("setting-structure.json")) {
-                    hasRequiredFiles = true;
-                    break;
+                ZipEntry entry = zis.getNextEntry();
+                while (entry != null) {
+                    String fileName = entry.getName();
+                    if (fileName.equals("library-structure.json") || fileName.equals("setting-structure.json")) {
+                        hasRequiredFiles = true;
+                        break;
+                    }
+                    entry = zis.getNextEntry();
                 }
-                entry = zis.getNextEntry();
-            }
         } catch (IOException e) {
             Toast.makeText(this, "Error reading zip file: " + e.getMessage(), Toast.LENGTH_SHORT).show();
             return false;
@@ -919,48 +797,42 @@ public class SettingActivity extends AppCompatActivity {
             Toast.makeText(this, "Zip file does not contain the required files.", Toast.LENGTH_SHORT).show();
             return false;
         }
-
-
-
         if (!destDir.exists()) {
             if (!destDir.mkdirs()) {
                 Toast.makeText(this, "Failed to create destination directory.", Toast.LENGTH_SHORT).show();
                 return false;
             }
         }
-
         try (FileInputStream fis = new FileInputStream(zipFile);
              ZipInputStream zis = new ZipInputStream(fis)) {
-
-            ZipEntry entry = zis.getNextEntry();
-            while (entry != null) {
-                try {
-                    File newFile = newFile(destDir, entry);
-                    if (entry.isDirectory()) {
-                        if (!newFile.mkdirs()) {
-                            throw new IOException("Failed to create directory: " + newFile.getAbsolutePath());
-                        }
-                    } else {
-                        File parent = newFile.getParentFile();
-                        if (!parent.isDirectory()) {
-                            throw new IOException("Failed to create directory: " + parent.getAbsolutePath());
-                        }
-                        try (FileOutputStream fos = new FileOutputStream(newFile)) {
-                            byte[] buffer = new byte[BUFFER_SIZE];
-                            int length;
-                            while ((length = zis.read(buffer)) > 0) {
-                                fos.write(buffer, 0, length);
+                ZipEntry entry = zis.getNextEntry();
+                while (entry != null) {
+                    try {
+                        File newFile = newFile(destDir, entry);
+                        if (entry.isDirectory()) {
+                            if (!newFile.mkdirs()) {
+                                throw new IOException("Failed to create directory: " + newFile.getAbsolutePath());
+                            }
+                        } else {
+                            File parent = newFile.getParentFile();
+                            if (!parent.isDirectory()) {
+                                throw new IOException("Failed to create directory: " + parent.getAbsolutePath());
+                            }
+                            try (FileOutputStream fos = new FileOutputStream(newFile)) {
+                                byte[] buffer = new byte[BUFFER_SIZE];
+                                int length;
+                                while ((length = zis.read(buffer)) > 0) {
+                                    fos.write(buffer, 0, length);
+                                }
                             }
                         }
+                    } catch (IOException e) {
+                        Toast.makeText(this, "Error processing entry: " + entry.getName() + " - " + e.getMessage(), Toast.LENGTH_SHORT).show();
                     }
-                } catch (IOException e) {
-                    Toast.makeText(this, "Error processing entry: " + entry.getName() + " - " + e.getMessage(), Toast.LENGTH_SHORT).show();
-//                    return false;
+                    zis.closeEntry();
+                    entry = zis.getNextEntry();
                 }
-                zis.closeEntry();
-                entry = zis.getNextEntry();
-            }
-            return true;
+                return true;
         } catch (FileNotFoundException e) {
             Toast.makeText(this, "Zip file not found: " + e.getMessage(), Toast.LENGTH_SHORT).show();
             return false;
@@ -969,12 +841,10 @@ public class SettingActivity extends AppCompatActivity {
             return false;
         }
     }
-
     private File newFile(File destDir, ZipEntry zipEntry) throws IOException {
         File destFile = new File(destDir, zipEntry.getName());
         String destDirPath = destDir.getCanonicalPath();
         String destFilePath = destFile.getCanonicalPath();
-
         if (!destFilePath.startsWith(destDirPath + File.separator)) {
             throw new IOException("Entry is outside of the target dir: " + zipEntry.getName());
         }
@@ -984,24 +854,19 @@ public class SettingActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         save_setting();
-
     }
-
     private void load() {
-
         SharedPreferences prefs = getSharedPreferences("MySharedPref", MODE_PRIVATE);
        try {
            settingJsonArray = new JSONArray(prefs.getString("key2", "[]"));
            JSONObject jsonObject0 = settingJsonArray.getJSONObject(0);
-
             text_selected = jsonObject0.getInt("selected");
-            selectedItem=jsonObject0.getString("style");
-            autoCompleteTextViewStyle.setText(selectedItem, false);
+            textStyle =jsonObject0.getString("style");
+            autoCompleteTextViewStyle.setText(textStyle, false);
             editTextSize.setText(String.valueOf(jsonObject0.getInt("size")));
             JSONObject jsonObject1 = settingJsonArray.getJSONObject(1);
             orientation_selected = jsonObject1.getInt("selected");
-            orientation_value = jsonObject1.getString("value");
-
+            orientationValue = jsonObject1.getString("value");
             JSONObject jsonObject2 = settingJsonArray.getJSONObject(2);
             migration_selected = jsonObject2.getInt("selected");
             type = jsonObject2.getString("type");
@@ -1009,12 +874,10 @@ public class SettingActivity extends AppCompatActivity {
             export_path = jsonObject2.getString("export_path");
             editTextExportPath.setText(export_path);
             dont_export_status = jsonObject2.getInt("export_setting_status");
-
             import_path = jsonObject2.getString("import_path");
             editTextImportPath.setText(import_path);
             dont_import_status = jsonObject2.getInt("import_setting_status");
             remove_existing_data_status = jsonObject2.getInt("remove_existing_data_status");
-
             if(text_selected==0){
                 constraintLayoutHiddenView.setVisibility(View.GONE);
                 imageViewTextToggle.setImageResource(android.R.drawable.arrow_down_float);
@@ -1036,63 +899,53 @@ public class SettingActivity extends AppCompatActivity {
                 constraintLayoutMigrationHiddenView.setVisibility(View.VISIBLE);
                 imageViewMigrationToggle.setImageResource(android.R.drawable.arrow_up_float);
             }
-            if(orientation_value.equals("Sensor")){
+            if(orientationValue.equals("Sensor")){
                 radioButtonSensor.setChecked(true);
                 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
             }
-            if(orientation_value.equals("Portrait")){
+            if(orientationValue.equals("Portrait")){
                 radioButtonPortrait.setChecked(true);
                 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
             }
-            if(orientation_value.equals("Landscape")){
+            if(orientationValue.equals("Landscape")){
                 radioButtonLandscape.setChecked(true);
                 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
             }
-
-
             if(remove_existing_data_status==1){
                 checkBoxRemoveExisting.setChecked(true);
             }else{
                 checkBoxRemoveExisting.setChecked(false);
             }
-
             if(dont_import_status==1){
                 checkBoxImportSettings.setChecked(true);
             }else{
                 checkBoxImportSettings.setChecked(false);
             }
-
            if(dont_export_status==1){
                checkBoxExportSettings.setChecked(true);
            }else{
                checkBoxExportSettings.setChecked(false);
            }
-
        }catch (Exception e){
            e.printStackTrace();
        }
-
     }
-
     private void save_setting() {
         settingJsonArray = new JSONArray();
         int textSize = Integer.parseInt(editTextSize.getText().toString());
         if (textSize < 10) {
             textSize = 40;
-            }
-
+        }
         try {
             JSONObject jsonObject1 = new JSONObject();
             jsonObject1.put("selected", text_selected);
             jsonObject1.put("size", textSize);
-            jsonObject1.put("style", selectedItem);
+            jsonObject1.put("style", textStyle);
             settingJsonArray.put(0, jsonObject1);
-
             JSONObject jsonObject2 = new JSONObject();
             jsonObject2.put("selected", orientation_selected);
-            jsonObject2.put("value", orientation_value);
+            jsonObject2.put("value", orientationValue);
             settingJsonArray.put(1, jsonObject2);
-
             JSONObject jsonObject3 = new JSONObject();
             jsonObject3.put("selected", migration_selected);
             jsonObject3.put("type", type);
@@ -1111,7 +964,6 @@ public class SettingActivity extends AppCompatActivity {
         editor.putString("key2", settingJsonArray.toString());
         editor.apply();
     }
-
     private void save() {
         Log.d("book_array", liberaryJsonArray.toString());
         SharedPreferences prefs = getSharedPreferences("MySharedPref", MODE_PRIVATE);
@@ -1120,8 +972,6 @@ public class SettingActivity extends AppCompatActivity {
         editor.apply();
         Log.d("array_data", "save array data: " + liberaryJsonArray.toString());
     }
-
-
 }
 
 

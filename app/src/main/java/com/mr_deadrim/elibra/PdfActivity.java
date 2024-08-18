@@ -38,14 +38,11 @@ public class PdfActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pdf);
-
-
         Intent intent = getIntent();
         orientation = intent.getStringExtra("orientation");
         storage = intent.getStringExtra("storage");
         position = intent.getIntExtra("position", 0);
         current_page = intent.getIntExtra("page", 0);
-
         if(orientation.equals("Sensor")){
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
         }
@@ -55,8 +52,6 @@ public class PdfActivity extends AppCompatActivity {
         if(orientation.equals("Landscape")){
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
         }
-
-
         recyclerView = findViewById(R.id.recyclerViewPdf);
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
@@ -68,7 +63,6 @@ public class PdfActivity extends AppCompatActivity {
             finish();
             return;
         }
-
         adapter = new PdfAdapter();
         recyclerView.setAdapter(adapter);
         toast = Toast.makeText(this, "", Toast.LENGTH_SHORT);
@@ -84,69 +78,57 @@ public class PdfActivity extends AppCompatActivity {
                 }
             }
         });
-
         scrollToPage(current_page);
     }
-
     private void openPdfRenderer() throws IOException {
         File file = new File(storage);
         ParcelFileDescriptor parcelFileDescriptor = ParcelFileDescriptor.open(file, ParcelFileDescriptor.MODE_READ_ONLY);
         pdfRenderer = new PdfRenderer(parcelFileDescriptor);
         total_pages = pdfRenderer.getPageCount();
     }
-
     private class PdfAdapter extends RecyclerView.Adapter<PdfAdapter.PdfViewHolder> {
-
         @NonNull
         @Override
         public PdfViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_pdf_page, parent, false);
             return new PdfViewHolder(view);
         }
-
         @Override
         public void onBindViewHolder(@NonNull PdfViewHolder holder, int position) {
             holder.bind(position);
         }
-
         @Override
         public int getItemCount() {
             return total_pages;
         }
-
         class PdfViewHolder extends RecyclerView.ViewHolder {
-            ImageView imageView;
-
+            ImageView imageViewPdf;
             PdfViewHolder(View itemView) {
                 super(itemView);
-                imageView = itemView.findViewById(R.id.imageViewPdf);
+                imageViewPdf = itemView.findViewById(R.id.imageViewPdf);
             }
-
             void bind(int position) {
                 if (pdfRenderer != null) {
                     PdfRenderer.Page page = pdfRenderer.openPage(position);
                     Bitmap bitmap = Bitmap.createBitmap(page.getWidth(), page.getHeight(), Bitmap.Config.ARGB_8888);
                     page.render(bitmap, null, null, PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY);
-                    imageView.setImageBitmap(bitmap);
+                    imageViewPdf.setImageBitmap(bitmap);
                     page.close();
                 }
             }
         }
     }
-
     private void scrollToPage(int page) {
         if (page > 0 && page <= total_pages) {
             recyclerView.scrollToPosition(page - 1);
         }
     }
-
     private void updateToast() {
         if (toast != null) {
             toast.setText(" [ " + current_page + " | " + total_pages + " ] ");
             toast.show();
         }
     }
-
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
@@ -156,13 +138,11 @@ public class PdfActivity extends AppCompatActivity {
         }
         return super.onKeyDown(keyCode, event);
     }
-
     @Override
     protected void onPause() {
         super.onPause();
         savePage();
     }
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -170,7 +150,6 @@ public class PdfActivity extends AppCompatActivity {
             pdfRenderer.close();
         }
     }
-
     private void savePage() {
         SharedPreferences prefs = getSharedPreferences("MySharedPref", MODE_PRIVATE);
         try {

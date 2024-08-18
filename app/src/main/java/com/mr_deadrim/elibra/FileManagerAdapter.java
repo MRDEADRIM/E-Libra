@@ -11,15 +11,11 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
-
 import java.io.File;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -33,85 +29,69 @@ public class FileManagerAdapter extends ArrayAdapter<String> {
     private final ArrayList<String> mFileList;
     private final Map<String, Bitmap> mBitmapCache;
     private final ExecutorService mExecutor;
-    private static JSONArray json2Array;
+    private static JSONArray settingJsonArray;
+    String textStyle ="sans-serif";
+    int textSize =40;
 
-    String style="sans-serif";
-    int size=40;
-
-    public FileManagerAdapter(Context context, ArrayList<String> fileList, JSONArray json2Array) {
+    public FileManagerAdapter(Context context, ArrayList<String> fileList, JSONArray settingJsonArray) {
         super(context, R.layout.file_list_layout, fileList);
         this.mContext = context;
         this.mFileList = fileList;
         this.mBitmapCache = new HashMap<>();
         this.mExecutor = Executors.newFixedThreadPool(5);
-
-        this.json2Array = json2Array;
+        this.settingJsonArray = settingJsonArray;
     }
 
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         ViewHolder viewHolder;
-
         if (convertView == null) {
             convertView = LayoutInflater.from(mContext).inflate(R.layout.file_list_layout, parent, false);
             viewHolder = new ViewHolder();
-            viewHolder.imageView = convertView.findViewById(R.id.textViewItemImage);
-            viewHolder.textView = convertView.findViewById(R.id.textViewItemName);
+            viewHolder.textViewItemImage = convertView.findViewById(R.id.textViewItemImage);
+            viewHolder.textViewItemName = convertView.findViewById(R.id.textViewItemName);
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
-
         String fileName = mFileList.get(position);
         File file = new File(fileName);
-
-        viewHolder.imageView.setImageResource(android.R.drawable.stat_notify_sync);
-
+        viewHolder.textViewItemImage.setImageResource(android.R.drawable.stat_notify_sync);
         if (fileName.toLowerCase().endsWith(".pdf")) {
-            viewHolder.imageView.setImageResource(R.drawable.pdf);
+            viewHolder.textViewItemImage.setImageResource(R.drawable.pdf);
         }
         if (file.isDirectory()) {
-            viewHolder.imageView.setImageResource(R.drawable.folder);
+            viewHolder.textViewItemImage.setImageResource(R.drawable.folder);
         }
         if (fileName.toLowerCase().endsWith(".png") || fileName.toLowerCase().endsWith(".jpg") || fileName.toLowerCase().endsWith(".jpeg")) {
             if (mBitmapCache.containsKey(fileName)) {
-                viewHolder.imageView.setImageBitmap(mBitmapCache.get(fileName));
+                viewHolder.textViewItemImage.setImageBitmap(mBitmapCache.get(fileName));
             } else {
-                BitmapWorkerTask task = new BitmapWorkerTask(viewHolder.imageView, fileName);
+                BitmapWorkerTask task = new BitmapWorkerTask(viewHolder.textViewItemImage, fileName);
                 mExecutor.execute(task);
             }
         }
         if (fileName.toLowerCase().endsWith(".zip")) {
-            viewHolder.imageView.setImageResource(R.drawable.zip);
+            viewHolder.textViewItemImage.setImageResource(R.drawable.zip);
         }
-
-
         try{
-            JSONObject jsonObject0 = json2Array.getJSONObject(0);
-            style = jsonObject0.getString("style");
-            size = jsonObject0.getInt("size");
-
+            JSONObject jsonObject0 = settingJsonArray.getJSONObject(0);
+            textStyle = jsonObject0.getString("style");
+            textSize = jsonObject0.getInt("size");
         }catch(Exception e){
             e.printStackTrace();
         }
-
-
-        viewHolder.textView.setText(file.getName());
-        Typeface typeface = Typeface.create(style, Typeface.NORMAL);
-        viewHolder.textView.setTypeface(typeface);
-
-        viewHolder.textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
-
-
-
+        viewHolder.textViewItemName.setText(file.getName());
+        Typeface typeface = Typeface.create(textStyle, Typeface.NORMAL);
+        viewHolder.textViewItemName.setTypeface(typeface);
+        viewHolder.textViewItemName.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
         return convertView;
     }
 
     private static class ViewHolder {
-        ImageView imageView;
-        TextView textView;
-
+        ImageView textViewItemImage;
+        TextView textViewItemName;
     }
 
     private class BitmapWorkerTask implements Runnable {

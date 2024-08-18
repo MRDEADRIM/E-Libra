@@ -25,12 +25,12 @@
         android:layout_marginBottom="8dp"
         android:text=" - - -"
         app:layout_constraintBottom_toBottomOf="@+id/imageViewAppIcon"
-        app:layout_constraintEnd_toStartOf="@+id/btn_update"
+        app:layout_constraintEnd_toStartOf="@+id/imageViewUpdate"
         app:layout_constraintStart_toEndOf="@+id/imageViewAppIcon"
         app:layout_constraintTop_toTopOf="@+id/imageViewAppIcon" />
 
     <ImageView
-        android:id="@+id/btn_delete"
+        android:id="@+id/imageViewDelete"
         android:layout_width="40dp"
         android:layout_height="30dp"
         android:layout_marginEnd="8dp"
@@ -42,7 +42,7 @@
         app:layout_constraintTop_toTopOf="@+id/imageViewAppIcon" />
 
     <ImageView
-        android:id="@+id/btn_update"
+        android:id="@+id/imageViewUpdate"
         android:layout_width="40dp"
         android:layout_height="30dp"
         android:layout_marginEnd="8dp"
@@ -50,7 +50,7 @@
         android:visibility="gone"
         android:src="@android:drawable/ic_menu_edit"
         app:layout_constraintBottom_toBottomOf="@+id/imageViewAppIcon"
-        app:layout_constraintEnd_toStartOf="@+id/btn_delete"
+        app:layout_constraintEnd_toStartOf="@+id/imageViewDelete"
         app:layout_constraintTop_toTopOf="@+id/imageViewAppIcon" />
 
     <TextView

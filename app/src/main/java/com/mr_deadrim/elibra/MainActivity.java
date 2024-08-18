@@ -37,39 +37,25 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import android.app.Activity;
-
 import java.util.HashSet;
 import java.util.Set;
 
 public class MainActivity extends AppCompatActivity {
 
-    private JSONArray liberaryjsonArray;
+    private JSONArray liberaryjsonArray,settingJsonArray;
     private View dialogView;
     public EditText textViewBookName, textViewBookPath;
     private static final int PICK_FILE_REQUEST_CODE = 1, PICK_IMAGE_REQUEST_CODE =21;
     RecyclerAdapter recyclerAdapter;
-    private ImageView imageButtonBookIcon;
-    public String image_path="";
     boolean isAllFieldsChecked = false;
-    JSONArray settingJsonArray;
-    String orientation_value="Sensor";
+    String image_path="", textStyle ="sans-serif", orientationValue ="Sensor";
+    int textSize =40;
+    Button buttonButtonCancel,buttonButtonSave;
+    ImageView imageButtonBookIcon,textViewBookPick, buttonButtonIconEdit;
 
-    String selectedItem="sans-serif";
+    TextView textViewExit,textViewExitMessage,textViewBookIconLabel, textViewBookNameLabel;
 
-    int size=40;
-
-    Button buttonButtonCancel;
-    Button buttonButtonSave;
-    ImageView textViewBookPick, buttonButtonIconEdit;
-    TextView textViewBookIconLabel, textViewBookNameLabel;
-    Button buttonAddBook;
-
-    TextView textViewExit;
-    TextView textViewExitMessage;
-
-    Button buttonExitNo;
-    Button buttonExitYes;
-
+    Button buttonAddBook,buttonExitNo,buttonExitYes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,8 +86,8 @@ public class MainActivity extends AppCompatActivity {
             textViewBookPath = dialogView.findViewById(R.id.textViewBookPath);
             buttonButtonCancel = dialogView.findViewById(R.id.buttonBookCancel);
             buttonButtonSave = dialogView.findViewById(R.id.buttonBookSave);
-            textViewBookPick = dialogView.findViewById(R.id.textViewBookPick);
-            buttonButtonIconEdit = dialogView.findViewById(R.id.buttonBookIconEdit);
+            textViewBookPick = dialogView.findViewById(R.id.imageViewBookPick);
+            buttonButtonIconEdit = dialogView.findViewById(R.id.imageViewBookIconPick);
             imageButtonBookIcon = dialogView.findViewById(R.id.imageButtonBookIcon);
 
             if(image_path.isEmpty()){
@@ -154,20 +140,14 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
         ItemTouchHelper itemTouchHelper = getItemTouchHelper();
         itemTouchHelper.attachToRecyclerView(recyclerView);
-
-
     }
-
-
     private boolean CheckAllFields() {
         String bookName = textViewBookName.getText().toString().trim();
         String bookPath = textViewBookPath.getText().toString().trim();
-
         if (bookName.isEmpty()) {
             textViewBookName.setError("This field is required");
             return false;
         }
-
         Set<String> existingNames = new HashSet<>();
         for (int i = 0; i < liberaryjsonArray.length(); i++) {
             try {
@@ -177,22 +157,16 @@ public class MainActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
-
         if (existingNames.contains(bookName)) {
             textViewBookName.setError("This name already exists");
             return false;
         }
-
-
         if (bookPath.isEmpty()) {
             textViewBookPath.setError("This field is required");
             return false;
         }
-
-
         return true;
     }
-
     @NonNull
     private ItemTouchHelper getItemTouchHelper() {
         ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP | ItemTouchHelper.DOWN | ItemTouchHelper.START | ItemTouchHelper.END, 0) {
@@ -212,13 +186,11 @@ public class MainActivity extends AppCompatActivity {
                 }
                 return false;
             }
-
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
                 // Handle swipe actions if needed
             }
         };
-
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
         return itemTouchHelper;
     }
@@ -268,23 +240,19 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu){
         MenuInflater inflater=getMenuInflater();
         inflater.inflate(R.menu.menu,menu);
-
         MenuItem item1 = menu.findItem(R.id.item1);
         MenuItem item2 = menu.findItem(R.id.item2);
         MenuItem item3 = menu.findItem(R.id.item3);
-
-        setMenuItemStyle(item1, selectedItem, size);
-        setMenuItemStyle(item2, selectedItem, size);
-        setMenuItemStyle(item3, selectedItem, size);
+        setMenuItemStyle(item1, textStyle, textSize);
+        setMenuItemStyle(item2, textStyle, textSize);
+        setMenuItemStyle(item3, textStyle, textSize);
         return true;
     }
 
     private void setMenuItemStyle(MenuItem item, String fontFamily, int textSize) {
         SpannableString spanString = new SpannableString(item.getTitle().toString());
-
         spanString.setSpan(new TypefaceSpan(fontFamily), 0, spanString.length(), 0);
         spanString.setSpan(new TextAppearanceSpan(null, 0, textSize, null, null), 0, spanString.length(), 0);
-
         item.setTitle(spanString);
     }
 
@@ -313,7 +281,6 @@ public class MainActivity extends AppCompatActivity {
     public void exit(){
         final AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
         dialogView = getLayoutInflater().inflate(R.layout.exit_dialog, null);
-
         textViewExit = dialogView.findViewById(R.id.textViewExit);
         textViewExitMessage = dialogView.findViewById(R.id.textViewExitMessage);
         buttonExitNo = dialogView.findViewById(R.id.buttonExitNo);
@@ -329,7 +296,6 @@ public class MainActivity extends AppCompatActivity {
         alertDialog.show();
     }
 
-
     private void save() {
         SharedPreferences prefs = getSharedPreferences("MySharedPref", MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
@@ -342,72 +308,56 @@ public class MainActivity extends AppCompatActivity {
     private void load() {
 
         try {
-
             JSONObject jsonObject0 = settingJsonArray.getJSONObject(0);
-
-            selectedItem=jsonObject0.getString("style");
-            size=jsonObject0.getInt("size");
-
+            textStyle =jsonObject0.getString("style");
+            textSize =jsonObject0.getInt("size");
             JSONObject jsonObject1 = settingJsonArray.getJSONObject(1);
-            orientation_value = jsonObject1.getString("value");
-
-            if(orientation_value.equals("Sensor")){
+            orientationValue = jsonObject1.getString("value");
+            if(orientationValue.equals("Sensor")){
                 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
             }
-            if(orientation_value.equals("Portrait")){
+            if(orientationValue.equals("Portrait")){
                 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
             }
-            if(orientation_value.equals("Landscape")){
+            if(orientationValue.equals("Landscape")){
                 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
             }
             main_text_change();
         }catch (Exception e){
             e.printStackTrace();
         }
-
     }
 
     public void dialog_text_change(){
-        Typeface typeface = Typeface.create(selectedItem, Typeface.NORMAL);
+        Typeface typeface = Typeface.create(textStyle, Typeface.NORMAL);
         textViewBookName.setTypeface(typeface);
         textViewBookPath.setTypeface(typeface);
         buttonButtonCancel.setTypeface(typeface);
         buttonButtonSave.setTypeface(typeface);
         textViewBookIconLabel.setTypeface(typeface);
         textViewBookNameLabel.setTypeface(typeface);
-
-
-        textViewBookName.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
-        textViewBookPath.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
-        buttonButtonCancel.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
-        buttonButtonSave.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
-        textViewBookIconLabel.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
-        textViewBookNameLabel.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
-
-
+        textViewBookName.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
+        textViewBookPath.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
+        buttonButtonCancel.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
+        buttonButtonSave.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
+        textViewBookIconLabel.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
+        textViewBookNameLabel.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
     }
     public void exit_text_change(){
-        Typeface typeface = Typeface.create(selectedItem, Typeface.NORMAL);
+        Typeface typeface = Typeface.create(textStyle, Typeface.NORMAL);
         textViewExit.setTypeface(typeface);
         textViewExitMessage.setTypeface(typeface);
         buttonExitNo.setTypeface(typeface);
         buttonExitYes.setTypeface(typeface);
-
-        textViewExit.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
-        textViewExitMessage.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
-        buttonExitNo.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
-        buttonExitYes.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
-
+        textViewExit.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
+        textViewExitMessage.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
+        buttonExitNo.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
+        buttonExitYes.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
     }
 
     public void main_text_change(){
-        Typeface typeface = Typeface.create(selectedItem, Typeface.NORMAL);
+        Typeface typeface = Typeface.create(textStyle, Typeface.NORMAL);
         buttonAddBook.setTypeface(typeface);
-
-        buttonAddBook.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
+        buttonAddBook.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
     }
-    
-
-
-
 }

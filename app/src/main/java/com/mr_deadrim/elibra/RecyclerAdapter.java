@@ -30,20 +30,18 @@ import java.util.Set;
 
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHolder> {
 
-    private static JSONArray jsonArray;
-    private static JSONArray json2Array;
-    public EditText nameEditText,storageEditText;
-    TextView textView3,textView2;
-    public ImageView imagePreview;
+    private static JSONArray liberaryjsonArray;
+    private static JSONArray settingJsonArray;
+    public EditText textViewBookName, textViewBookPath;
+    TextView textViewBookIconLabel, textViewBookNameLabel;
+    public ImageView imageButtonBookIcon;
     public View dialogView;
-    public String image_path,style="sans-serif",orientation_value;
-    int size=40;
-
-    public RecyclerAdapter(JSONArray jsonArray,JSONArray json2Array) {
-        this.jsonArray = jsonArray;
-        this.json2Array = json2Array;
+    public String image_path, textStyle ="sans-serif", orientationValue;
+    int textSize =40;
+    public RecyclerAdapter(JSONArray liberaryjsonArray,JSONArray settingJsonArray) {
+        this.liberaryjsonArray = liberaryjsonArray;
+        this.settingJsonArray = settingJsonArray;
     }
-
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -51,33 +49,30 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
         View view = layoutInflater.inflate(R.layout.row_item, parent, false);
         return new ViewHolder(view);
     }
-
     public void setFilePath(String filePath) {
-        storageEditText.setText(filePath);
+        textViewBookPath.setText(filePath);
     }
     public void setImagePath(String filePath){
         if(!filePath.isEmpty()){
-            imagePreview.setImageURI(Uri.parse(filePath));
+            imageButtonBookIcon.setImageURI(Uri.parse(filePath));
             image_path=filePath;
         }
     }
-
-
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         try {
-            JSONObject jsonObject = jsonArray.getJSONObject(position);
+            JSONObject jsonObject = liberaryjsonArray.getJSONObject(position);
             String name = jsonObject.getString("name");
             String page = jsonObject.getString("page");
             String total_pages = jsonObject.getString("total_pages");
             String image_path = jsonObject.getString("image_path");
             if(image_path.isEmpty()){
-                holder.imageView.setImageResource(R.mipmap.ic_launcher);
+                holder.imageViewAppIcon.setImageResource(R.mipmap.ic_launcher);
             }else{
-                holder.imageView.setImageURI(Uri.parse(image_path));
+                holder.imageViewAppIcon.setImageURI(Uri.parse(image_path));
             }
-            holder.name.setText(name);
-            holder.pages.setText(" [ " + page + " | " + total_pages +" ] ");
+            holder.textViewName.setText(name);
+            holder.textViewPages.setText(" [ " + page + " | " + total_pages +" ] ");
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -85,97 +80,79 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 
     @Override
     public int getItemCount() {
-        return jsonArray.length();
+        return liberaryjsonArray.length();
     }
 
     class ViewHolder extends RecyclerView.ViewHolder  implements View.OnClickListener  {
-        private ImageView imageView;
-        private TextView name,pages;
-        private ImageView updateButton, deleteButton;
+        private TextView textViewName, textViewPages;
+        private ImageView imageViewAppIcon, imageViewUpdate, imageViewDelete;
         private String storage;
-        private Button cancelButton;
-        private Button saveButton;
+        private Button buttonBookCancel,buttonBookSave;
         private static final int PICK_FILE_REQUEST_CODE = 2,PICK_IMAGE_REQUEST=22;
-
         boolean isAllFieldsChecked = false;
-
-
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-
-            imageView = itemView.findViewById(R.id.imageViewAppIcon);
-            name = itemView.findViewById(R.id.textViewName);
-            pages = itemView.findViewById(R.id.textViewPages);
-            updateButton = itemView.findViewById(R.id.btn_update);
-            deleteButton = itemView.findViewById(R.id.btn_delete);
-
-
+            imageViewAppIcon = itemView.findViewById(R.id.imageViewAppIcon);
+            textViewName = itemView.findViewById(R.id.textViewName);
+            textViewPages = itemView.findViewById(R.id.textViewPages);
+            imageViewUpdate = itemView.findViewById(R.id.imageViewUpdate);
+            imageViewDelete = itemView.findViewById(R.id.imageViewDelete);
             try{
-                JSONObject jsonObject0 = json2Array.getJSONObject(0);
-                style = jsonObject0.getString("style");
-                size = jsonObject0.getInt("size");
-                JSONObject jsonObject1 = json2Array.getJSONObject(1);
-                orientation_value = jsonObject1.getString("value");
+                JSONObject jsonObject0 = settingJsonArray.getJSONObject(0);
+                textStyle = jsonObject0.getString("style");
+                textSize = jsonObject0.getInt("size");
+                JSONObject jsonObject1 = settingJsonArray.getJSONObject(1);
+                orientationValue = jsonObject1.getString("value");
             }catch(Exception e){
                 Toast.makeText(itemView.getContext(), "error in retreating json2array", Toast.LENGTH_SHORT).show();
             }
-
             Handler handler = new Handler();
             itemView.setOnClickListener(this);
-
             itemView.setOnLongClickListener(v -> {
-                updateButton.setVisibility(View.VISIBLE);
-                deleteButton.setVisibility(View.VISIBLE);
+                imageViewUpdate.setVisibility(View.VISIBLE);
+                imageViewDelete.setVisibility(View.VISIBLE);
                 handler.postDelayed(() -> {
-                    updateButton.setVisibility(View.GONE);
-                    deleteButton.setVisibility(View.GONE);
+                    imageViewUpdate.setVisibility(View.GONE);
+                    imageViewDelete.setVisibility(View.GONE);
                 }, 5000);
 
                 return true;
             });
-
-            updateButton.setOnClickListener(v -> {
-
+            imageViewUpdate.setOnClickListener(v -> {
                 Context context = itemView.getContext();
                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
                 LayoutInflater inflater = LayoutInflater.from(context);
                 dialogView = inflater.inflate(R.layout.dialog, null);
-                nameEditText = dialogView.findViewById(R.id.textViewBookName);
-                storageEditText = dialogView.findViewById(R.id.textViewBookPath);
-                imagePreview = dialogView.findViewById(R.id.imageButtonBookIcon);
-                textView3 = dialogView.findViewById(R.id.textViewBookIconLabel);
-                textView2 = dialogView.findViewById(R.id.textViewBookNameLabel);
+                textViewBookName = dialogView.findViewById(R.id.textViewBookName);
+                textViewBookPath = dialogView.findViewById(R.id.textViewBookPath);
+                imageButtonBookIcon = dialogView.findViewById(R.id.imageButtonBookIcon);
+                textViewBookIconLabel = dialogView.findViewById(R.id.textViewBookIconLabel);
+                textViewBookNameLabel = dialogView.findViewById(R.id.textViewBookNameLabel);
                 try {
-                    JSONObject jsonObject = jsonArray.getJSONObject(getAdapterPosition());
-
+                    JSONObject jsonObject = liberaryjsonArray.getJSONObject(getAdapterPosition());
                     String name = jsonObject.getString("name");
                     storage = jsonObject.getString("storage");
                     String image_path=jsonObject.getString("image_path");
-                    storageEditText.setText(storage);
-                    nameEditText.setText(name);
-
+                    textViewBookPath.setText(storage);
+                    textViewBookName.setText(name);
                     if(image_path.isEmpty()){
-                        imagePreview.setImageResource(R.mipmap.ic_launcher);
+                        imageButtonBookIcon.setImageResource(R.mipmap.ic_launcher);
                     }else{
-                        imagePreview.setImageURI(Uri.parse(image_path));
+                        imageButtonBookIcon.setImageURI(Uri.parse(image_path));
                     }
-
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-
-                cancelButton = dialogView.findViewById(R.id.buttonBookCancel);
-                saveButton = dialogView.findViewById(R.id.buttonBookSave);
-                ImageView fileManager = dialogView.findViewById(R.id.textViewBookPick);
-                ImageView imageButton =dialogView.findViewById(R.id.buttonBookIconEdit);
-
-                fileManager.setOnClickListener(view -> {
+                buttonBookCancel = dialogView.findViewById(R.id.buttonBookCancel);
+                buttonBookSave = dialogView.findViewById(R.id.buttonBookSave);
+                ImageView imageViewBookPick = dialogView.findViewById(R.id.imageViewBookPick);
+                ImageView imageViewBookIconPick =dialogView.findViewById(R.id.imageViewBookIconPick);
+                imageViewBookPick.setOnClickListener(view -> {
                     Intent intent = new Intent(context, FileManagerActivity.class);
                     intent.putExtra("status", "add_document");
                     ((Activity) context).startActivityForResult(intent, PICK_FILE_REQUEST_CODE);
                 });
-
-                imageButton.setOnClickListener(view -> {
+                imageViewBookIconPick.setOnClickListener(view -> {
                     Intent intent = new Intent(context, FileManagerActivity.class);
                     intent.putExtra("status", "add_image");
                     ((Activity) context).startActivityForResult(intent, PICK_IMAGE_REQUEST);
@@ -184,20 +161,19 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
                 builder.setView(dialogView);
                 AlertDialog dialog = builder.create();
                 dialog.show();
-
-                saveButton.setOnClickListener(v1 -> {
+                buttonBookSave.setOnClickListener(v1 -> {
                     isAllFieldsChecked = CheckAllFields();
                     if(isAllFieldsChecked) {
                         try {
-                            JSONObject jsonObject = jsonArray.getJSONObject(getAdapterPosition());
-                            String newName = nameEditText.getText().toString();
-                            String newStorage = storageEditText.getText().toString();
+                            JSONObject jsonObject = liberaryjsonArray.getJSONObject(getAdapterPosition());
+                            String newName = textViewBookName.getText().toString();
+                            String newStorage = textViewBookPath.getText().toString();
                             jsonObject.put("name", newName);
                             jsonObject.put("storage", newStorage);
                             if (image_path != null) {
                                 jsonObject.put("image_path", image_path);
                             }
-                            if(!storage.equals(storageEditText.getText().toString())){
+                            if(!storage.equals(textViewBookPath.getText().toString())){
                                 jsonObject.put("page", 0);
                                 jsonObject.put("total_pages",0);
                             }
@@ -210,64 +186,51 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
                         image_path = null;
                     }
                 });
-                
-                cancelButton.setOnClickListener(v12 -> dialog.dismiss());
+                buttonBookCancel.setOnClickListener(v12 -> dialog.dismiss());
             });
-
-            deleteButton.setOnClickListener(v -> {
-                JSONObject jsonObject = (JSONObject) jsonArray.remove(getAdapterPosition());
-
-
+            imageViewDelete.setOnClickListener(v -> {
+                JSONObject jsonObject = (JSONObject) liberaryjsonArray.remove(getAdapterPosition());
                 notifyItemRemoved(getAdapterPosition());
-
                 save();
                 delete(jsonObject);
-
             });
-
             main_text_change();
         }
-
         private boolean CheckAllFields() {
-            if (nameEditText.length() == 0) {
-                nameEditText.setError("This field is required");
+            if (textViewBookName.length() == 0) {
+                textViewBookName.setError("This field is required");
                 return false;
             }
-
             Set<String> existingNames = new HashSet<>();
-            for (int i = 0; i < jsonArray.length(); i++) {
+            for (int i = 0; i < liberaryjsonArray.length(); i++) {
                 try {
-                    JSONObject json = jsonArray.getJSONObject(i);
+                    JSONObject json = liberaryjsonArray.getJSONObject(i);
                     existingNames.add(json.getString("name"));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
-
-            if (existingNames.contains(name)) {
-                nameEditText.setError("This name already exists");
+            if (existingNames.contains(textViewName)) {
+                textViewBookName.setError("This name already exists");
                 return false;
             }
-
-
-            if (storageEditText.length() == 0) {
-                storageEditText.setError("This field is required");
+            if (textViewBookPath.length() == 0) {
+                textViewBookPath.setError("This field is required");
                 return false;
             }
             return true;
         }
-
         @Override
         public void onClick(View v) {
             try {
-                JSONObject jsonObject = jsonArray.getJSONObject(getAdapterPosition());
+                JSONObject jsonObject = liberaryjsonArray.getJSONObject(getAdapterPosition());
                 String storagePath = jsonObject.getString("storage");
                 Integer page = jsonObject.getInt("page");
                 File file = new File(storagePath);
                 if (file.exists()) {
                     Context context = itemView.getContext();
                     Intent intent = new Intent(context, PdfActivity.class);
-                    intent.putExtra("orientation", orientation_value);
+                    intent.putExtra("orientation", orientationValue);
                     intent.putExtra("position",getAdapterPosition());
                     intent.putExtra("storage", storagePath);
                     intent.putExtra("page",page);
@@ -279,25 +242,21 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
             } catch (JSONException e) {
                 throw new RuntimeException(e);
             }
-
         }
-
         public boolean deleteDirectory(File directory) {
             if (!directory.exists()) {
                 Toast.makeText(itemView.getContext(), "Folder not found", Toast.LENGTH_SHORT).show();
                 return false;
             }
-
             Set<String> existingStorage = new HashSet<>();
-            for (int i = 0; i < jsonArray.length(); i++) {
+            for (int i = 0; i < liberaryjsonArray.length(); i++) {
                 try {
-                    JSONObject json = jsonArray.getJSONObject(i);
+                    JSONObject json = liberaryjsonArray.getJSONObject(i);
                     existingStorage.add(json.getString("storage"));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
-
             if (existingStorage.contains(storage)) {
                 Toast.makeText(itemView.getContext(), " path unique found", Toast.LENGTH_SHORT).show();
             } else {
@@ -313,9 +272,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 
                 }
             }
-
             return directory.delete();
-
         }
         private boolean isInsideDirectory(File file, File baseDirectory) {
             try {
@@ -328,33 +285,30 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
             }
         }
         public void dialog_text_change(){
-            Typeface typeface = Typeface.create(style, Typeface.NORMAL);
-            nameEditText.setTypeface(typeface);
-            storageEditText.setTypeface(typeface);
-            cancelButton.setTypeface(typeface);
-            saveButton.setTypeface(typeface);
-            textView3.setTypeface(typeface);
-            textView2.setTypeface(typeface);
-
-            nameEditText.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
-            storageEditText.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
-            cancelButton.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
-            saveButton.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
-            textView3.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
-            textView2.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
+            Typeface typeface = Typeface.create(textStyle, Typeface.NORMAL);
+            textViewBookName.setTypeface(typeface);
+            textViewBookPath.setTypeface(typeface);
+            buttonBookCancel.setTypeface(typeface);
+            buttonBookSave.setTypeface(typeface);
+            textViewBookIconLabel.setTypeface(typeface);
+            textViewBookNameLabel.setTypeface(typeface);
+            textViewBookName.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
+            textViewBookPath.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
+            buttonBookCancel.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
+            buttonBookSave.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
+            textViewBookIconLabel.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
+            textViewBookNameLabel.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
         }
-
         public void main_text_change(){
-            Typeface typeface = Typeface.create(style, Typeface.NORMAL);
-            name.setTypeface(typeface);
-            pages.setTypeface(typeface);
-            name.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
-            pages.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
+            Typeface typeface = Typeface.create(textStyle, Typeface.NORMAL);
+            textViewName.setTypeface(typeface);
+            textViewPages.setTypeface(typeface);
+            textViewName.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
+            textViewPages.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
         }
         private void delete(JSONObject jsonObject){
             String storage = jsonObject.optString("storage");
             String image_path = jsonObject.optString("image_path");
-
             File file = !storage.isEmpty() ? new File(storage) : new File(image_path);
             File parentDir = file.getParentFile();
             File baseDirectory = new File("/sdcard/E Libra/Library/");
@@ -376,9 +330,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
         private void save() {
             SharedPreferences prefs = itemView.getContext().getSharedPreferences("MySharedPref", Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = prefs.edit();
-            editor.putString("key", jsonArray.toString());
+            editor.putString("key", liberaryjsonArray.toString());
             editor.apply();
-            Log.d("array_data", "save array data: " + jsonArray.toString());
+            Log.d("array_data", "save array data: " + liberaryjsonArray.toString());
         }
     }
 }

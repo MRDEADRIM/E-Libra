@@ -22,7 +22,6 @@ import androidx.core.content.ContextCompat;
 import android.content.Intent;
 import android.app.AlertDialog;
 import android.widget.TextView;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -30,46 +29,29 @@ import org.json.JSONObject;
 public class PermissionActivity extends AppCompatActivity {
     private static final int STORAGE_PERMISSION_REQUEST_CODE = 100;
     private static final int APP_SETTINGS_REQUEST_CODE = 101;
-    Button permission_btn;
+
     private View dialogView;
-
-    TextView textView7;
-    TextView textView5,textView,textView6;
-
-    Button button2;
-    Button button5;
-    JSONArray json2Array;
-
-    String style="sans-serif";
-
-    int size=40;
-    Button goToSettingCancelButton;
-    Button goToSettingButton;
-    TextView textview;
-
-    String orientation_value="Sensor";
-
-    String selectedItem="sans-serif";
-
-
+    TextView textViewExit;
+    TextView textViewExitMessage,textViewPermissionDescription,textViewAuthorization,textViewAuthorizationMessage;
+    JSONArray settingJsonArray;
+    String textStyle="sans-serif", orientationValue ="Sensor";
+    int textSize=40;
+    Button buttonExitNo,buttonExitYes,buttonGrandPermission,buttonGoToSettingCancel, buttonGoToSetting;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_permission);
-        textView=findViewById(R.id.textViewPermissionDescription);
-
-        permission_btn = findViewById(R.id.buttonGrandPermission);
-        permission_btn.setOnClickListener(v -> {
+        textViewPermissionDescription =findViewById(R.id.textViewPermissionDescription);
+        buttonGrandPermission = findViewById(R.id.buttonGrandPermission);
+        buttonGrandPermission.setOnClickListener(v -> {
             checkPermission();
         });
-
         SharedPreferences prefs = getSharedPreferences("MySharedPref", MODE_PRIVATE);
         try {
-
-            json2Array = new JSONArray(prefs.getString("key2", "[]"));
-            JSONObject jsonObject0 = json2Array.getJSONObject(0);
-            style=jsonObject0.getString("style");
-            size=jsonObject0.getInt("size");
+            settingJsonArray = new JSONArray(prefs.getString("key2", "[]"));
+            JSONObject jsonObject0 = settingJsonArray.getJSONObject(0);
+            textStyle =jsonObject0.getString("style");
+            textSize =jsonObject0.getInt("size");
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -78,24 +60,19 @@ public class PermissionActivity extends AppCompatActivity {
 
     }
     private void load() {
-
         try {
-
-            JSONObject jsonObject0 = json2Array.getJSONObject(0);
-
-            selectedItem=jsonObject0.getString("style");
-            size=jsonObject0.getInt("size");
-
-            JSONObject jsonObject1 = json2Array.getJSONObject(1);
-            orientation_value = jsonObject1.getString("value");
-
-            if(orientation_value.equals("Sensor")){
+            JSONObject jsonObject0 = settingJsonArray.getJSONObject(0);
+            textStyle=jsonObject0.getString("style");
+            textSize =jsonObject0.getInt("size");
+            JSONObject jsonObject1 = settingJsonArray.getJSONObject(1);
+            orientationValue = jsonObject1.getString("value");
+            if(orientationValue.equals("Sensor")){
                 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
             }
-            if(orientation_value.equals("Portrait")){
+            if(orientationValue.equals("Portrait")){
                 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
             }
-            if(orientation_value.equals("Landscape")){
+            if(orientationValue.equals("Landscape")){
                 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
             }
             main_text_change();
@@ -133,33 +110,31 @@ public class PermissionActivity extends AppCompatActivity {
     private void showSettingsDialog(String status) {
         final AlertDialog.Builder alert = new AlertDialog.Builder(PermissionActivity.this);
         dialogView = getLayoutInflater().inflate(R.layout.storage_permission_dialog, null);
-        goToSettingCancelButton = dialogView.findViewById(R.id.buttonGoToSettingCancel);
-        goToSettingButton = dialogView.findViewById(R.id.buttonGoToSetting);
-        textview = dialogView.findViewById(R.id.textViewExitMessage);
-        textView6 = dialogView.findViewById(R.id.textViewAuthorization);
+        buttonGoToSettingCancel = dialogView.findViewById(R.id.buttonGoToSettingCancel);
+        buttonGoToSetting = dialogView.findViewById(R.id.buttonGoToSetting);
+        textViewAuthorizationMessage = dialogView.findViewById(R.id.textViewAuthorizationMessage);
+        textViewAuthorization = dialogView.findViewById(R.id.textViewAuthorization);
         if(status.equals("new")){
-            textview.setText(getString(R.string.storage_permission_new_text));
+            textViewAuthorizationMessage.setText(getString(R.string.storage_permission_new_text));
         }else{
-            textview.setText(getString(R.string.storage_permission_old_text));
+            textViewAuthorizationMessage.setText(getString(R.string.storage_permission_old_text));
         }
         permission_text_change();
         alert.setView(dialogView);
         final AlertDialog alertDialog = alert.create();
         alertDialog.setCanceledOnTouchOutside(false);
-        goToSettingCancelButton.setOnClickListener(v1 -> alertDialog.dismiss());
-        goToSettingButton.setOnClickListener(v12 -> {
+        buttonGoToSettingCancel.setOnClickListener(v1 -> alertDialog.dismiss());
+        buttonGoToSetting.setOnClickListener(v12 -> {
             openAppSettings();
         });
         alertDialog.show();
     }
-
     private void openAppSettings() {
         Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
         Uri uri = Uri.fromParts("package", getPackageName(), null);
         intent.setData(uri);
         ((Activity) PermissionActivity.this).startActivityForResult(intent, APP_SETTINGS_REQUEST_CODE);
     }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -167,7 +142,6 @@ public class PermissionActivity extends AppCompatActivity {
             checkPermission();
         }
     }
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -175,61 +149,51 @@ public class PermissionActivity extends AppCompatActivity {
             checkPermission();
         }
     }
-
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         final AlertDialog.Builder alert = new AlertDialog.Builder(PermissionActivity.this);
         dialogView = getLayoutInflater().inflate(R.layout.exit_dialog, null);
-
-        textView7 = dialogView.findViewById(R.id.textViewExit);
-        textView5 = dialogView.findViewById(R.id.textViewExitMessage);
-        button2 = dialogView.findViewById(R.id.buttonExitNo);
-        button5 = dialogView.findViewById(R.id.buttonExitYes);
+        textViewExit = dialogView.findViewById(R.id.textViewExit);
+        textViewExitMessage = dialogView.findViewById(R.id.textViewExitMessage);
+        buttonExitNo = dialogView.findViewById(R.id.buttonExitNo);
+        buttonExitYes = dialogView.findViewById(R.id.buttonExitYes);
         exit_text_change();
         alert.setView(dialogView);
         final AlertDialog alertDialog = alert.create();
         alertDialog.setCanceledOnTouchOutside(false);
-        button2.setOnClickListener(v1 -> alertDialog.dismiss());
-        button5.setOnClickListener(v12 -> {
+        buttonExitNo.setOnClickListener(v1 -> alertDialog.dismiss());
+        buttonExitYes.setOnClickListener(v12 -> {
             finish();
         });
         alertDialog.show();
         return true;
     }
     public void permission_text_change(){
-        Typeface typeface = Typeface.create(style, Typeface.NORMAL);
-        goToSettingCancelButton.setTypeface(typeface);
-        goToSettingButton.setTypeface(typeface);
-        textview.setTypeface(typeface);
-        textView6.setTypeface(typeface);
-
-        goToSettingCancelButton.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
-        goToSettingButton.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
-        textview.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
-        textView6.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
-
+        Typeface typeface = Typeface.create(textStyle, Typeface.NORMAL);
+        buttonGoToSettingCancel.setTypeface(typeface);
+        buttonGoToSetting.setTypeface(typeface);
+        textViewAuthorizationMessage.setTypeface(typeface);
+        textViewAuthorization.setTypeface(typeface);
+        buttonGoToSettingCancel.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
+        buttonGoToSetting.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
+        textViewAuthorizationMessage.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
+        textViewAuthorization.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
     }
     public void exit_text_change(){
-        Typeface typeface = Typeface.create(style, Typeface.NORMAL);
-        textView7.setTypeface(typeface);
-        textView5.setTypeface(typeface);
-        button2.setTypeface(typeface);
-        button5.setTypeface(typeface);
-
-        textView7.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
-        textView5.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
-        button2.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
-        button5.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
-
+        Typeface typeface = Typeface.create(textStyle, Typeface.NORMAL);
+        textViewExit.setTypeface(typeface);
+        textViewExitMessage.setTypeface(typeface);
+        buttonExitNo.setTypeface(typeface);
+        buttonExitYes.setTypeface(typeface);
+        textViewExit.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
+        textViewExitMessage.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
+        buttonExitNo.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
+        buttonExitYes.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
     }
     public void main_text_change(){
-
-        Typeface typeface = Typeface.create(style, Typeface.NORMAL);
-        textView.setTypeface(typeface);
-        permission_btn.setTypeface(typeface);
-
-
-        textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
-        permission_btn.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
+        Typeface typeface = Typeface.create(textStyle, Typeface.NORMAL);
+        textViewPermissionDescription.setTypeface(typeface);
+        buttonGrandPermission.setTypeface(typeface);
+        textViewPermissionDescription.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
+        buttonGrandPermission.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
     }
-
 }
