@@ -35,7 +35,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
     public ImageView imageButtonBookIcon;
     public View dialogView;
     public String image_path, textStyle ="sans-serif", orientationValue;
-    int textSize =30;
+    int textSize =40;
     public RecyclerAdapter(JSONArray liberaryjsonArray,JSONArray settingJsonArray) {
         this.libraryJsonArray = liberaryjsonArray;
         this.settingJsonArray = settingJsonArray;

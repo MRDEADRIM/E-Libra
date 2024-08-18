@@ -35,7 +35,7 @@ public class PermissionActivity extends AppCompatActivity {
     TextView textViewExitMessage,textViewPermissionDescription,textViewAuthorization,textViewAuthorizationMessage;
     JSONArray settingJsonArray;
     String textStyle="sans-serif", orientationValue ="Sensor";
-    int textSize=30;
+    int textSize=40;
     Button buttonExitNo,buttonExitYes,buttonGrandPermission,buttonGoToSettingCancel, buttonGoToSetting;
     @Override
     protected void onCreate(Bundle savedInstanceState) {

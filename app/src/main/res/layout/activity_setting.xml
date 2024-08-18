@@ -72,6 +72,7 @@
                         android:minWidth="40dp"
                         android:text="40"
                         android:textAlignment="center"
+                        android:textSize="14sp"
                         app:layout_constraintBottom_toBottomOf="@+id/textViewAdjustSize"
                         app:layout_constraintStart_toEndOf="@+id/textViewAdjustSize"
                         app:layout_constraintTop_toTopOf="@+id/textViewAdjustSize" />
@@ -436,6 +437,7 @@
                         android:ems="10"
                         android:inputType="text"
                         android:text="/sdcard/Downloads/"
+                        android:textSize="14sp"
                         app:layout_constraintEnd_toStartOf="@+id/imageViewFolderPicker"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/editTextExportFile" />
@@ -517,6 +519,7 @@
                         android:ems="10"
                         android:inputType="text"
                         android:text="Books"
+                        android:textSize="14sp"
                         app:layout_constraintEnd_toStartOf="@+id/textViewZip"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/nestedScrollViewStatusOutput" />
@@ -550,6 +553,7 @@
                         android:ems="10"
                         android:inputType="text"
                         android:text="/sdcard/Downloads/elibra.zip"
+                        android:textSize="14sp"
                         app:layout_constraintEnd_toStartOf="@+id/imageViewFilePicker"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/nestedScrollViewStatusOutput" />

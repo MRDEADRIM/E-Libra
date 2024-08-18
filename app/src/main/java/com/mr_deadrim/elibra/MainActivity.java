@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
     RecyclerAdapter recyclerAdapter;
     boolean isAllFieldsChecked = false;
     String image_path="", textStyle ="sans-serif", orientationValue ="Sensor";
-    int textSize =30;
+    int textSize =40;
     Button buttonButtonCancel,buttonButtonSave;
     ImageView imageButtonBookIcon,textViewBookPick, buttonButtonIconEdit;
     TextView textViewExit,textViewExitMessage,textViewBookIconLabel, textViewBookNameLabel;

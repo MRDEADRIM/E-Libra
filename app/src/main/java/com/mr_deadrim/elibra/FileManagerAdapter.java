@@ -31,7 +31,7 @@ public class FileManagerAdapter extends ArrayAdapter<String> {
     private final ExecutorService mExecutor;
     private static JSONArray settingJsonArray;
     String textStyle="sans-serif";
-    int textSize=30;
+    int textSize=40;
 
     public FileManagerAdapter(Context context, ArrayList<String> fileList, JSONArray settingJsonArray) {
         super(context, R.layout.file_list_layout, fileList);

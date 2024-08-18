@@ -29,7 +29,7 @@ public class AboutActivity extends AppCompatActivity {
     private View dialogView;
     TextView textViewAppVersion, textViewAppName, textViewAuthorName, textViewAboutDetail, textViewAbout, textViewAppNameLabel, textViewAppVersionLabel, textViewAuthorNameLabel,textViewExit,textViewExitMessage;
     JSONArray settingJsonArray;
-    int textSize=30;
+    int textSize=40;
     Button buttonExitNo,buttonExitYes;
     String textStyle, orientationValue;
 

@@ -71,7 +71,7 @@ public class SettingActivity extends AppCompatActivity {
     NestedScrollView nestedScrollViewStatusOutput;
     public JSONArray libraryJsonArray,settingJsonArray, jsonImportArray;
     private static final int BUFFER_SIZE = 4096;
-    int added=0, textSize =30,text_selected=1,orientation_selected=1,migration_selected=1,remove_existing_data_status,dont_import_status,dont_export_status;
+    int added=0, textSize =40,text_selected=1,orientation_selected=1,migration_selected=1,remove_existing_data_status,dont_import_status,dont_export_status;
     MenuItem item1,item2,item3;
 
     @Override

@@ -31,7 +31,7 @@ public class FileManagerActivity extends AppCompatActivity {
     private static final String KEY_INTERNAL_STORAGE_PATH = null;
     JSONArray settingJsonArray;
     String selectedItem="sans-serif", orientationValue;
-    int textSize =30;
+    int textSize =40;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
