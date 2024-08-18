@@ -42,17 +42,16 @@ import java.util.Set;
 
 public class MainActivity extends AppCompatActivity {
 
-    private JSONArray liberaryjsonArray,settingJsonArray;
+    private JSONArray libraryJsonArray,settingJsonArray;
     private View dialogView;
     public EditText textViewBookName, textViewBookPath;
     private static final int PICK_FILE_REQUEST_CODE = 1, PICK_IMAGE_REQUEST_CODE =21;
     RecyclerAdapter recyclerAdapter;
     boolean isAllFieldsChecked = false;
     String image_path="", textStyle ="sans-serif", orientationValue ="Sensor";
-    int textSize =40;
+    int textSize =30;
     Button buttonButtonCancel,buttonButtonSave;
     ImageView imageButtonBookIcon,textViewBookPick, buttonButtonIconEdit;
-
     TextView textViewExit,textViewExitMessage,textViewBookIconLabel, textViewBookNameLabel;
 
     Button buttonAddBook,buttonExitNo,buttonExitYes;
@@ -67,16 +66,14 @@ public class MainActivity extends AppCompatActivity {
         buttonAddBook = findViewById(R.id.buttonAddBook);
         RecyclerView recyclerView = findViewById(R.id.recyclerViewBookList);
 
-        SharedPreferences prefs = getSharedPreferences("MySharedPref", MODE_PRIVATE);
+        SharedPreferences prefs = getSharedPreferences("ShredPreferenceJsonData", MODE_PRIVATE);
         try {
-            liberaryjsonArray = new JSONArray(prefs.getString("key", "[]"));
-            settingJsonArray = new JSONArray(prefs.getString("key2", "[]"));
+            libraryJsonArray = new JSONArray(prefs.getString("libraryJsonArray", "[]"));
+            settingJsonArray = new JSONArray(prefs.getString("settingJsonArray", "[]"));
         } catch (JSONException e) {
             e.printStackTrace();
         }
         load();
-
-
         buttonAddBook.setOnClickListener(v -> {
             final AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
             dialogView = getLayoutInflater().inflate(R.layout.dialog, null);
@@ -121,7 +118,7 @@ public class MainActivity extends AppCompatActivity {
                         json.put("storage", textViewBookPath.getText().toString());
                         json.put("page",0);
                         json.put("total_pages",0);
-                        liberaryjsonArray.put(json);
+                        libraryJsonArray.put(json);
                         save();
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -135,7 +132,7 @@ public class MainActivity extends AppCompatActivity {
             alertDialog.show();
         });
 
-        recyclerAdapter = new RecyclerAdapter(liberaryjsonArray, settingJsonArray);
+        recyclerAdapter = new RecyclerAdapter(libraryJsonArray, settingJsonArray);
         recyclerView.setAdapter(recyclerAdapter);
         recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
         ItemTouchHelper itemTouchHelper = getItemTouchHelper();
@@ -149,9 +146,9 @@ public class MainActivity extends AppCompatActivity {
             return false;
         }
         Set<String> existingNames = new HashSet<>();
-        for (int i = 0; i < liberaryjsonArray.length(); i++) {
+        for (int i = 0; i < libraryJsonArray.length(); i++) {
             try {
-                JSONObject json = liberaryjsonArray.getJSONObject(i);
+                JSONObject json = libraryJsonArray.getJSONObject(i);
                 existingNames.add(json.getString("name"));
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -175,13 +172,12 @@ public class MainActivity extends AppCompatActivity {
                 int fromPosition = viewHolder.getAdapterPosition();
                 int toPosition = target.getAdapterPosition();
                 try {
-                    JSONObject temp = liberaryjsonArray.getJSONObject(fromPosition);
-                    liberaryjsonArray.put(fromPosition, liberaryjsonArray.get(toPosition));
-                    liberaryjsonArray.put(toPosition, temp);
+                    JSONObject temp = libraryJsonArray.getJSONObject(fromPosition);
+                    libraryJsonArray.put(fromPosition, libraryJsonArray.get(toPosition));
+                    libraryJsonArray.put(toPosition, temp);
                     recyclerView.getAdapter().notifyItemMoved(fromPosition, toPosition);
                     save();
                 } catch (JSONException e) {
-                    Log.d("error", "Error spotted on move: " + e);
                     Toast.makeText(MainActivity.this, "Error spotted on move", Toast.LENGTH_SHORT).show();
                 }
                 return false;
@@ -297,11 +293,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void save() {
-        SharedPreferences prefs = getSharedPreferences("MySharedPref", MODE_PRIVATE);
+        SharedPreferences prefs = getSharedPreferences("ShredPreferenceJsonData", MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
-        editor.putString("key", liberaryjsonArray.toString());
+        editor.putString("libraryJsonArray", libraryJsonArray.toString());
         editor.apply();
-        Log.d("array_data", "save array data: " + liberaryjsonArray.toString());
     }
 
 

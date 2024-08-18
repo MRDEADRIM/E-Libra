@@ -35,7 +35,7 @@ public class PermissionActivity extends AppCompatActivity {
     TextView textViewExitMessage,textViewPermissionDescription,textViewAuthorization,textViewAuthorizationMessage;
     JSONArray settingJsonArray;
     String textStyle="sans-serif", orientationValue ="Sensor";
-    int textSize=40;
+    int textSize=30;
     Button buttonExitNo,buttonExitYes,buttonGrandPermission,buttonGoToSettingCancel, buttonGoToSetting;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,9 +46,9 @@ public class PermissionActivity extends AppCompatActivity {
         buttonGrandPermission.setOnClickListener(v -> {
             checkPermission();
         });
-        SharedPreferences prefs = getSharedPreferences("MySharedPref", MODE_PRIVATE);
+        SharedPreferences prefs = getSharedPreferences("ShredPreferenceJsonData", MODE_PRIVATE);
         try {
-            settingJsonArray = new JSONArray(prefs.getString("key2", "[]"));
+            settingJsonArray = new JSONArray(prefs.getString("settingJsonArray", "[]"));
             JSONObject jsonObject0 = settingJsonArray.getJSONObject(0);
             textStyle =jsonObject0.getString("style");
             textSize =jsonObject0.getInt("size");

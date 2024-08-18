@@ -31,7 +31,7 @@ public class FileManagerActivity extends AppCompatActivity {
     private static final String KEY_INTERNAL_STORAGE_PATH = null;
     JSONArray settingJsonArray;
     String selectedItem="sans-serif", orientationValue;
-    int textSize =40;
+    int textSize =30;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -143,9 +143,9 @@ public class FileManagerActivity extends AppCompatActivity {
     }
 
     private void load() {
-        SharedPreferences prefs = getSharedPreferences("MySharedPref", MODE_PRIVATE);
+        SharedPreferences prefs = getSharedPreferences("ShredPreferenceJsonData", MODE_PRIVATE);
         try {
-            settingJsonArray = new JSONArray(prefs.getString("key2", "[]"));
+            settingJsonArray = new JSONArray(prefs.getString("settingJsonArray", "[]"));
             JSONObject jsonObject0 = settingJsonArray.getJSONObject(0);
             selectedItem = jsonObject0.getString("style");
             textSize = jsonObject0.getInt("size");

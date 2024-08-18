@@ -27,9 +27,9 @@ import org.json.JSONObject;
 
 public class AboutActivity extends AppCompatActivity {
     private View dialogView;
-    TextView textViewAppVersion, textViewAppName, textViewAutherName, textViewAboutDetail, textViewAbout, textViewAppNameLabel, textViewAppVersionLabel, textViewAuthorNameLabel,textViewExit,textViewExitMessage;
+    TextView textViewAppVersion, textViewAppName, textViewAuthorName, textViewAboutDetail, textViewAbout, textViewAppNameLabel, textViewAppVersionLabel, textViewAuthorNameLabel,textViewExit,textViewExitMessage;
     JSONArray settingJsonArray;
-    int textSize=40;
+    int textSize=30;
     Button buttonExitNo,buttonExitYes;
     String textStyle, orientationValue;
 
@@ -39,7 +39,7 @@ public class AboutActivity extends AppCompatActivity {
         setContentView(R.layout.activity_about);
         textViewAppVersion = findViewById(R.id.textViewAppVersion);
         textViewAppName = findViewById(R.id.textViewAppName);
-        textViewAutherName = findViewById(R.id.textViewAuthorName);
+        textViewAuthorName = findViewById(R.id.textViewAuthorName);
         textViewAboutDetail = findViewById(R.id.textViewAboutDetail);
         textViewAbout = findViewById(R.id.textViewAbout);
         textViewAppNameLabel = findViewById(R.id.textViewAppNameLabel);
@@ -49,13 +49,13 @@ public class AboutActivity extends AppCompatActivity {
             PackageInfo packageInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
             textViewAppVersion.setText(packageInfo.versionName);
             textViewAppName.setText(getPackageManager().getApplicationLabel(getPackageManager().getApplicationInfo(getPackageName(), 0)));
-            textViewAutherName.setText(R.string.auther_name);
+            textViewAuthorName.setText(R.string.auther_name);
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
-        SharedPreferences prefs = getSharedPreferences("MySharedPref", MODE_PRIVATE);
+        SharedPreferences prefs = getSharedPreferences("ShredPreferenceJsonData", MODE_PRIVATE);
         try{
-            settingJsonArray = new JSONArray(prefs.getString("key2", "[]"));
+            settingJsonArray = new JSONArray(prefs.getString("settingJsonArray", "[]"));
             JSONObject jsonObject0 = settingJsonArray.getJSONObject(0);
             textStyle = jsonObject0.getString("style");
             textSize = jsonObject0.getInt("size");
@@ -142,7 +142,7 @@ public class AboutActivity extends AppCompatActivity {
         Typeface typeface = Typeface.create(textStyle, Typeface.NORMAL);
         textViewAppVersion.setTypeface(typeface);
         textViewAppName.setTypeface(typeface);
-        textViewAutherName.setTypeface(typeface);
+        textViewAuthorName.setTypeface(typeface);
         textViewAboutDetail.setTypeface(typeface);
         textViewAbout.setTypeface(typeface);
         textViewAppNameLabel.setTypeface(typeface);
@@ -150,7 +150,7 @@ public class AboutActivity extends AppCompatActivity {
         textViewAuthorNameLabel.setTypeface(typeface);
         textViewAppVersion.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
         textViewAppName.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
-        textViewAutherName.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
+        textViewAuthorName.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
         textViewAboutDetail.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
         textViewAbout.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
         textViewAppNameLabel.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);

@@ -7,7 +7,6 @@ import android.graphics.Bitmap;
 import android.graphics.pdf.PdfRenderer;
 import android.os.Bundle;
 import android.os.ParcelFileDescriptor;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,7 +31,7 @@ public class PdfActivity extends AppCompatActivity {
     public int position, current_page = 1, total_pages;
     private Toast toast;
     private LinearLayoutManager layoutManager;
-    private PdfAdapter adapter;
+    private PdfAdapter pdfAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,8 +62,8 @@ public class PdfActivity extends AppCompatActivity {
             finish();
             return;
         }
-        adapter = new PdfAdapter();
-        recyclerView.setAdapter(adapter);
+        pdfAdapter = new PdfAdapter();
+        recyclerView.setAdapter(pdfAdapter);
         toast = Toast.makeText(this, "", Toast.LENGTH_SHORT);
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -74,7 +73,6 @@ public class PdfActivity extends AppCompatActivity {
                 if (firstVisibleItemPosition != RecyclerView.NO_POSITION) {
                     current_page = firstVisibleItemPosition + 1;
                     updateToast();
-                    Log.d("page_count", String.valueOf(current_page));
                 }
             }
         });
@@ -151,14 +149,14 @@ public class PdfActivity extends AppCompatActivity {
         }
     }
     private void savePage() {
-        SharedPreferences prefs = getSharedPreferences("MySharedPref", MODE_PRIVATE);
+        SharedPreferences prefs = getSharedPreferences("ShredPreferenceJsonData", MODE_PRIVATE);
         try {
-            JSONArray jsonArray = new JSONArray(prefs.getString("key", "[]"));
+            JSONArray jsonArray = new JSONArray(prefs.getString("libraryJsonArray", "[]"));
             JSONObject json = jsonArray.getJSONObject(position);
             json.put("page", current_page);
             json.put("total_pages", total_pages);
             SharedPreferences.Editor editor = prefs.edit();
-            editor.putString("key", jsonArray.toString());
+            editor.putString("libraryJsonArray", jsonArray.toString());
             editor.apply();
         } catch (JSONException e) {
             e.printStackTrace();

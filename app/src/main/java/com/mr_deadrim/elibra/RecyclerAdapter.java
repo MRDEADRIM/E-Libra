@@ -8,7 +8,6 @@ import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Handler;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,16 +29,15 @@ import java.util.Set;
 
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHolder> {
 
-    private static JSONArray liberaryjsonArray;
-    private static JSONArray settingJsonArray;
+    private static JSONArray libraryJsonArray,settingJsonArray;
     public EditText textViewBookName, textViewBookPath;
     TextView textViewBookIconLabel, textViewBookNameLabel;
     public ImageView imageButtonBookIcon;
     public View dialogView;
     public String image_path, textStyle ="sans-serif", orientationValue;
-    int textSize =40;
+    int textSize =30;
     public RecyclerAdapter(JSONArray liberaryjsonArray,JSONArray settingJsonArray) {
-        this.liberaryjsonArray = liberaryjsonArray;
+        this.libraryJsonArray = liberaryjsonArray;
         this.settingJsonArray = settingJsonArray;
     }
     @NonNull
@@ -61,7 +59,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         try {
-            JSONObject jsonObject = liberaryjsonArray.getJSONObject(position);
+            JSONObject jsonObject = libraryJsonArray.getJSONObject(position);
             String name = jsonObject.getString("name");
             String page = jsonObject.getString("page");
             String total_pages = jsonObject.getString("total_pages");
@@ -80,7 +78,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 
     @Override
     public int getItemCount() {
-        return liberaryjsonArray.length();
+        return libraryJsonArray.length();
     }
 
     class ViewHolder extends RecyclerView.ViewHolder  implements View.OnClickListener  {
@@ -129,7 +127,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
                 textViewBookIconLabel = dialogView.findViewById(R.id.textViewBookIconLabel);
                 textViewBookNameLabel = dialogView.findViewById(R.id.textViewBookNameLabel);
                 try {
-                    JSONObject jsonObject = liberaryjsonArray.getJSONObject(getAdapterPosition());
+                    JSONObject jsonObject = libraryJsonArray.getJSONObject(getAdapterPosition());
                     String name = jsonObject.getString("name");
                     storage = jsonObject.getString("storage");
                     String image_path=jsonObject.getString("image_path");
@@ -165,7 +163,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
                     isAllFieldsChecked = CheckAllFields();
                     if(isAllFieldsChecked) {
                         try {
-                            JSONObject jsonObject = liberaryjsonArray.getJSONObject(getAdapterPosition());
+                            JSONObject jsonObject = libraryJsonArray.getJSONObject(getAdapterPosition());
                             String newName = textViewBookName.getText().toString();
                             String newStorage = textViewBookPath.getText().toString();
                             jsonObject.put("name", newName);
@@ -189,7 +187,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
                 buttonBookCancel.setOnClickListener(v12 -> dialog.dismiss());
             });
             imageViewDelete.setOnClickListener(v -> {
-                JSONObject jsonObject = (JSONObject) liberaryjsonArray.remove(getAdapterPosition());
+                JSONObject jsonObject = (JSONObject) libraryJsonArray.remove(getAdapterPosition());
                 notifyItemRemoved(getAdapterPosition());
                 save();
                 delete(jsonObject);
@@ -202,9 +200,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
                 return false;
             }
             Set<String> existingNames = new HashSet<>();
-            for (int i = 0; i < liberaryjsonArray.length(); i++) {
+            for (int i = 0; i < libraryJsonArray.length(); i++) {
                 try {
-                    JSONObject json = liberaryjsonArray.getJSONObject(i);
+                    JSONObject json = libraryJsonArray.getJSONObject(i);
                     existingNames.add(json.getString("name"));
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -223,7 +221,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
         @Override
         public void onClick(View v) {
             try {
-                JSONObject jsonObject = liberaryjsonArray.getJSONObject(getAdapterPosition());
+                JSONObject jsonObject = libraryJsonArray.getJSONObject(getAdapterPosition());
                 String storagePath = jsonObject.getString("storage");
                 Integer page = jsonObject.getInt("page");
                 File file = new File(storagePath);
@@ -249,9 +247,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
                 return false;
             }
             Set<String> existingStorage = new HashSet<>();
-            for (int i = 0; i < liberaryjsonArray.length(); i++) {
+            for (int i = 0; i < libraryJsonArray.length(); i++) {
                 try {
-                    JSONObject json = liberaryjsonArray.getJSONObject(i);
+                    JSONObject json = libraryJsonArray.getJSONObject(i);
                     existingStorage.add(json.getString("storage"));
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -328,11 +326,10 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
             }
         }
         private void save() {
-            SharedPreferences prefs = itemView.getContext().getSharedPreferences("MySharedPref", Context.MODE_PRIVATE);
+            SharedPreferences prefs = itemView.getContext().getSharedPreferences("ShredPreferenceJsonData", Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = prefs.edit();
-            editor.putString("key", liberaryjsonArray.toString());
+            editor.putString("libraryJsonArray", libraryJsonArray.toString());
             editor.apply();
-            Log.d("array_data", "save array data: " + liberaryjsonArray.toString());
         }
     }
 }

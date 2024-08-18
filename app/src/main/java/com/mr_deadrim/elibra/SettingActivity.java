@@ -13,7 +13,6 @@ import android.text.SpannableString;
 import android.text.TextWatcher;
 import android.text.style.TextAppearanceSpan;
 import android.text.style.TypefaceSpan;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -31,7 +30,6 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.transition.TransitionManager;
-
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -57,24 +55,23 @@ import java.util.zip.ZipOutputStream;
 
 public class SettingActivity extends AppCompatActivity {
 
-    private View dialogView;
+    private View dialogView,fileReplaceDialog;
     ConstraintLayout constraintLayoutTextFixedLayout, constraintLayoutOrientationFixedLayout, constraintLayoutMigrationFixedLayout, constraintLayoutHiddenView, constraintLayoutOrientationHiddenView, constraintLayoutMigrationHiddenView;
     CardView cardViewText, cardViewOrientation, cardViewMigration;
     ImageView imageViewTextToggle, imageViewOrientationToggle, imageViewMigrationToggle, imageViewFolderPicker, imageViewFilePicker;
     EditText editTextSize,editTextExportPath, editTextExportFile,editTextImportPath;
-    Button buttonSizeDecrement, buttonSizeIncrement,buttonImport, buttonExport, buttonProceed, buttonExitNo, buttonExitYes;
+    Button buttonSizeDecrement, buttonSizeIncrement,buttonImport, buttonExport, buttonProceed, buttonExitNo, buttonExitYes,buttonFileReplaceNo, buttonFileReplaceYes;
     String textStyle="sans-serif", orientationValue ="Sensor",type="export",import_output="",export_output="",export_path="/sdcard/Downloads/", import_path ="";
     private AutoCompleteTextView autoCompleteTextViewStyle;
     private ArrayAdapter<String> adapter;
     private static final int CHOOSE_REQUEST_CODE = 1;
-    TextView textViewStyle, textViewAdjustSize, textViewSettings, textViewOrientation, textViewMigration, textViewText, textViewZip, textViewOutputPreview, textViewExit, textViewExitMessage;
+    TextView textViewStyle, textViewAdjustSize, textViewSettings, textViewOrientation, textViewMigration, textViewText, textViewZip, textViewOutputPreview, textViewExit, textViewExitMessage,textViewFileReplace, textViewFileReplaceMessage;
     RadioButton radioButtonSensor, radioButtonPortrait, radioButtonLandscape;
     CheckBox checkBoxRemoveExisting, checkBoxImportSettings, checkBoxExportSettings;
     NestedScrollView nestedScrollViewStatusOutput;
-    public JSONArray liberaryJsonArray, jsonImportArray;
+    public JSONArray libraryJsonArray,settingJsonArray, jsonImportArray;
     private static final int BUFFER_SIZE = 4096;
-    int added=0, text_size =40,text_selected=1,orientation_selected=1,migration_selected=1,remove_existing_data_status,dont_import_status,dont_export_status;
-    JSONArray settingJsonArray;
+    int added=0, textSize =30,text_selected=1,orientation_selected=1,migration_selected=1,remove_existing_data_status,dont_import_status,dont_export_status;
     MenuItem item1,item2,item3;
 
     @Override
@@ -190,20 +187,20 @@ public class SettingActivity extends AppCompatActivity {
         buttonSizeDecrement.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                text_size = Integer.parseInt(editTextSize.getText().toString());
-                if (text_size < 200) {
-                    text_size = text_size + 10;
-                    editTextSize.setText(String.valueOf(text_size));
+                textSize = Integer.parseInt(editTextSize.getText().toString());
+                if (textSize < 200) {
+                    textSize = textSize + 10;
+                    editTextSize.setText(String.valueOf(textSize));
                 }
             }
         });
         buttonSizeIncrement.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                text_size = Integer.parseInt(editTextSize.getText().toString());
-                if (text_size > 10) {
-                    text_size = text_size - 10;
-                    editTextSize.setText(String.valueOf(text_size));
+                textSize = Integer.parseInt(editTextSize.getText().toString());
+                if (textSize > 10) {
+                    textSize = textSize - 10;
+                    editTextSize.setText(String.valueOf(textSize));
                 }
             }
         });
@@ -274,15 +271,14 @@ public class SettingActivity extends AppCompatActivity {
         buttonProceed.setOnClickListener(view -> {
             File folderToZip = new File(editTextExportPath.getText().toString(), "/" + editTextExportFile.getText().toString() + "/");
             File zippedFile = new File(editTextExportPath.getText().toString(), "/" + editTextExportFile.getText().toString() + ".zip");
-            SharedPreferences prefs = getSharedPreferences("MySharedPref", MODE_PRIVATE);
+            SharedPreferences prefs = getSharedPreferences("ShredPreferenceJsonData", MODE_PRIVATE);
             try {
-                liberaryJsonArray = new JSONArray(prefs.getString("key", "[]"));
+                libraryJsonArray = new JSONArray(prefs.getString("libraryJsonArray", "[]"));
             } catch (JSONException e) {
                 throw new RuntimeException(e);
             }
             try {
-                settingJsonArray = new JSONArray(prefs.getString("key2", "[]"));
-
+                settingJsonArray = new JSONArray(prefs.getString("settingJsonArray", "[]"));
             } catch (JSONException e) {
                 throw new RuntimeException(e);
             }
@@ -301,8 +297,8 @@ public class SettingActivity extends AppCompatActivity {
                 import_path = editTextExportPath.getText().toString();
                 try {
                     jsonImportArray = new JSONArray();
-                    for (int i = 0; i < liberaryJsonArray.length(); i++) {
-                        JSONObject json = liberaryJsonArray.getJSONObject(i);
+                    for (int i = 0; i < libraryJsonArray.length(); i++) {
+                        JSONObject json = libraryJsonArray.getJSONObject(i);
                         JSONObject newJson = new JSONObject();
                         newJson.put("image_path", json.getString("image_path"));
                         newJson.put("name", json.getString("name"));
@@ -342,62 +338,187 @@ public class SettingActivity extends AppCompatActivity {
                     }
                 }
                 if (zippedFile.exists()) {
+                    file_replace_dialog(folderToZip, zippedFile);
                     Toast.makeText(getApplicationContext(), "File already exists", Toast.LENGTH_SHORT).show();
                 } else {
                     try {
                         Toast.makeText(this, "zip function running", Toast.LENGTH_SHORT).show();
                         zip(folderToZip, zippedFile);
+                        deleteFolder(folderToZip);
                     } catch (IOException e) {
                         e.printStackTrace();
                         Toast.makeText(this, "error while files zipping", Toast.LENGTH_SHORT).show();
                     }
+                    migrationOutput("[ STATUS ]-( SUCCESS )\n\n[ GENERATED PATH ] - "+zippedFile+"\n\n",type);
                 }
-                deleteFolder(folderToZip);
-                migrationOutput("[ STATUS ]-( SUCCESS )\n\n[ PATH ] - "+zippedFile+"\n",type);
             }
             if(type.equals("import")){
                 export_path = editTextImportPath.getText().toString();
                 Toast.makeText(this, export_path, Toast.LENGTH_SHORT).show();
                 if(checkBoxRemoveExisting.isChecked()){
-                    liberaryJsonArray = new JSONArray();
+                    libraryJsonArray = new JSONArray();
+                    added=0;
                 }
-                if(!checkBoxImportSettings.isChecked()){
-                    settingJsonArray = new JSONArray();
+
+
+                File file1 = new File("/sdcard/E Libra/Library/library-structure.json");
+                File file2 = new File("/sdcard/E Libra/Library/setting-structure.json");
+
+                if (file1.exists()) {
+                    if (file1.delete()) {
+                        Toast.makeText(getApplicationContext(), "deleted", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(getApplicationContext(), "Failed to delete", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(getApplicationContext(), "not found", Toast.LENGTH_SHORT).show();
                 }
+
+                if (file2.exists()) {
+                    if (file2.delete()) {
+                        Toast.makeText(getApplicationContext(), "deleted", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(getApplicationContext(), "Failed to delete", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(getApplicationContext(), "not found", Toast.LENGTH_SHORT).show();
+                }
+
                 try {
                     if (unzip(new File(editTextImportPath.getText().toString()), new File("/sdcard/E Libra/Library"))) {
                         nestedScrollViewStatusOutput.setVisibility(View.VISIBLE);
                         StringBuilder jsonData = new StringBuilder();
-                        BufferedReader reader = new BufferedReader(new FileReader("/sdcard/E Libra/Library/library-structure.json"));
-                        String line;
-                        while ((line = reader.readLine()) != null) {
-                            jsonData.append(line);
+                        try {
+                            BufferedReader reader = new BufferedReader(new FileReader("/sdcard/E Libra/Library/library-structure.json"));
+                            String line;
+                            while ((line = reader.readLine()) != null) {
+                                jsonData.append(line);
+                            }
+                            reader.close();
+                        } catch (FileNotFoundException e) {
+                            Toast.makeText(getApplicationContext(), "Library Structure json File not found", Toast.LENGTH_SHORT).show();
                         }
-                        reader.close();
+
+
                         JSONArray importjsonArray = new JSONArray(jsonData.toString());
                         for (int i = 0; i < importjsonArray.length(); i++) {
                             JSONObject json = importjsonArray.getJSONObject(i);
                             JSONObject newJson = new JSONObject();
-                            if (json.getString("image_path").isEmpty()){
+                            if (json.getString("image_path").isEmpty()) {
                                 newJson.put("image_path", json.getString("image_path"));
-                            }else{
+                            } else {
                                 newJson.put("image_path", "/sdcard/E Libra/Library/" + json.getString("name") + "/" + json.getString("image_path").substring(json.getString("image_path").lastIndexOf("/") + 1));
                             }
-                            newJson.put("name",json.getString("name"));
+                            newJson.put("name", json.getString("name"));
                             if (json.getString("storage").isEmpty()) {
                                 newJson.put("storage", json.getString("storage"));
-                            }else{
+                            } else {
                                 newJson.put("storage", "/sdcard/E Libra/Library/" + json.getString("name") + "/" + json.getString("storage").substring(json.getString("storage").lastIndexOf("/") + 1));
                             }
                             newJson.put("page", json.getString("page"));
                             newJson.put("total_pages", json.getString("total_pages"));
                             added++;
-                            liberaryJsonArray.put(newJson);
+                            libraryJsonArray.put(newJson);
                         }
-                        migrationOutput("[ ANALYSED DATA ]",type);
-                        migrationOutput("\n\n"+formatJson(importjsonArray),type);
-                        migrationOutput("[ SETTINGS DATA ]",type);
-                        migrationOutput("\n\n"+formatJson(settingJsonArray),type);
+                        settingJsonArray = new JSONArray();
+
+
+                        migrationOutput("[ ANALYSED DATA ]", type);
+                        migrationOutput("\n\n" + formatJson(importjsonArray), type);
+
+
+
+
+                        if(checkBoxImportSettings.isChecked()){
+                            StringBuilder jsonData2 = new StringBuilder();
+
+                            try {
+                                BufferedReader reader2 = new BufferedReader(new FileReader("/sdcard/E Libra/Library/setting-structure.json"));
+                                String line2;
+                                while ((line2 = reader2.readLine()) != null) {
+                                    jsonData2.append(line2);
+                                }
+                                reader2.close();
+                            } catch (FileNotFoundException e) {
+                                Toast.makeText(getApplicationContext(), "Setting Structure File not found", Toast.LENGTH_SHORT).show();
+                            }
+
+                            settingJsonArray = new JSONArray(jsonData2.toString());
+
+                            JSONObject jsonObject0 = settingJsonArray.getJSONObject(0);
+                            text_selected = jsonObject0.getInt("selected");
+                            textStyle = jsonObject0.getString("style");
+                            autoCompleteTextViewStyle.setText(textStyle, false);
+                            editTextSize.setText(String.valueOf(jsonObject0.getInt("size")));
+                            JSONObject jsonObject1 = settingJsonArray.getJSONObject(1);
+                            orientation_selected = jsonObject1.getInt("selected");
+                            orientationValue = jsonObject1.getString("value");
+                            JSONObject jsonObject2 = settingJsonArray.getJSONObject(2);
+                            migration_selected = jsonObject2.getInt("selected");
+//                            type = jsonObject2.getString("type");
+                            editTextExportFile.setText(jsonObject2.getString("export_name"));
+                            export_path = jsonObject2.getString("export_path");
+                            editTextExportPath.setText(export_path);
+                            dont_export_status = jsonObject2.getInt("export_setting_status");
+                            import_path = jsonObject2.getString("import_path");
+                            editTextImportPath.setText(import_path);
+                            dont_import_status = jsonObject2.getInt("import_setting_status");
+                            remove_existing_data_status = jsonObject2.getInt("remove_existing_data_status");
+                            if (text_selected == 0) {
+                                constraintLayoutHiddenView.setVisibility(View.GONE);
+                                imageViewTextToggle.setImageResource(android.R.drawable.arrow_down_float);
+                            } else {
+                                constraintLayoutHiddenView.setVisibility(View.VISIBLE);
+                                imageViewTextToggle.setImageResource(android.R.drawable.arrow_up_float);
+                            }
+                            if (orientation_selected == 0) {
+                                constraintLayoutOrientationHiddenView.setVisibility(View.GONE);
+                                imageViewOrientationToggle.setImageResource(android.R.drawable.arrow_down_float);
+                            } else {
+                                constraintLayoutOrientationHiddenView.setVisibility(View.VISIBLE);
+                                imageViewOrientationToggle.setImageResource(android.R.drawable.arrow_up_float);
+                            }
+                            if (migration_selected == 0) {
+                                constraintLayoutMigrationHiddenView.setVisibility(View.GONE);
+                                imageViewMigrationToggle.setImageResource(android.R.drawable.arrow_down_float);
+                            } else {
+                                constraintLayoutMigrationHiddenView.setVisibility(View.VISIBLE);
+                                imageViewMigrationToggle.setImageResource(android.R.drawable.arrow_up_float);
+                            }
+                            if (orientationValue.equals("Sensor")) {
+                                radioButtonSensor.setChecked(true);
+                                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+                            }
+                            if (orientationValue.equals("Portrait")) {
+                                radioButtonPortrait.setChecked(true);
+                                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+                            }
+                            if (orientationValue.equals("Landscape")) {
+                                radioButtonLandscape.setChecked(true);
+                                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
+                            }
+                            if (remove_existing_data_status == 1) {
+                                checkBoxRemoveExisting.setChecked(true);
+                            } else {
+                                checkBoxRemoveExisting.setChecked(false);
+                            }
+                            if (dont_import_status == 1) {
+                                checkBoxImportSettings.setChecked(true);
+                            } else {
+                                checkBoxImportSettings.setChecked(false);
+                            }
+                            if (dont_export_status == 1) {
+                                checkBoxExportSettings.setChecked(true);
+                            } else {
+                                checkBoxExportSettings.setChecked(false);
+                            }
+                            migrationOutput("[ SETTINGS DATA ]",type);
+                            migrationOutput("\n\n"+formatJson(settingJsonArray),type);
+                        }
+
+
+
+
                         migrationOutput("[ STATUS ]\n\nADDED - "+ added +"\n"+"TOTAL -"+importjsonArray.length()+"\n",type);
                         save();
                     } else {
@@ -457,11 +578,7 @@ public class SettingActivity extends AppCompatActivity {
             for (int j = 0; j < jsonObject.names().length(); j++) {
                 String key = jsonObject.names().getString(j);
                 String value = jsonObject.getString(key);
-                if(jsonArray.length()!=1) {
-                    formattedJson.append("\t\t\t\t |---").append(key).append(" : ").append(value).append("\n");
-                }else{
-                    formattedJson.append("[---").append(key).append(" : ").append(value).append("\n");
-                }
+                formattedJson.append("\t\t\t\t |---").append(key).append(" : ").append(value).append("\n");
             }
             formattedJson.append("\n");
         }
@@ -513,7 +630,7 @@ public class SettingActivity extends AppCompatActivity {
     }
     public void migrationOutput(String string,String type){
         try {
-            Thread.sleep(200);
+            Thread.sleep(100);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -525,6 +642,7 @@ public class SettingActivity extends AppCompatActivity {
             export_output+=string;
             textViewOutputPreview.setText(export_output);
         }
+        nestedScrollViewStatusOutput.scrollTo(0, textViewOutputPreview.getBottom());
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu){
@@ -578,6 +696,48 @@ public class SettingActivity extends AppCompatActivity {
             finishAffinity();
         });
         alertDialog.show();
+    }
+
+    public void file_replace_dialog(File folderToZip, File zippedFile){
+        final AlertDialog.Builder alert = new AlertDialog.Builder(SettingActivity.this);
+        fileReplaceDialog = getLayoutInflater().inflate(R.layout.file_replace_dialog, null);
+        textViewFileReplace = fileReplaceDialog.findViewById(R.id.textViewFileReplace);
+        textViewFileReplaceMessage = fileReplaceDialog.findViewById(R.id.textViewFileReplaceMessage);
+        buttonFileReplaceNo = fileReplaceDialog.findViewById(R.id.buttonFileReplaceNo);
+        buttonFileReplaceYes = fileReplaceDialog.findViewById(R.id.buttonFileReplaceYes);
+        file_replace_text_change();
+        alert.setView(fileReplaceDialog);
+        final AlertDialog alertDialog = alert.create();
+        alertDialog.setCanceledOnTouchOutside(false);
+        buttonFileReplaceNo.setOnClickListener(v1 -> {
+            migrationOutput("[ STATUS ]-( CANCELLED )\n\n[ TARGETED PATH ] - "+zippedFile+"\n\n",type);
+            alertDialog.dismiss();
+        });
+        buttonFileReplaceYes.setOnClickListener(v12 -> {
+            try {
+                Toast.makeText(this, "zip function running", Toast.LENGTH_SHORT).show();
+                zip(folderToZip, zippedFile);
+                migrationOutput("[ STATUS ]-( REPLACED )\n\n[ PATH ] - "+zippedFile+"\n\n",type);
+                deleteFolder(folderToZip);
+                alertDialog.dismiss();
+            } catch (IOException e) {
+                e.printStackTrace();
+                Toast.makeText(this, "error while files zipping", Toast.LENGTH_SHORT).show();
+            }
+        });
+        alertDialog.show();
+    }
+    public void file_replace_text_change(){
+        Typeface typeface = Typeface.create(textStyle, Typeface.NORMAL);
+        textViewFileReplace.setTypeface(typeface);
+        textViewFileReplaceMessage.setTypeface(typeface);
+        buttonFileReplaceNo.setTypeface(typeface);
+        buttonFileReplaceYes.setTypeface(typeface);
+        textViewFileReplace.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
+        textViewFileReplaceMessage.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
+        buttonFileReplaceNo.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
+        buttonFileReplaceYes.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
+
     }
     public void settings_text_change(){
         SpannableString spanString1 = null;
@@ -827,7 +987,7 @@ public class SettingActivity extends AppCompatActivity {
                             }
                         }
                     } catch (IOException e) {
-                        Toast.makeText(this, "Error processing entry: " + entry.getName() + " - " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "Error" + e.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                     zis.closeEntry();
                     entry = zis.getNextEntry();
@@ -854,11 +1014,12 @@ public class SettingActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         save_setting();
+
     }
     private void load() {
-        SharedPreferences prefs = getSharedPreferences("MySharedPref", MODE_PRIVATE);
+        SharedPreferences prefs = getSharedPreferences("ShredPreferenceJsonData", MODE_PRIVATE);
        try {
-           settingJsonArray = new JSONArray(prefs.getString("key2", "[]"));
+           settingJsonArray = new JSONArray(prefs.getString("settingJsonArray", "[]"));
            JSONObject jsonObject0 = settingJsonArray.getJSONObject(0);
             text_selected = jsonObject0.getInt("selected");
             textStyle =jsonObject0.getString("style");
@@ -930,6 +1091,8 @@ public class SettingActivity extends AppCompatActivity {
            e.printStackTrace();
        }
     }
+
+
     private void save_setting() {
         settingJsonArray = new JSONArray();
         int textSize = Integer.parseInt(editTextSize.getText().toString());
@@ -959,18 +1122,16 @@ public class SettingActivity extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        SharedPreferences prefs = getSharedPreferences("MySharedPref", MODE_PRIVATE);
+        SharedPreferences prefs = getSharedPreferences("ShredPreferenceJsonData", MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
-        editor.putString("key2", settingJsonArray.toString());
+        editor.putString("settingJsonArray", settingJsonArray.toString());
         editor.apply();
     }
     private void save() {
-        Log.d("book_array", liberaryJsonArray.toString());
-        SharedPreferences prefs = getSharedPreferences("MySharedPref", MODE_PRIVATE);
+        SharedPreferences prefs = getSharedPreferences("ShredPreferenceJsonData", MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
-        editor.putString("key", liberaryJsonArray.toString());
+        editor.putString("libraryJsonArray", libraryJsonArray.toString());
         editor.apply();
-        Log.d("array_data", "save array data: " + liberaryJsonArray.toString());
     }
 }
 
