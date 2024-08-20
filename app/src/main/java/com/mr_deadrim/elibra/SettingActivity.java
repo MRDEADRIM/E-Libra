@@ -13,6 +13,7 @@ import android.text.SpannableString;
 import android.text.TextWatcher;
 import android.text.style.TextAppearanceSpan;
 import android.text.style.TypefaceSpan;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -274,10 +275,6 @@ public class SettingActivity extends AppCompatActivity {
             SharedPreferences prefs = getSharedPreferences("ShredPreferenceJsonData", MODE_PRIVATE);
             try {
                 libraryJsonArray = new JSONArray(prefs.getString("libraryJsonArray", "[]"));
-            } catch (JSONException e) {
-                throw new RuntimeException(e);
-            }
-            try {
                 settingJsonArray = new JSONArray(prefs.getString("settingJsonArray", "[]"));
             } catch (JSONException e) {
                 throw new RuntimeException(e);
@@ -293,63 +290,83 @@ public class SettingActivity extends AppCompatActivity {
                 Toast.makeText(this, "Folder already exists", Toast.LENGTH_SHORT).show();
             }
             if(type.equals("export")) {
-                nestedScrollViewStatusOutput.setVisibility(View.VISIBLE);
-                import_path = editTextExportPath.getText().toString();
-                try {
-                    jsonImportArray = new JSONArray();
-                    for (int i = 0; i < libraryJsonArray.length(); i++) {
-                        JSONObject json = libraryJsonArray.getJSONObject(i);
-                        JSONObject newJson = new JSONObject();
-                        newJson.put("image_path", json.getString("image_path"));
-                        newJson.put("name", json.getString("name"));
-                        newJson.put("storage", json.getString("storage"));
-                        copyFile(json.getString("storage"), editTextExportPath.getText().toString() + "/" + editTextExportFile.getText().toString() + "/" + json.getString("name") + "/" + json.getString("storage").substring(json.getString("storage").lastIndexOf("/") + 1));
-                        copyFile(json.getString("image_path"), editTextExportPath.getText().toString() + "/" + editTextExportFile.getText().toString() + "/" + json.getString("name") + "/" + json.getString("image_path").substring(json.getString("image_path").lastIndexOf("/") + 1));
-                        newJson.put("page", json.getString("page"));
-                        newJson.put("total_pages", json.getString("total_pages"));
-                        jsonImportArray.put(newJson);
-                    }
-                    migrationOutput("[ LIBRARY DATA STRUCTURE ]\n", type);
-                    migrationOutput("\n\n" + formatJson(jsonImportArray) + "\n\n", type);
-                    migrationOutput("[ SETTING DATA STRUCTURE ]\n", type);
-                    migrationOutput("\n\n" + formatJson(settingJsonArray) + "\n\n", type);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                File file1 = new File(editTextExportPath.getText().toString(), "/" + editTextExportFile.getText().toString() + "/library-structure.json");
-                try {
-                    FileWriter fileWriter1 = new FileWriter(file1);
-                    fileWriter1.write(jsonImportArray.toString());
-                    fileWriter1.flush();
 
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    Toast.makeText(this, "Failed to write or empty data to file", Toast.LENGTH_SHORT).show();
-                }
-                if (checkBoxExportSettings.isChecked()){
-                    File file2 = new File(editTextExportPath.getText().toString(), "/" + editTextExportFile.getText().toString() + "/setting-structure.json");
-                    try {
-                        FileWriter fileWriter2 = new FileWriter(file2);
-                        fileWriter2.write(settingJsonArray.toString());
-                        fileWriter2.flush();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        Toast.makeText(this, "Failed to write or empty data to file", Toast.LENGTH_SHORT).show();
+                if(libraryJsonArray == null && libraryJsonArray.length() < 0 || !checkBoxExportSettings.isChecked()) {
+                    Toast.makeText(this, "Nothing to Export", Toast.LENGTH_SHORT).show();
+                }else{
+                    File file = new File(editTextExportPath.getText().toString(), editTextExportFile.getText().toString());
+                    if (!file.exists() && !file.mkdirs()) {
+                        Toast.makeText(this, "Failed to create directory: " + file.getAbsolutePath(), Toast.LENGTH_SHORT).show();
+                        return;
                     }
-                }
-                if (zippedFile.exists()) {
-                    file_replace_dialog(folderToZip, zippedFile);
-                    Toast.makeText(getApplicationContext(), "File already exists", Toast.LENGTH_SHORT).show();
-                } else {
+
+                    nestedScrollViewStatusOutput.setVisibility(View.VISIBLE);
+                    import_path = editTextExportPath.getText().toString();
                     try {
-                        Toast.makeText(this, "zip function running", Toast.LENGTH_SHORT).show();
-                        zip(folderToZip, zippedFile);
-                        deleteFolder(folderToZip);
-                    } catch (IOException e) {
+                        jsonImportArray = new JSONArray();
+                        for (int i = 0; i < libraryJsonArray.length(); i++) {
+                            JSONObject json = libraryJsonArray.getJSONObject(i);
+                            JSONObject newJson = new JSONObject();
+                            newJson.put("image_path", json.getString("image_path"));
+                            newJson.put("name", json.getString("name"));
+                            newJson.put("storage", json.getString("storage"));
+                            copyFile(json.getString("storage"), editTextExportPath.getText().toString() + "/" + editTextExportFile.getText().toString() + "/" + json.getString("name") + "/" + json.getString("storage").substring(json.getString("storage").lastIndexOf("/") + 1));
+                            copyFile(json.getString("image_path"), editTextExportPath.getText().toString() + "/" + editTextExportFile.getText().toString() + "/" + json.getString("name") + "/" + json.getString("image_path").substring(json.getString("image_path").lastIndexOf("/") + 1));
+                            newJson.put("page", json.getString("page"));
+                            newJson.put("total_pages", json.getString("total_pages"));
+                            jsonImportArray.put(newJson);
+                        }
+                        if(jsonImportArray.length()>0){
+                            migrationOutput("[ LIBRARY DATA STRUCTURE ]\n", type);
+                            migrationOutput("\n\n" + formatJson(jsonImportArray) + "\n\n", type);
+                        }
+                        if(settingJsonArray.length()>0) {
+                            migrationOutput("[ SETTING DATA STRUCTURE ]\n", type);
+                            migrationOutput("\n\n" + formatJson(settingJsonArray) + "\n\n", type);
+                        }
+                    } catch (JSONException e) {
                         e.printStackTrace();
-                        Toast.makeText(this, "error while files zipping", Toast.LENGTH_SHORT).show();
                     }
-                    migrationOutput("[ STATUS ]-( SUCCESS )\n\n[ GENERATED PATH ] - "+zippedFile+"\n\n",type);
+
+
+                    if (libraryJsonArray != null && libraryJsonArray.length() > 0) {
+                        try (FileWriter fileWriter = new FileWriter(new File(file, "library-structure.json"))) {
+                            fileWriter.write(libraryJsonArray.toString());
+                            Toast.makeText(this, "File written successfully: " + file.getAbsolutePath(), Toast.LENGTH_SHORT).show();
+                        } catch (Exception e) {
+                            Toast.makeText(this, "Failed to write to file", Toast.LENGTH_SHORT).show();
+                            e.printStackTrace();
+                        }
+                    }
+
+                    if (checkBoxExportSettings.isChecked()) {
+                        if (settingJsonArray != null && settingJsonArray.length() > 0) {
+                            try (FileWriter fileWriter = new FileWriter(new File(file, "setting-structure.json"))) {
+                                fileWriter.write(settingJsonArray.toString());
+                                Toast.makeText(this, "File written successfully: " + file.getAbsolutePath(), Toast.LENGTH_SHORT).show();
+                            } catch (Exception e) {
+                                Toast.makeText(this, "Failed to write to file", Toast.LENGTH_SHORT).show();
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+
+                    if (zippedFile.exists()) {
+                        file_replace_dialog(folderToZip, zippedFile);
+                        Toast.makeText(getApplicationContext(), "File already exists", Toast.LENGTH_SHORT).show();
+                    } else {
+                        try {
+                            Toast.makeText(this, "zip function running", Toast.LENGTH_SHORT).show();
+
+                            zip(folderToZip, zippedFile);
+
+                            deleteFolder(folderToZip);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                            Toast.makeText(this, "error while files zipping", Toast.LENGTH_SHORT).show();
+                        }
+                        migrationOutput("[ STATUS ]-( SUCCESS )\n\n[ GENERATED PATH ] - " + zippedFile + "\n\n", type);
+                    }
                 }
             }
             if(type.equals("import")){
@@ -426,9 +443,6 @@ public class SettingActivity extends AppCompatActivity {
                         migrationOutput("[ ANALYSED DATA ]", type);
                         migrationOutput("\n\n" + formatJson(importjsonArray), type);
 
-
-
-
                         if(checkBoxImportSettings.isChecked()){
                             StringBuilder jsonData2 = new StringBuilder();
 
@@ -456,14 +470,14 @@ public class SettingActivity extends AppCompatActivity {
                             JSONObject jsonObject2 = settingJsonArray.getJSONObject(2);
                             migration_selected = jsonObject2.getInt("selected");
 //                            type = jsonObject2.getString("type");
-                            editTextExportFile.setText(jsonObject2.getString("export_name"));
-                            export_path = jsonObject2.getString("export_path");
-                            editTextExportPath.setText(export_path);
-                            dont_export_status = jsonObject2.getInt("export_setting_status");
-                            import_path = jsonObject2.getString("import_path");
-                            editTextImportPath.setText(import_path);
-                            dont_import_status = jsonObject2.getInt("import_setting_status");
-                            remove_existing_data_status = jsonObject2.getInt("remove_existing_data_status");
+//                            editTextExportFile.setText(jsonObject2.getString("export_name"));
+//                            export_path = jsonObject2.getString("export_path");
+//                            editTextExportPath.setText(export_path);
+//                            dont_export_status = jsonObject2.getInt("export_setting_status");
+//                            import_path = jsonObject2.getString("import_path");
+//                            editTextImportPath.setText(import_path);
+//                            dont_import_status = jsonObject2.getInt("import_setting_status");
+//                            remove_existing_data_status = jsonObject2.getInt("remove_existing_data_status");
                             if (text_selected == 0) {
                                 constraintLayoutHiddenView.setVisibility(View.GONE);
                                 imageViewTextToggle.setImageResource(android.R.drawable.arrow_down_float);
