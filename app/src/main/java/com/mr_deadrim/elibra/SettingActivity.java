@@ -326,7 +326,7 @@ public class SettingActivity extends AppCompatActivity {
                     if (libraryJsonArray != null && libraryJsonArray.length() > 0) {
                         try (FileWriter fileWriter = new FileWriter(new File(file, "library-structure.json"))) {
                             fileWriter.write(libraryJsonArray.toString());
-                            Toast.makeText(this, "File written successfully: " + file.getAbsolutePath(), Toast.LENGTH_SHORT).show();
+                            Log.d("log_message","File written successfully: " + file.getAbsolutePath());
                         } catch (Exception e) {
                             Toast.makeText(this, "Failed to write to file", Toast.LENGTH_SHORT).show();
                             e.printStackTrace();
@@ -337,7 +337,7 @@ public class SettingActivity extends AppCompatActivity {
                         if (settingJsonArray != null && settingJsonArray.length() > 0) {
                             try (FileWriter fileWriter = new FileWriter(new File(file, "setting-structure.json"))) {
                                 fileWriter.write(settingJsonArray.toString());
-                                Toast.makeText(this, "File written successfully: " + file.getAbsolutePath(), Toast.LENGTH_SHORT).show();
+                                Log.d("log_message","File written successfully: " + file.getAbsolutePath());
                             } catch (Exception e) {
                                 Toast.makeText(this, "Failed to write to file", Toast.LENGTH_SHORT).show();
                                 e.printStackTrace();
@@ -353,7 +353,7 @@ public class SettingActivity extends AppCompatActivity {
                         }
                     } else {
                         try {
-                            Toast.makeText(this, "zip function running", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(this, "Exporting...", Toast.LENGTH_SHORT).show();
                             zip(folderToZip, zippedFile);
                             deleteFolder(folderToZip);
                         } catch (IOException e) {
