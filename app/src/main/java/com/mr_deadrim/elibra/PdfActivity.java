@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
+import android.graphics.Rect;
 import android.graphics.pdf.PdfRenderer;
 import android.os.Bundle;
 import android.os.ParcelFileDescriptor;
@@ -108,8 +109,11 @@ public class PdfActivity extends AppCompatActivity {
             void bind(int position) {
                 if (pdfRenderer != null) {
                     PdfRenderer.Page page = pdfRenderer.openPage(position);
-                    Bitmap bitmap = Bitmap.createBitmap(page.getWidth(), page.getHeight(), Bitmap.Config.ARGB_8888);
-                    page.render(bitmap, null, null, PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY);
+                    int bitmapWidth = page.getWidth() * 2;
+                    int bitmapHeight = page.getHeight() * 2;
+                    Bitmap bitmap = Bitmap.createBitmap(bitmapWidth, bitmapHeight, Bitmap.Config.ARGB_8888);
+                    Rect rect = new Rect(0, 0, bitmapWidth, bitmapHeight);
+                    page.render(bitmap, rect, null, PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY);
                     imageViewPdf.setImageBitmap(bitmap);
                     page.close();
                 }
