@@ -11,7 +11,6 @@ import android.os.Environment;
 import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.View;
-import android.webkit.MimeTypeMap;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
@@ -117,7 +116,6 @@ public class FileManagerActivity extends AppCompatActivity {
                 if (status.equals("select_zip_file") && (file.isDirectory() || "zip".equals(fileType))) {
                     fileList.add(file.getAbsolutePath());
                 }
-
             }
         }
         FileManagerAdapter adapter = new FileManagerAdapter(this, fileList,settingJsonArray);

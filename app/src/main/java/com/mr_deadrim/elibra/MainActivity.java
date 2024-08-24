@@ -14,7 +14,6 @@ import android.os.Environment;
 import android.text.SpannableString;
 import android.text.style.TextAppearanceSpan;
 import android.text.style.TypefaceSpan;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -39,7 +38,6 @@ import org.json.JSONObject;
 import android.app.Activity;
 import java.util.HashSet;
 import java.util.Set;
-
 public class MainActivity extends AppCompatActivity {
 
     private JSONArray libraryJsonArray,settingJsonArray;

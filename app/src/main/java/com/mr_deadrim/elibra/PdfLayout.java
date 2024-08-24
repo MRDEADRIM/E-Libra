@@ -10,7 +10,6 @@ import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.ViewTreeObserver;
 import androidx.recyclerview.widget.RecyclerView;
-
 public class PdfLayout extends RecyclerView {
     private ScaleGestureDetector scaleGestureDetector;
     private GestureDetector gestureDetector;

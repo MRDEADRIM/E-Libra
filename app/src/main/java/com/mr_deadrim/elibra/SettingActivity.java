@@ -374,14 +374,14 @@ public class SettingActivity extends AppCompatActivity {
                 File file1 = new File("/sdcard/E Libra/Library/library-structure.json");
                 if (file1.exists()) {
                     if (file1.delete()) {
-//                        Toast.makeText(getApplicationContext(), "removed previous file library-structure.json", Toast.LENGTH_SHORT).show();
+                        Log.d("log_message","removed previous file library-structure.json");
                     }
                 }
 
                 File file2 = new File("/sdcard/E Libra/Library/setting-structure.json");
                 if (file2.exists()) {
                     if (file2.delete()) {
-//                        Toast.makeText(getApplicationContext(), "removed previous file setting-structure.json", Toast.LENGTH_SHORT).show();
+                         Log.d("log_message","removed previous file library-structure.json");
                     }
                 }
 
@@ -401,33 +401,33 @@ public class SettingActivity extends AppCompatActivity {
                             Toast.makeText(getApplicationContext(), "No Books Found in This Backup File", Toast.LENGTH_SHORT).show();
                         }
 
-if(!jsonData.toString().isEmpty()) {
-    JSONArray importjsonArray = new JSONArray(jsonData.toString());
-    for (int i = 0; i < importjsonArray.length(); i++) {
-        JSONObject json = importjsonArray.getJSONObject(i);
-        JSONObject newJson = new JSONObject();
-        if (json.getString("image_path").isEmpty()) {
-            newJson.put("image_path", json.getString("image_path"));
-        } else {
-            newJson.put("image_path", "/sdcard/E Libra/Library/" + json.getString("name") + "/" + json.getString("image_path").substring(json.getString("image_path").lastIndexOf("/") + 1));
-        }
-        newJson.put("name", json.getString("name"));
-        if (json.getString("storage").isEmpty()) {
-            newJson.put("storage", json.getString("storage"));
-        } else {
-            newJson.put("storage", "/sdcard/E Libra/Library/" + json.getString("name") + "/" + json.getString("storage").substring(json.getString("storage").lastIndexOf("/") + 1));
-        }
-        newJson.put("page", json.getString("page"));
-        newJson.put("total_pages", json.getString("total_pages"));
-        added++;
-        libraryJsonArray.put(newJson);
+                        if(!jsonData.toString().isEmpty()) {
+                            JSONArray importjsonArray = new JSONArray(jsonData.toString());
+                            for (int i = 0; i < importjsonArray.length(); i++) {
+                                JSONObject json = importjsonArray.getJSONObject(i);
+                                JSONObject newJson = new JSONObject();
+                                if (json.getString("image_path").isEmpty()) {
+                                    newJson.put("image_path", json.getString("image_path"));
+                                } else {
+                                    newJson.put("image_path", "/sdcard/E Libra/Library/" + json.getString("name") + "/" + json.getString("image_path").substring(json.getString("image_path").lastIndexOf("/") + 1));
+                                }
+                                newJson.put("name", json.getString("name"));
+                                if (json.getString("storage").isEmpty()) {
+                                    newJson.put("storage", json.getString("storage"));
+                                } else {
+                                    newJson.put("storage", "/sdcard/E Libra/Library/" + json.getString("name") + "/" + json.getString("storage").substring(json.getString("storage").lastIndexOf("/") + 1));
+                                }
+                                newJson.put("page", json.getString("page"));
+                                newJson.put("total_pages", json.getString("total_pages"));
+                                added++;
+                                libraryJsonArray.put(newJson);
 
-    }
-    migrationOutput("[ ANALYSED DATA ]", type);
-    migrationOutput("\n\n" + formatJson(importjsonArray), type);
-    migrationOutput("[ STATUS ]\n\nADDED - " + added + "\n" + "TOTAL -" + importjsonArray.length() + "\n", type);
-    save();
-}
+                            }
+                            migrationOutput("[ ANALYSED DATA ]", type);
+                            migrationOutput("\n\n" + formatJson(importjsonArray), type);
+                            migrationOutput("[ STATUS ]\n\nADDED - " + added + "\n" + "TOTAL -" + importjsonArray.length() + "\n", type);
+                            save();
+                        }
 
                         if(checkBoxImportSettings.isChecked()){
                             StringBuilder jsonData2 = new StringBuilder();
@@ -454,15 +454,6 @@ if(!jsonData.toString().isEmpty()) {
                             orientationValue = jsonObject1.getString("value");
                             JSONObject jsonObject2 = settingJsonArray.getJSONObject(2);
                             migration_selected = jsonObject2.getInt("selected");
-//                            type = jsonObject2.getString("type");
-//                            editTextExportFile.setText(jsonObject2.getString("export_name"));
-//                            export_path = jsonObject2.getString("export_path");
-//                            editTextExportPath.setText(export_path);
-//                            dont_export_status = jsonObject2.getInt("export_setting_status");
-//                            import_path = jsonObject2.getString("import_path");
-//                            editTextImportPath.setText(import_path);
-//                            dont_import_status = jsonObject2.getInt("import_setting_status");
-//                            remove_existing_data_status = jsonObject2.getInt("remove_existing_data_status");
                             if (text_selected == 0) {
                                 constraintLayoutHiddenView.setVisibility(View.GONE);
                                 imageViewTextToggle.setImageResource(android.R.drawable.arrow_down_float);
@@ -862,7 +853,6 @@ if(!jsonData.toString().isEmpty()) {
             while ((length = fis.read(buffer)) > 0) {
                 fos.write(buffer, 0, length);
             }
-            Toast.makeText(this, "File copied Successfully: "+destPath, Toast.LENGTH_SHORT).show();
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
@@ -985,7 +975,7 @@ if(!jsonData.toString().isEmpty()) {
                             }
                         }
                     } catch (IOException e) {
-                        Toast.makeText(this, "Error" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        Log.d("error",e.getMessage());
                     }
                     zis.closeEntry();
                     entry = zis.getNextEntry();

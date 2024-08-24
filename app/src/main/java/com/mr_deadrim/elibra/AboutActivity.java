@@ -24,7 +24,6 @@ import android.content.pm.PackageInfo;
 import android.widget.Toast;
 import org.json.JSONArray;
 import org.json.JSONObject;
-
 public class AboutActivity extends AppCompatActivity {
     private View dialogView;
     TextView textViewAppVersion, textViewAppName, textViewAuthorName, textViewAboutDetail, textViewAbout, textViewAppNameLabel, textViewAppVersionLabel, textViewAuthorNameLabel,textViewExit,textViewExitMessage;
