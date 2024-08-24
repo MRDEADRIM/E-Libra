@@ -10,8 +10,8 @@ android {
         applicationId "com.mr_deadrim.elibra"
         minSdk 24
         targetSdk 34
-        versionCode 202404
-        versionName "2024.04"
+        versionCode 202405
+        versionName "2024.05"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
