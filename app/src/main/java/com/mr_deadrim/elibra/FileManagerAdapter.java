@@ -4,20 +4,29 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
+import android.media.MediaMetadataRetriever;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.MimeTypeMap;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.lang.ref.WeakReference;
+import java.net.URLConnection;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -57,14 +66,15 @@ public class FileManagerAdapter extends ArrayAdapter<String> {
         }
         String fileName = mFileList.get(position);
         File file = new File(fileName);
+        String fileType = getFileType(file);
         viewHolder.textViewItemImage.setImageResource(android.R.drawable.stat_notify_sync);
-        if (fileName.toLowerCase().endsWith(".pdf")) {
+        if ("pdf".equals(fileType)) {
             viewHolder.textViewItemImage.setImageResource(R.drawable.pdf);
         }
         if (file.isDirectory()) {
             viewHolder.textViewItemImage.setImageResource(R.drawable.folder);
         }
-        if (fileName.toLowerCase().endsWith(".png") || fileName.toLowerCase().endsWith(".jpg") || fileName.toLowerCase().endsWith(".jpeg")) {
+        if ("png".equals(fileType) || "jpg".equals(fileType)) {
             if (mBitmapCache.containsKey(fileName)) {
                 viewHolder.textViewItemImage.setImageBitmap(mBitmapCache.get(fileName));
             } else {
@@ -72,9 +82,11 @@ public class FileManagerAdapter extends ArrayAdapter<String> {
                 mExecutor.execute(task);
             }
         }
-        if (fileName.toLowerCase().endsWith(".zip")) {
+
+        if ("zip".equals(fileType)) {
             viewHolder.textViewItemImage.setImageResource(R.drawable.zip);
         }
+
         try{
             JSONObject jsonObject0 = settingJsonArray.getJSONObject(0);
             textStyle = jsonObject0.getString("style");
@@ -87,6 +99,38 @@ public class FileManagerAdapter extends ArrayAdapter<String> {
         viewHolder.textViewItemName.setTypeface(typeface);
         viewHolder.textViewItemName.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
         return convertView;
+    }
+    public static String getFileType(File file) {
+        try (FileInputStream fis = new FileInputStream(file)) {
+            byte[] header = new byte[16]; // Read the first 16 bytes of the file
+            if (fis.read(header) != -1) {
+                return getFileTypeFromHeader(header);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return "unknown";
+    }
+
+    private static String getFileTypeFromHeader(byte[] header) {
+        // Check for PDF
+        if (header.length >= 5 && header[0] == 0x25 && header[1] == 0x50 && header[2] == 0x44 && header[3] == 0x46) {
+            return "pdf";
+        }
+        // Check for PNG
+        if (header.length >= 8 && header[0] == (byte) 0x89 && header[1] == (byte) 0x50 && header[2] == (byte) 0x4E && header[3] == (byte) 0x47) {
+            return "png";
+        }
+        // Check for JPG
+        if (header.length >= 2 && header[0] == (byte) 0xFF && header[1] == (byte) 0xD8) {
+            return "jpg";
+        }
+        // Check for ZIP
+        if (header.length >= 4 && header[0] == (byte) 0x50 && header[1] == (byte) 0x4B && header[2] == (byte) 0x03 && header[3] == (byte) 0x04) {
+            return "zip";
+        }
+        // Add more file types here as needed
+        return "unknown";
     }
 
     private static class ViewHolder {

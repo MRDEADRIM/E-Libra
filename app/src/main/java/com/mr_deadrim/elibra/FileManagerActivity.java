@@ -11,6 +11,7 @@ import android.os.Environment;
 import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.View;
+import android.webkit.MimeTypeMap;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
@@ -19,6 +20,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class FileManagerActivity extends AppCompatActivity {
@@ -101,23 +104,57 @@ public class FileManagerActivity extends AppCompatActivity {
         fileList.clear();
         if (files != null) {
             for (File file : files) {
-                if (status.equals("add_document") && (file.isDirectory() || file.getName().toLowerCase().endsWith(".pdf"))) {
-                    fileList.add(String.valueOf(file));
+                String fileType = getFileType(file);
+                if (status.equals("add_document") && (file.isDirectory() || "pdf".equals(fileType))) {
+                    fileList.add(file.getAbsolutePath());
                 }
-                if (status.equals("add_image") && (file.isDirectory() || file.getName().toLowerCase().endsWith(".png") || file.getName().toLowerCase().endsWith(".jpg") || file.getName().toLowerCase().endsWith(".jpeg"))) {
-                    fileList.add(String.valueOf(file));
+                if (status.equals("add_image") && (file.isDirectory() || "png".equals(fileType)  || "jpg".equals(fileType))) {
+                    fileList.add(file.getAbsolutePath());
                 }
-                if(status.equals("select_folder") && file.isDirectory()){
-                    fileList.add(String.valueOf(file));
+                if (status.equals("select_folder") && file.isDirectory()) {
+                    fileList.add(file.getAbsolutePath());
                 }
-                if(status.equals("select_zip_file") && (file.isDirectory() || file.getName().toLowerCase().endsWith(".zip"))){
-                    fileList.add(String.valueOf(file));
+                if (status.equals("select_zip_file") && (file.isDirectory() || "zip".equals(fileType))) {
+                    fileList.add(file.getAbsolutePath());
                 }
 
             }
         }
         FileManagerAdapter adapter = new FileManagerAdapter(this, fileList,settingJsonArray);
         listView.setAdapter(adapter);
+    }
+
+    public static String getFileType(File file) {
+        try (FileInputStream fis = new FileInputStream(file)) {
+            byte[] header = new byte[16]; // Read the first 16 bytes of the file
+            if (fis.read(header) != -1) {
+                return getFileTypeFromHeader(header);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return "unknown";
+    }
+
+    private static String getFileTypeFromHeader(byte[] header) {
+        // Check for PDF
+        if (header.length >= 5 && header[0] == 0x25 && header[1] == 0x50 && header[2] == 0x44 && header[3] == 0x46) {
+            return "pdf";
+        }
+        // Check for PNG
+        if (header.length >= 8 && header[0] == (byte) 0x89 && header[1] == (byte) 0x50 && header[2] == (byte) 0x4E && header[3] == (byte) 0x47) {
+            return "png";
+        }
+        // Check for JPEG
+        if (header.length >= 2 && header[0] == (byte) 0xFF && header[1] == (byte) 0xD8) {
+            return "jpg";
+        }
+        // Check for ZIP
+        if (header.length >= 4 && header[0] == (byte) 0x50 && header[1] == (byte) 0x4B && header[2] == (byte) 0x03 && header[3] == (byte) 0x04) {
+            return "zip";
+        }
+        // Add more file types here as needed
+        return "unknown";
     }
 
     public void settings_text_change(){

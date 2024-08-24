@@ -275,58 +275,52 @@ public class SettingActivity extends AppCompatActivity {
             SharedPreferences prefs = getSharedPreferences("ShredPreferenceJsonData", MODE_PRIVATE);
             try {
                 libraryJsonArray = new JSONArray(prefs.getString("libraryJsonArray", "[]"));
+
                 settingJsonArray = new JSONArray(prefs.getString("settingJsonArray", "[]"));
+
             } catch (JSONException e) {
                 throw new RuntimeException(e);
             }
             File folder = new File(Environment.getExternalStorageDirectory(), "E Libra");
             if (!folder.exists()) {
-                if (folder.mkdirs()) {
-                    Toast.makeText(this, "Folder created successfully", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(this, "Failed to create folder", Toast.LENGTH_SHORT).show();
-                }
-            } else {
-                Toast.makeText(this, "Folder already exists", Toast.LENGTH_SHORT).show();
+                folder.mkdirs();
             }
             if(type.equals("export")) {
 
-                if(libraryJsonArray == null && libraryJsonArray.length() < 0 || !checkBoxExportSettings.isChecked()) {
-                    Toast.makeText(this, "Nothing to Export", Toast.LENGTH_SHORT).show();
-                }else{
                     File file = new File(editTextExportPath.getText().toString(), editTextExportFile.getText().toString());
                     if (!file.exists() && !file.mkdirs()) {
                         Toast.makeText(this, "Failed to create directory: " + file.getAbsolutePath(), Toast.LENGTH_SHORT).show();
                         return;
                     }
 
-                    nestedScrollViewStatusOutput.setVisibility(View.VISIBLE);
-                    import_path = editTextExportPath.getText().toString();
-                    try {
-                        jsonImportArray = new JSONArray();
-                        for (int i = 0; i < libraryJsonArray.length(); i++) {
-                            JSONObject json = libraryJsonArray.getJSONObject(i);
-                            JSONObject newJson = new JSONObject();
-                            newJson.put("image_path", json.getString("image_path"));
-                            newJson.put("name", json.getString("name"));
-                            newJson.put("storage", json.getString("storage"));
-                            copyFile(json.getString("storage"), editTextExportPath.getText().toString() + "/" + editTextExportFile.getText().toString() + "/" + json.getString("name") + "/" + json.getString("storage").substring(json.getString("storage").lastIndexOf("/") + 1));
-                            copyFile(json.getString("image_path"), editTextExportPath.getText().toString() + "/" + editTextExportFile.getText().toString() + "/" + json.getString("name") + "/" + json.getString("image_path").substring(json.getString("image_path").lastIndexOf("/") + 1));
-                            newJson.put("page", json.getString("page"));
-                            newJson.put("total_pages", json.getString("total_pages"));
-                            jsonImportArray.put(newJson);
+                        import_path = editTextExportPath.getText().toString();
+                        try {
+                            jsonImportArray = new JSONArray();
+                            for (int i = 0; i < libraryJsonArray.length(); i++) {
+                                JSONObject json = libraryJsonArray.getJSONObject(i);
+                                JSONObject newJson = new JSONObject();
+                                newJson.put("image_path", json.getString("image_path"));
+                                newJson.put("name", json.getString("name"));
+                                newJson.put("storage", json.getString("storage"));
+                                copyFile(json.getString("storage"), editTextExportPath.getText().toString() + "/" + editTextExportFile.getText().toString() + "/" + json.getString("name") + "/" + json.getString("storage").substring(json.getString("storage").lastIndexOf("/") + 1));
+                                copyFile(json.getString("image_path"), editTextExportPath.getText().toString() + "/" + editTextExportFile.getText().toString() + "/" + json.getString("name") + "/" + json.getString("image_path").substring(json.getString("image_path").lastIndexOf("/") + 1));
+                                newJson.put("page", json.getString("page"));
+                                newJson.put("total_pages", json.getString("total_pages"));
+                                jsonImportArray.put(newJson);
+                            }
+                            if (jsonImportArray.length() > 0) {
+                                migrationOutput("[ LIBRARY DATA STRUCTURE ]\n", type);
+                                migrationOutput("\n\n" + formatJson(jsonImportArray) + "\n\n", type);
+                            }
+                            if (checkBoxExportSettings.isChecked()){
+                                nestedScrollViewStatusOutput.setVisibility(View.VISIBLE);
+                                migrationOutput("[ SETTING DATA STRUCTURE ]\n", type);
+                                migrationOutput("\n\n" + formatJson(settingJsonArray) + "\n\n", type);
+                            }
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
-                        if(jsonImportArray.length()>0){
-                            migrationOutput("[ LIBRARY DATA STRUCTURE ]\n", type);
-                            migrationOutput("\n\n" + formatJson(jsonImportArray) + "\n\n", type);
-                        }
-                        if(settingJsonArray.length()>0) {
-                            migrationOutput("[ SETTING DATA STRUCTURE ]\n", type);
-                            migrationOutput("\n\n" + formatJson(settingJsonArray) + "\n\n", type);
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
 
 
                     if (libraryJsonArray != null && libraryJsonArray.length() > 0) {
@@ -352,14 +346,15 @@ public class SettingActivity extends AppCompatActivity {
                     }
 
                     if (zippedFile.exists()) {
-                        file_replace_dialog(folderToZip, zippedFile);
-                        Toast.makeText(getApplicationContext(), "File already exists", Toast.LENGTH_SHORT).show();
+                        if(libraryJsonArray != null && libraryJsonArray.length() > 0 || checkBoxExportSettings.isChecked()){
+                            file_replace_dialog(folderToZip, zippedFile);
+                        }else{
+                            Toast.makeText(this, "Nothing to Export", Toast.LENGTH_SHORT).show();
+                        }
                     } else {
                         try {
                             Toast.makeText(this, "zip function running", Toast.LENGTH_SHORT).show();
-
                             zip(folderToZip, zippedFile);
-
                             deleteFolder(folderToZip);
                         } catch (IOException e) {
                             e.printStackTrace();
@@ -367,39 +362,29 @@ public class SettingActivity extends AppCompatActivity {
                         }
                         migrationOutput("[ STATUS ]-( SUCCESS )\n\n[ GENERATED PATH ] - " + zippedFile + "\n\n", type);
                     }
-                }
             }
-            if(type.equals("import")){
+            if(type.equals("import")) {
                 export_path = editTextImportPath.getText().toString();
-                Toast.makeText(this, export_path, Toast.LENGTH_SHORT).show();
-                if(checkBoxRemoveExisting.isChecked()){
+                if (checkBoxRemoveExisting.isChecked()) {
                     libraryJsonArray = new JSONArray();
-                    added=0;
+                    added = 0;
                 }
 
 
                 File file1 = new File("/sdcard/E Libra/Library/library-structure.json");
-                File file2 = new File("/sdcard/E Libra/Library/setting-structure.json");
-
                 if (file1.exists()) {
                     if (file1.delete()) {
-                        Toast.makeText(getApplicationContext(), "deleted", Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(getApplicationContext(), "Failed to delete", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(getApplicationContext(), "removed previous file library-structure.json", Toast.LENGTH_SHORT).show();
                     }
-                } else {
-                    Toast.makeText(getApplicationContext(), "not found", Toast.LENGTH_SHORT).show();
                 }
 
+                File file2 = new File("/sdcard/E Libra/Library/setting-structure.json");
                 if (file2.exists()) {
                     if (file2.delete()) {
-                        Toast.makeText(getApplicationContext(), "deleted", Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(getApplicationContext(), "Failed to delete", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(getApplicationContext(), "removed previous file setting-structure.json", Toast.LENGTH_SHORT).show();
                     }
-                } else {
-                    Toast.makeText(getApplicationContext(), "not found", Toast.LENGTH_SHORT).show();
                 }
+
 
                 try {
                     if (unzip(new File(editTextImportPath.getText().toString()), new File("/sdcard/E Libra/Library"))) {
@@ -413,48 +398,48 @@ public class SettingActivity extends AppCompatActivity {
                             }
                             reader.close();
                         } catch (FileNotFoundException e) {
-                            Toast.makeText(getApplicationContext(), "Library Structure json File not found", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), "No Books Found in This Backup File", Toast.LENGTH_SHORT).show();
                         }
 
+if(!jsonData.toString().isEmpty()) {
+    JSONArray importjsonArray = new JSONArray(jsonData.toString());
+    for (int i = 0; i < importjsonArray.length(); i++) {
+        JSONObject json = importjsonArray.getJSONObject(i);
+        JSONObject newJson = new JSONObject();
+        if (json.getString("image_path").isEmpty()) {
+            newJson.put("image_path", json.getString("image_path"));
+        } else {
+            newJson.put("image_path", "/sdcard/E Libra/Library/" + json.getString("name") + "/" + json.getString("image_path").substring(json.getString("image_path").lastIndexOf("/") + 1));
+        }
+        newJson.put("name", json.getString("name"));
+        if (json.getString("storage").isEmpty()) {
+            newJson.put("storage", json.getString("storage"));
+        } else {
+            newJson.put("storage", "/sdcard/E Libra/Library/" + json.getString("name") + "/" + json.getString("storage").substring(json.getString("storage").lastIndexOf("/") + 1));
+        }
+        newJson.put("page", json.getString("page"));
+        newJson.put("total_pages", json.getString("total_pages"));
+        added++;
+        libraryJsonArray.put(newJson);
 
-                        JSONArray importjsonArray = new JSONArray(jsonData.toString());
-                        for (int i = 0; i < importjsonArray.length(); i++) {
-                            JSONObject json = importjsonArray.getJSONObject(i);
-                            JSONObject newJson = new JSONObject();
-                            if (json.getString("image_path").isEmpty()) {
-                                newJson.put("image_path", json.getString("image_path"));
-                            } else {
-                                newJson.put("image_path", "/sdcard/E Libra/Library/" + json.getString("name") + "/" + json.getString("image_path").substring(json.getString("image_path").lastIndexOf("/") + 1));
-                            }
-                            newJson.put("name", json.getString("name"));
-                            if (json.getString("storage").isEmpty()) {
-                                newJson.put("storage", json.getString("storage"));
-                            } else {
-                                newJson.put("storage", "/sdcard/E Libra/Library/" + json.getString("name") + "/" + json.getString("storage").substring(json.getString("storage").lastIndexOf("/") + 1));
-                            }
-                            newJson.put("page", json.getString("page"));
-                            newJson.put("total_pages", json.getString("total_pages"));
-                            added++;
-                            libraryJsonArray.put(newJson);
-                        }
-                        settingJsonArray = new JSONArray();
-
-
-                        migrationOutput("[ ANALYSED DATA ]", type);
-                        migrationOutput("\n\n" + formatJson(importjsonArray), type);
+    }
+    migrationOutput("[ ANALYSED DATA ]", type);
+    migrationOutput("\n\n" + formatJson(importjsonArray), type);
+    migrationOutput("[ STATUS ]\n\nADDED - " + added + "\n" + "TOTAL -" + importjsonArray.length() + "\n", type);
+    save();
+}
 
                         if(checkBoxImportSettings.isChecked()){
                             StringBuilder jsonData2 = new StringBuilder();
-
                             try {
                                 BufferedReader reader2 = new BufferedReader(new FileReader("/sdcard/E Libra/Library/setting-structure.json"));
-                                String line2;
-                                while ((line2 = reader2.readLine()) != null) {
-                                    jsonData2.append(line2);
+                                String line;
+                                while ((line = reader2.readLine()) != null) {
+                                    jsonData2.append(line);
                                 }
                                 reader2.close();
                             } catch (FileNotFoundException e) {
-                                Toast.makeText(getApplicationContext(), "Setting Structure File not found", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getApplicationContext(), "No Settings Configuration Found in This Backup File", Toast.LENGTH_SHORT).show();
                             }
 
                             settingJsonArray = new JSONArray(jsonData2.toString());
@@ -530,17 +515,16 @@ public class SettingActivity extends AppCompatActivity {
                             migrationOutput("\n\n"+formatJson(settingJsonArray),type);
                         }
 
-
-
-
-                        migrationOutput("[ STATUS ]\n\nADDED - "+ added +"\n"+"TOTAL -"+importjsonArray.length()+"\n",type);
-                        save();
                     } else {
                         Toast.makeText(this, "Path Not Found", Toast.LENGTH_SHORT).show();
                     }
-                } catch (IOException | JSONException e) {
-                    throw new RuntimeException(e);
-                }
+
+                    } catch (Exception e) {
+                        Toast.makeText(this, "error library json"+e, Toast.LENGTH_SHORT).show();
+                        Log.d("error",e.toString());
+                    }
+
+
             }
         });
         checkBoxRemoveExisting.setOnClickListener(new View.OnClickListener() {
