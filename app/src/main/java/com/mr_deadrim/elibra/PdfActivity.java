@@ -26,7 +26,7 @@ import org.json.JSONObject;
 
 public class PdfActivity extends AppCompatActivity {
 
-    private RecyclerView recyclerView;
+    private RecyclerView pdfLayout;
     private PdfRenderer pdfRenderer;
     public String storage,orientation;
     public int position, current_page = 1, total_pages;
@@ -52,9 +52,9 @@ public class PdfActivity extends AppCompatActivity {
         if(orientation.equals("Landscape")){
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
         }
-        recyclerView = findViewById(R.id.recyclerViewPdf);
+        pdfLayout = findViewById(R.id.pdfLayout);
         layoutManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(layoutManager);
+        pdfLayout.setLayoutManager(layoutManager);
         try {
             openPdfRenderer();
         } catch (IOException e) {
@@ -64,9 +64,9 @@ public class PdfActivity extends AppCompatActivity {
             return;
         }
         pdfAdapter = new PdfAdapter();
-        recyclerView.setAdapter(pdfAdapter);
+        pdfLayout.setAdapter(pdfAdapter);
         toast = Toast.makeText(this, "", Toast.LENGTH_SHORT);
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        pdfLayout.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
@@ -122,7 +122,7 @@ public class PdfActivity extends AppCompatActivity {
     }
     private void scrollToPage(int page) {
         if (page > 0 && page <= total_pages) {
-            recyclerView.scrollToPosition(page - 1);
+            pdfLayout.scrollToPosition(page - 1);
         }
     }
     private void updateToast() {

@@ -5,13 +5,13 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF"
+    android:background="#000000"
     tools:context=".PdfActivity">
 
 
 
     <com.mr_deadrim.elibra.PdfLayout
-        android:id="@+id/recyclerViewPdf"
+        android:id="@+id/pdfLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scrollbars="vertical"
