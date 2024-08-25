@@ -61,16 +61,22 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
         try {
             JSONObject jsonObject = libraryJsonArray.getJSONObject(position);
             String name = jsonObject.getString("name");
-            String page = jsonObject.getString("page");
-            String total_pages = jsonObject.getString("total_pages");
+            int page = jsonObject.getInt("page");
+            int total_pages = jsonObject.getInt("total_pages");
             String image_path = jsonObject.getString("image_path");
+
             if(image_path.isEmpty()){
                 holder.imageViewAppIcon.setImageResource(R.mipmap.ic_launcher);
             }else{
                 holder.imageViewAppIcon.setImageURI(Uri.parse(image_path));
             }
             holder.textViewName.setText(name);
-            holder.textViewPages.setText(" [ " + page + " | " + total_pages +" ] ");
+            if(page==total_pages && total_pages!=0) {
+                holder.textViewPages.setText(" [ COMPLETED ] ");
+            }else{
+                holder.textViewPages.setText(" [ " + page + " | " + total_pages +" ] ");
+            }
+
         } catch (JSONException e) {
             e.printStackTrace();
         }

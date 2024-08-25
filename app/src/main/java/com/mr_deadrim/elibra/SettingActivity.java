@@ -304,8 +304,8 @@ public class SettingActivity extends AppCompatActivity {
                                 newJson.put("storage", json.getString("storage"));
                                 copyFile(json.getString("storage"), editTextExportPath.getText().toString() + "/" + editTextExportFile.getText().toString() + "/" + json.getString("name") + "/" + json.getString("storage").substring(json.getString("storage").lastIndexOf("/") + 1));
                                 copyFile(json.getString("image_path"), editTextExportPath.getText().toString() + "/" + editTextExportFile.getText().toString() + "/" + json.getString("name") + "/" + json.getString("image_path").substring(json.getString("image_path").lastIndexOf("/") + 1));
-                                newJson.put("page", json.getString("page"));
-                                newJson.put("total_pages", json.getString("total_pages"));
+                                newJson.put("page", json.getInt("page"));
+                                newJson.put("total_pages", json.getInt("total_pages"));
                                 jsonImportArray.put(newJson);
                             }
                             if (jsonImportArray.length() > 0) {
@@ -417,8 +417,8 @@ public class SettingActivity extends AppCompatActivity {
                                 } else {
                                     newJson.put("storage", "/sdcard/E Libra/Library/" + json.getString("name") + "/" + json.getString("storage").substring(json.getString("storage").lastIndexOf("/") + 1));
                                 }
-                                newJson.put("page", json.getString("page"));
-                                newJson.put("total_pages", json.getString("total_pages"));
+                                newJson.put("page", json.getInt("page"));
+                                newJson.put("total_pages", json.getInt("total_pages"));
                                 added++;
                                 libraryJsonArray.put(newJson);
 

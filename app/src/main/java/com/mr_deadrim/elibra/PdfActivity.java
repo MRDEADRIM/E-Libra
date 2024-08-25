@@ -4,10 +4,13 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.pdf.PdfRenderer;
 import android.os.Bundle;
 import android.os.ParcelFileDescriptor;
+import android.util.DisplayMetrics;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,6 +26,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import android.util.Log;
 
 public class PdfActivity extends AppCompatActivity {
 
@@ -94,11 +98,15 @@ public class PdfActivity extends AppCompatActivity {
         }
         @Override
         public void onBindViewHolder(@NonNull PdfViewHolder holder, int position) {
-            holder.bind(position);
+            if (position == total_pages) { // Insert blank page at the 3rd position (index 2)
+                holder.bindBlankPage();
+            } else {
+                holder.bind(position);
+            }
         }
         @Override
         public int getItemCount() {
-            return total_pages;
+            return total_pages +1;
         }
         class PdfViewHolder extends RecyclerView.ViewHolder {
             ImageView imageViewPdf;
@@ -117,6 +125,12 @@ public class PdfActivity extends AppCompatActivity {
                     imageViewPdf.setImageBitmap(bitmap);
                     page.close();
                 }
+            }
+            void bindBlankPage() {
+                Bitmap blankBitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
+                Canvas canvas = new Canvas(blankBitmap);
+                canvas.drawColor(Color.WHITE);
+                imageViewPdf.setImageBitmap(blankBitmap);
             }
         }
     }
