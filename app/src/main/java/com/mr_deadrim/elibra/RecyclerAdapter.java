@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Handler;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,8 +35,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
     TextView textViewBookIconLabel, textViewBookNameLabel;
     public ImageView imageButtonBookIcon;
     public View dialogView;
-    public String image_path, textStyle ="sans-serif", orientationValue;
-    int textSize =40;
+    public String image_path, textStyle="sans-serif", orientationValue="Sensor";
+    int textSize=40;
     public RecyclerAdapter(JSONArray liberaryjsonArray,JSONArray settingJsonArray) {
         this.libraryJsonArray = liberaryjsonArray;
         this.settingJsonArray = settingJsonArray;
@@ -102,13 +103,16 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
             imageViewUpdate = itemView.findViewById(R.id.imageViewUpdate);
             imageViewDelete = itemView.findViewById(R.id.imageViewDelete);
             try{
-                JSONObject jsonObject0 = settingJsonArray.getJSONObject(0);
-                textStyle = jsonObject0.getString("style");
-                textSize = jsonObject0.getInt("size");
-                JSONObject jsonObject1 = settingJsonArray.getJSONObject(1);
-                orientationValue = jsonObject1.getString("value");
-            }catch(Exception e){
-                Toast.makeText(itemView.getContext(), "error in retreating json2array", Toast.LENGTH_SHORT).show();
+                if (settingJsonArray.length() > 1) {
+                    JSONObject jsonObject0 = settingJsonArray.getJSONObject(0);
+                    textStyle = jsonObject0.getString("style");
+                    textSize = jsonObject0.getInt("size");
+                    JSONObject jsonObject1 = settingJsonArray.getJSONObject(1);
+                    orientationValue = jsonObject1.getString("value");
+                }
+            }
+            catch (JSONException e) {
+                e.printStackTrace();
             }
             Handler handler = new Handler();
             itemView.setOnClickListener(this);
@@ -224,6 +228,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
             }
             return true;
         }
+
         @Override
         public void onClick(View v) {
             try {
@@ -249,7 +254,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
         }
         public boolean deleteDirectory(File directory) {
             if (!directory.exists()) {
-                Toast.makeText(itemView.getContext(), "Folder not found", Toast.LENGTH_SHORT).show();
+                Log.d("error_message","Folder Not Found");
                 return false;
             }
             Set<String> existingStorage = new HashSet<>();
@@ -261,8 +266,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
                     e.printStackTrace();
                 }
             }
-            if (existingStorage.contains(storage)) {
-                Toast.makeText(itemView.getContext(), " path unique found", Toast.LENGTH_SHORT).show();
+            if (existingStorage.contains(directory.toString())) {
+                Log.d("error_message","Folder Unique Found");
+                return false;
             } else {
                 if (directory.isDirectory()) {
                     File[] files = directory.listFiles();
@@ -273,7 +279,6 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
                             }
                         }
                     }
-
                 }
             }
             return directory.delete();
@@ -320,15 +325,15 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
                 if (parentDir != null && parentDir.exists()) {
                     boolean success = deleteDirectory(parentDir);
                     if (success) {
-                        Toast.makeText(itemView.getContext(), "Deleting folder ", Toast.LENGTH_SHORT).show();
+                        Log.d("error_message","Deleting Folder");
                     } else {
-                        Toast.makeText(itemView.getContext(), "Failed to delete directory.", Toast.LENGTH_SHORT).show();
+                        Log.d("error_message","Failed To Delete Folder");
                     }
                 } else {
-                    Toast.makeText(itemView.getContext(), "Parent directory does not exist.", Toast.LENGTH_SHORT).show();
+                    Log.d("error_message","Parent directory does not exist.");
                 }
             }else{
-                Toast.makeText(itemView.getContext(), "Outside path", Toast.LENGTH_SHORT).show();
+                Log.d("error_message","Outside Path");
             }
         }
         private void save() {

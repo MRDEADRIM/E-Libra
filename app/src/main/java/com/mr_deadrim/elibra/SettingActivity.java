@@ -62,7 +62,7 @@ public class SettingActivity extends AppCompatActivity {
     ImageView imageViewTextToggle, imageViewOrientationToggle, imageViewMigrationToggle, imageViewFolderPicker, imageViewFilePicker;
     EditText editTextSize,editTextExportPath, editTextExportFile,editTextImportPath;
     Button buttonSizeDecrement, buttonSizeIncrement,buttonImport, buttonExport, buttonProceed, buttonExitNo, buttonExitYes,buttonFileReplaceNo, buttonFileReplaceYes;
-    String textStyle="sans-serif", orientationValue ="Sensor",type="export",import_output="",export_output="",export_path="/sdcard/Downloads/", import_path ="";
+    String textStyle="sans-serif", orientationValue ="Sensor",type="export",import_output="",export_output="",export_path="/sdcard/Download/", import_path ="";
     private AutoCompleteTextView autoCompleteTextViewStyle;
     private ArrayAdapter<String> adapter;
     private static final int CHOOSE_REQUEST_CODE = 1;
@@ -367,9 +367,8 @@ public class SettingActivity extends AppCompatActivity {
                 export_path = editTextImportPath.getText().toString();
                 if (checkBoxRemoveExisting.isChecked()) {
                     libraryJsonArray = new JSONArray();
-                    added = 0;
                 }
-
+                added = 0;
 
                 File file1 = new File("/sdcard/E Libra/Library/library-structure.json");
                 if (file1.exists()) {
@@ -425,7 +424,7 @@ public class SettingActivity extends AppCompatActivity {
                             }
                             migrationOutput("[ ANALYSED DATA ]", type);
                             migrationOutput("\n\n" + formatJson(importjsonArray), type);
-                            migrationOutput("[ STATUS ]\n\nADDED - " + added + "\n" + "TOTAL -" + importjsonArray.length() + "\n", type);
+                            migrationOutput("\n\nADDED - " + added + "\n" + "TOTAL -" + libraryJsonArray.length() + "\n\n", type);
                             save();
                         }
 
@@ -504,6 +503,9 @@ public class SettingActivity extends AppCompatActivity {
                             }
                             migrationOutput("[ SETTINGS DATA ]",type);
                             migrationOutput("\n\n"+formatJson(settingJsonArray),type);
+                        }
+                        if(!jsonData.toString().isEmpty() || checkBoxImportSettings.isChecked()) {
+                            migrationOutput("[ STATUS ]-( SUCCESS )\n\n[ EXTRACTED PATH ] - " + editTextImportPath.getText().toString() + "\n\n", type);
                         }
 
                     } else {
@@ -1008,73 +1010,76 @@ public class SettingActivity extends AppCompatActivity {
         SharedPreferences prefs = getSharedPreferences("ShredPreferenceJsonData", MODE_PRIVATE);
        try {
            settingJsonArray = new JSONArray(prefs.getString("settingJsonArray", "[]"));
-           JSONObject jsonObject0 = settingJsonArray.getJSONObject(0);
-            text_selected = jsonObject0.getInt("selected");
-            textStyle =jsonObject0.getString("style");
-            autoCompleteTextViewStyle.setText(textStyle, false);
-            editTextSize.setText(String.valueOf(jsonObject0.getInt("size")));
-            JSONObject jsonObject1 = settingJsonArray.getJSONObject(1);
-            orientation_selected = jsonObject1.getInt("selected");
-            orientationValue = jsonObject1.getString("value");
-            JSONObject jsonObject2 = settingJsonArray.getJSONObject(2);
-            migration_selected = jsonObject2.getInt("selected");
-            type = jsonObject2.getString("type");
-            editTextExportFile.setText(jsonObject2.getString("export_name"));
-            export_path = jsonObject2.getString("export_path");
-            editTextExportPath.setText(export_path);
-            dont_export_status = jsonObject2.getInt("export_setting_status");
-            import_path = jsonObject2.getString("import_path");
-            editTextImportPath.setText(import_path);
-            dont_import_status = jsonObject2.getInt("import_setting_status");
-            remove_existing_data_status = jsonObject2.getInt("remove_existing_data_status");
-            if(text_selected==0){
-                constraintLayoutHiddenView.setVisibility(View.GONE);
-                imageViewTextToggle.setImageResource(android.R.drawable.arrow_down_float);
-            }else{
-                constraintLayoutHiddenView.setVisibility(View.VISIBLE);
-                imageViewTextToggle.setImageResource(android.R.drawable.arrow_up_float);
+           if (settingJsonArray.length() > 1) {
+               JSONObject jsonObject0 = settingJsonArray.getJSONObject(0);
+               text_selected = jsonObject0.getInt("selected");
+               textStyle = jsonObject0.getString("style");
+               autoCompleteTextViewStyle.setText(textStyle, false);
+               editTextSize.setText(String.valueOf(jsonObject0.getInt("size")));
+               JSONObject jsonObject1 = settingJsonArray.getJSONObject(1);
+               orientation_selected = jsonObject1.getInt("selected");
+               orientationValue = jsonObject1.getString("value");
+               JSONObject jsonObject2 = settingJsonArray.getJSONObject(2);
+               migration_selected = jsonObject2.getInt("selected");
+               type = jsonObject2.getString("type");
+               editTextExportFile.setText(jsonObject2.getString("export_name"));
+               export_path = jsonObject2.getString("export_path");
+               editTextExportPath.setText(export_path);
+               dont_export_status = jsonObject2.getInt("export_setting_status");
+               import_path = jsonObject2.getString("import_path");
+               editTextImportPath.setText(import_path);
+               dont_import_status = jsonObject2.getInt("import_setting_status");
+               remove_existing_data_status = jsonObject2.getInt("remove_existing_data_status");
             }
-            if(orientation_selected==0){
-                constraintLayoutOrientationHiddenView.setVisibility(View.GONE);
-                imageViewOrientationToggle.setImageResource(android.R.drawable.arrow_down_float);
-            }else{
-                constraintLayoutOrientationHiddenView.setVisibility(View.VISIBLE);
-                imageViewOrientationToggle.setImageResource(android.R.drawable.arrow_up_float);
-            }
-            if (migration_selected==0) {
-                constraintLayoutMigrationHiddenView.setVisibility(View.GONE);
-                imageViewMigrationToggle.setImageResource(android.R.drawable.arrow_down_float);
-            }else {
-                constraintLayoutMigrationHiddenView.setVisibility(View.VISIBLE);
-                imageViewMigrationToggle.setImageResource(android.R.drawable.arrow_up_float);
-            }
-            if(orientationValue.equals("Sensor")){
-                radioButtonSensor.setChecked(true);
-                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
-            }
-            if(orientationValue.equals("Portrait")){
-                radioButtonPortrait.setChecked(true);
-                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-            }
-            if(orientationValue.equals("Landscape")){
-                radioButtonLandscape.setChecked(true);
-                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
-            }
-            if(remove_existing_data_status==1){
-                checkBoxRemoveExisting.setChecked(true);
-            }else{
-                checkBoxRemoveExisting.setChecked(false);
-            }
-            if(dont_import_status==1){
-                checkBoxImportSettings.setChecked(true);
-            }else{
-                checkBoxImportSettings.setChecked(false);
-            }
-           if(dont_export_status==1){
-               checkBoxExportSettings.setChecked(true);
-           }else{
-               checkBoxExportSettings.setChecked(false);
-           }
+               if (text_selected == 0) {
+                   constraintLayoutHiddenView.setVisibility(View.GONE);
+                   imageViewTextToggle.setImageResource(android.R.drawable.arrow_down_float);
+               } else {
+                   constraintLayoutHiddenView.setVisibility(View.VISIBLE);
+                   imageViewTextToggle.setImageResource(android.R.drawable.arrow_up_float);
+               }
+               if (orientation_selected == 0) {
+                   constraintLayoutOrientationHiddenView.setVisibility(View.GONE);
+                   imageViewOrientationToggle.setImageResource(android.R.drawable.arrow_down_float);
+               } else {
+                   constraintLayoutOrientationHiddenView.setVisibility(View.VISIBLE);
+                   imageViewOrientationToggle.setImageResource(android.R.drawable.arrow_up_float);
+               }
+               if (migration_selected == 0) {
+                   constraintLayoutMigrationHiddenView.setVisibility(View.GONE);
+                   imageViewMigrationToggle.setImageResource(android.R.drawable.arrow_down_float);
+               } else {
+                   constraintLayoutMigrationHiddenView.setVisibility(View.VISIBLE);
+                   imageViewMigrationToggle.setImageResource(android.R.drawable.arrow_up_float);
+               }
+               if (orientationValue.equals("Sensor")) {
+                   radioButtonSensor.setChecked(true);
+                   setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+               }
+               if (orientationValue.equals("Portrait")) {
+                   radioButtonPortrait.setChecked(true);
+                   setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+               }
+               if (orientationValue.equals("Landscape")) {
+                   radioButtonLandscape.setChecked(true);
+                   setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
+               }
+               if (remove_existing_data_status == 1) {
+                   checkBoxRemoveExisting.setChecked(true);
+               } else {
+                   checkBoxRemoveExisting.setChecked(false);
+               }
+               if (dont_import_status == 1) {
+                   checkBoxImportSettings.setChecked(true);
+               } else {
+                   checkBoxImportSettings.setChecked(false);
+               }
+               if (dont_export_status == 1) {
+                   checkBoxExportSettings.setChecked(true);
+               } else {
+                   checkBoxExportSettings.setChecked(false);
+               }
+
        }catch (Exception e){
            e.printStackTrace();
        }

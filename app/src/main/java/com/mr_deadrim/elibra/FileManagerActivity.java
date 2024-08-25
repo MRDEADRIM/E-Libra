@@ -32,7 +32,7 @@ public class FileManagerActivity extends AppCompatActivity {
     private Button buttonFileManagerSelect, buttonFileManagerCancel;
     private static final String KEY_INTERNAL_STORAGE_PATH = null;
     JSONArray settingJsonArray;
-    String selectedItem="sans-serif", orientationValue;
+    String selectedItem="sans-serif", orientationValue="Sensor";
     int textSize =40;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -123,6 +123,9 @@ public class FileManagerActivity extends AppCompatActivity {
     }
 
     public static String getFileType(File file) {
+        if (file.isDirectory()) {
+            return "directory";
+        }
         try (FileInputStream fis = new FileInputStream(file)) {
             byte[] header = new byte[16]; // Read the first 16 bytes of the file
             if (fis.read(header) != -1) {
@@ -143,7 +146,7 @@ public class FileManagerActivity extends AppCompatActivity {
         if (header.length >= 8 && header[0] == (byte) 0x89 && header[1] == (byte) 0x50 && header[2] == (byte) 0x4E && header[3] == (byte) 0x47) {
             return "png";
         }
-        // Check for JPEG
+        // Check for JPG
         if (header.length >= 2 && header[0] == (byte) 0xFF && header[1] == (byte) 0xD8) {
             return "jpg";
         }
@@ -181,11 +184,13 @@ public class FileManagerActivity extends AppCompatActivity {
         SharedPreferences prefs = getSharedPreferences("ShredPreferenceJsonData", MODE_PRIVATE);
         try {
             settingJsonArray = new JSONArray(prefs.getString("settingJsonArray", "[]"));
-            JSONObject jsonObject0 = settingJsonArray.getJSONObject(0);
-            selectedItem = jsonObject0.getString("style");
-            textSize = jsonObject0.getInt("size");
-            JSONObject jsonObject1 = settingJsonArray.getJSONObject(1);
-            orientationValue = jsonObject1.getString("value");
+            if (settingJsonArray.length() > 1) {
+                JSONObject jsonObject0 = settingJsonArray.getJSONObject(0);
+                selectedItem = jsonObject0.getString("style");
+                textSize = jsonObject0.getInt("size");
+                JSONObject jsonObject1 = settingJsonArray.getJSONObject(1);
+                orientationValue = jsonObject1.getString("value");
+            }
             if(orientationValue.equals("Sensor")){
                 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
             }

@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.style.TextAppearanceSpan;
 import android.text.style.TypefaceSpan;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -21,7 +22,6 @@ import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import android.content.pm.PackageInfo;
-import android.widget.Toast;
 import org.json.JSONArray;
 import org.json.JSONObject;
 public class AboutActivity extends AppCompatActivity {
@@ -52,17 +52,7 @@ public class AboutActivity extends AppCompatActivity {
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
-        SharedPreferences prefs = getSharedPreferences("ShredPreferenceJsonData", MODE_PRIVATE);
-        try{
-            settingJsonArray = new JSONArray(prefs.getString("settingJsonArray", "[]"));
-            JSONObject jsonObject0 = settingJsonArray.getJSONObject(0);
-            textStyle = jsonObject0.getString("style");
-            textSize = jsonObject0.getInt("size");
-            JSONObject jsonObject1 = settingJsonArray.getJSONObject(1);
-            orientationValue = jsonObject1.getString("value");
-        }catch(Exception e){
-            Toast.makeText(AboutActivity.this, "error in retreating json2array", Toast.LENGTH_SHORT).show();
-        }
+
         load();
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
@@ -129,32 +119,50 @@ public class AboutActivity extends AppCompatActivity {
         alertDialog.show();
     }
     public void load(){
-        if(orientationValue.equals("Sensor")){
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+        SharedPreferences prefs = getSharedPreferences("ShredPreferenceJsonData", MODE_PRIVATE);
+        try{
+                settingJsonArray = new JSONArray(prefs.getString("settingJsonArray", "[]"));
+            if (settingJsonArray.length() > 1) {
+                JSONObject jsonObject0 = settingJsonArray.getJSONObject(0);
+                textStyle = jsonObject0.getString("style");
+                textSize = jsonObject0.getInt("size");
+                JSONObject jsonObject1 = settingJsonArray.getJSONObject(1);
+                orientationValue = jsonObject1.getString("value");
+            }
+
+            Typeface typeface = Typeface.create(textStyle, Typeface.NORMAL);
+            textViewAppVersion.setTypeface(typeface);
+            textViewAppName.setTypeface(typeface);
+            textViewAuthorName.setTypeface(typeface);
+            textViewAboutDetail.setTypeface(typeface);
+            textViewAbout.setTypeface(typeface);
+            textViewAppNameLabel.setTypeface(typeface);
+            textViewAppVersionLabel.setTypeface(typeface);
+            textViewAuthorNameLabel.setTypeface(typeface);
+            textViewAppVersion.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
+            textViewAppName.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
+            textViewAuthorName.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
+            textViewAboutDetail.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
+            textViewAbout.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
+            textViewAppNameLabel.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
+            textViewAppVersionLabel.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
+            textViewAuthorNameLabel.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
+
+            if(orientationValue.equals("Sensor")){
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+            }
+            if(orientationValue.equals("Portrait")){
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+            }
+            if(orientationValue.equals("Landscape")){
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
+            }
+        }catch(Exception e){
+            Log.d("error_message",e.toString());
         }
-        if(orientationValue.equals("Portrait")){
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        }
-        if(orientationValue.equals("Landscape")){
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
-        }
-        Typeface typeface = Typeface.create(textStyle, Typeface.NORMAL);
-        textViewAppVersion.setTypeface(typeface);
-        textViewAppName.setTypeface(typeface);
-        textViewAuthorName.setTypeface(typeface);
-        textViewAboutDetail.setTypeface(typeface);
-        textViewAbout.setTypeface(typeface);
-        textViewAppNameLabel.setTypeface(typeface);
-        textViewAppVersionLabel.setTypeface(typeface);
-        textViewAuthorNameLabel.setTypeface(typeface);
-        textViewAppVersion.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
-        textViewAppName.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
-        textViewAuthorName.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
-        textViewAboutDetail.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
-        textViewAbout.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
-        textViewAppNameLabel.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
-        textViewAppVersionLabel.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
-        textViewAuthorNameLabel.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
+
+
+
     }
     public void exit_text_change(){
         Typeface typeface = Typeface.create(textStyle, Typeface.NORMAL);

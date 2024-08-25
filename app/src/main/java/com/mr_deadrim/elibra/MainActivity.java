@@ -285,7 +285,8 @@ public class MainActivity extends AppCompatActivity {
         alertDialog.setCanceledOnTouchOutside(false);
         buttonExitNo.setOnClickListener(v1 -> alertDialog.dismiss());
         buttonExitYes.setOnClickListener(v12 -> {
-        finishAffinity();
+            alertDialog.dismiss();
+            finishAffinity();
         });
         alertDialog.show();
     }
@@ -297,25 +298,25 @@ public class MainActivity extends AppCompatActivity {
         editor.apply();
     }
 
-
     private void load() {
-
         try {
-            JSONObject jsonObject0 = settingJsonArray.getJSONObject(0);
-            textStyle =jsonObject0.getString("style");
-            textSize =jsonObject0.getInt("size");
-            JSONObject jsonObject1 = settingJsonArray.getJSONObject(1);
-            orientationValue = jsonObject1.getString("value");
-            if(orientationValue.equals("Sensor")){
-                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+            if (settingJsonArray.length() > 1) {
+                JSONObject jsonObject0 = settingJsonArray.getJSONObject(0);
+                textStyle = jsonObject0.getString("style");
+                textSize = jsonObject0.getInt("size");
+                JSONObject jsonObject1 = settingJsonArray.getJSONObject(1);
+                orientationValue = jsonObject1.getString("value");
+                if (orientationValue.equals("Sensor")) {
+                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+                }
+                if (orientationValue.equals("Portrait")) {
+                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+                }
+                if (orientationValue.equals("Landscape")) {
+                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
+                }
+                main_text_change();
             }
-            if(orientationValue.equals("Portrait")){
-                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-            }
-            if(orientationValue.equals("Landscape")){
-                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
-            }
-            main_text_change();
         }catch (Exception e){
             e.printStackTrace();
         }

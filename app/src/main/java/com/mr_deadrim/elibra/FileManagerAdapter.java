@@ -81,9 +81,11 @@ public class FileManagerAdapter extends ArrayAdapter<String> {
         }
 
         try{
-            JSONObject jsonObject0 = settingJsonArray.getJSONObject(0);
-            textStyle = jsonObject0.getString("style");
-            textSize = jsonObject0.getInt("size");
+            if(settingJsonArray.length()>1) {
+                JSONObject jsonObject0 = settingJsonArray.getJSONObject(0);
+                textStyle = jsonObject0.getString("style");
+                textSize = jsonObject0.getInt("size");
+            }
         }catch(Exception e){
             e.printStackTrace();
         }
@@ -94,6 +96,9 @@ public class FileManagerAdapter extends ArrayAdapter<String> {
         return convertView;
     }
     public static String getFileType(File file) {
+        if (file.isDirectory()) {
+            return "directory";
+        }
         try (FileInputStream fis = new FileInputStream(file)) {
             byte[] header = new byte[16]; // Read the first 16 bytes of the file
             if (fis.read(header) != -1) {

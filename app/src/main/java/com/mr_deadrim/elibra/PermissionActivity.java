@@ -28,12 +28,11 @@ import org.json.JSONObject;
 public class PermissionActivity extends AppCompatActivity {
     private static final int STORAGE_PERMISSION_REQUEST_CODE = 100;
     private static final int APP_SETTINGS_REQUEST_CODE = 101;
-
     private View dialogView;
     TextView textViewExit;
     TextView textViewExitMessage,textViewPermissionDescription,textViewAuthorization,textViewAuthorizationMessage;
     JSONArray settingJsonArray;
-    String textStyle="sans-serif", orientationValue ="Sensor";
+    String textStyle="sans-serif", orientationValue="Sensor";
     int textSize=40;
     Button buttonExitNo,buttonExitYes,buttonGrandPermission,buttonGoToSettingCancel, buttonGoToSetting;
     @Override
@@ -54,27 +53,32 @@ public class PermissionActivity extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
         load();
-
     }
     private void load() {
         try {
-            JSONObject jsonObject0 = settingJsonArray.getJSONObject(0);
-            textStyle=jsonObject0.getString("style");
-            textSize =jsonObject0.getInt("size");
-            JSONObject jsonObject1 = settingJsonArray.getJSONObject(1);
-            orientationValue = jsonObject1.getString("value");
-            if(orientationValue.equals("Sensor")){
+            if (settingJsonArray.length() > 1) {
+                JSONObject jsonObject0 = settingJsonArray.getJSONObject(0);
+                textStyle = jsonObject0.getString("style");
+                textSize = jsonObject0.getInt("size");
+                JSONObject jsonObject1 = settingJsonArray.getJSONObject(1);
+                orientationValue = jsonObject1.getString("value");
+            }
+            if (orientationValue.equals("Sensor")) {
                 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
             }
-            if(orientationValue.equals("Portrait")){
+            if (orientationValue.equals("Portrait")) {
                 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
             }
-            if(orientationValue.equals("Landscape")){
+            if (orientationValue.equals("Landscape")) {
                 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
             }
-            main_text_change();
+            Typeface typeface = Typeface.create(textStyle, Typeface.NORMAL);
+            textViewPermissionDescription.setTypeface(typeface);
+            buttonGrandPermission.setTypeface(typeface);
+            textViewPermissionDescription.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
+            buttonGrandPermission.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
+
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -188,11 +192,5 @@ public class PermissionActivity extends AppCompatActivity {
         buttonExitNo.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
         buttonExitYes.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
     }
-    public void main_text_change(){
-        Typeface typeface = Typeface.create(textStyle, Typeface.NORMAL);
-        textViewPermissionDescription.setTypeface(typeface);
-        buttonGrandPermission.setTypeface(typeface);
-        textViewPermissionDescription.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
-        buttonGrandPermission.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
-    }
+
 }
