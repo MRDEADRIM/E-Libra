@@ -46,7 +46,4 @@ Thank you for using E Libra.\n\n
         <item>sans-serif-smallcaps</item>
     </string-array>
 
-    <dimen name="text_size">40sp</dimen>
-
-
 </resources>

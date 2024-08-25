@@ -938,7 +938,7 @@ public class SettingActivity extends AppCompatActivity {
                     entry = zis.getNextEntry();
                 }
         } catch (IOException e) {
-            Toast.makeText(this, "Error reading zip file: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            Log.d("log_message","Error reading zip file: " + e.getMessage());
             return false;
         }
         if (!hasRequiredFiles) {

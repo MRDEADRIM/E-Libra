@@ -502,7 +502,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
-                        android:text="Remove the existing data and import.( including settings and Books )"
+                        android:text="Remove Existing Books And Import."
                         app:layout_constraintEnd_toEndOf="@+id/editTextImportPath"
                         app:layout_constraintStart_toStartOf="@+id/editTextImportPath"
                         app:layout_constraintTop_toBottomOf="@+id/editTextImportPath" />
@@ -538,6 +538,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:text="Import Settings"
+                        android:checked="true"
                         app:layout_constraintEnd_toStartOf="@+id/buttonProceed"
                         app:layout_constraintStart_toStartOf="@+id/checkBoxRemoveExisting"
                         app:layout_constraintTop_toBottomOf="@+id/checkBoxRemoveExisting" />
@@ -574,6 +575,7 @@
                         android:layout_marginStart="8dp"
                         android:layout_marginTop="16dp"
                         android:text="Export Settings"
+                        android:checked="true"
                         app:layout_constraintEnd_toStartOf="@+id/buttonProceed"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/editTextExportPath" />
