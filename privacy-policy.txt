@@ -1,0 +1,46 @@
+Privacy Policy
+
+
+1. Introduction
+
+Welcome to E Libra (the "App"). We are committed to protecting your privacy. This Privacy Policy explains how we collect, use, and safeguard your personal information when you use our App. By using our App, you agree to the terms of this Privacy Policy.
+
+2. Permissions
+
+Our App requires the following permissions to function:
+
+    MANAGE_EXTERNAL_STORAGE: This permission allows the App to manage files on your device's external storage. It is necessary for organizing and managing your e Books.
+
+    READ_EXTERNAL_STORAGE: This permission allows the App to read files from your device's external storage. It is used to access your eBooks and display them within the App.
+
+    WRITE_EXTERNAL_STORAGE: This permission allows the App to write files to your device's external storage. It is required for saving and updating eBooks on your device.
+
+3. Data Collection and Use
+
+    Personal Data: Our App does not collect, store, or share any personal data or information from users. The permissions requested are solely used for managing eBooks on your device and are not used for any other purpose.
+
+    Usage Data: Since our App does not connect to the internet, it does not collect any usage data or analytics.
+
+4. Data Security
+
+We take reasonable measures to protect your information from unauthorized access, use, or disclosure. However, since our App does not transmit data over the internet, the risk of data breaches is minimal.
+
+5. Third-Party Services
+
+Our App does not integrate with any third-party services or APIs. We do not share your information with any third parties.
+
+6. Changes to This Privacy Policy
+
+We may update this Privacy Policy from time to time. Any changes will be posted on this page with an updated effective date. We encourage you to review this Privacy Policy periodically.
+
+7. Contact Us
+
+If you have any questions or concerns about this Privacy Policy or our App, please contact us at 80binuthoms08@gmail.com .
+
+8. Disclaimer
+
+The developer of this App will not be responsible for any misuse of the application. Users are solely responsible for how they use the App and the files they manage with it. The developer disclaims any liability for any consequences arising from the use or misuse of the App.
+
+8. Consent
+
+By using our App, you consent to the terms of this Privacy Policy.

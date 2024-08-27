@@ -509,12 +509,12 @@ public class SettingActivity extends AppCompatActivity {
                         }
 
                     } else {
-                        Toast.makeText(this, "Path Not Found", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "Can't Extract Books From this path", Toast.LENGTH_SHORT).show();
                     }
 
                     } catch (Exception e) {
                         Toast.makeText(this, "error library json"+e, Toast.LENGTH_SHORT).show();
-                        Log.d("error",e.toString());
+                        Log.d("error_message",e.toString());
                     }
 
 
@@ -706,7 +706,6 @@ public class SettingActivity extends AppCompatActivity {
         });
         buttonFileReplaceYes.setOnClickListener(v12 -> {
             try {
-                Toast.makeText(this, "zip function running", Toast.LENGTH_SHORT).show();
                 zip(folderToZip, zippedFile);
                 migrationOutput("[ STATUS ]-( REPLACED )\n\n[ PATH ] - "+zippedFile+"\n\n",type);
                 deleteFolder(folderToZip);
@@ -842,7 +841,7 @@ public class SettingActivity extends AppCompatActivity {
         File destination = new File(destPath);
         destination.getParentFile().mkdirs();
         if (!source.exists()) {
-            Toast.makeText(SettingActivity.this, "Source file does not exist", Toast.LENGTH_SHORT).show();
+            Log.d("error_message","Source file does not exist");
             return;
         }
         FileInputStream fis = null;
@@ -944,7 +943,6 @@ public class SettingActivity extends AppCompatActivity {
             return false;
         }
         if (!hasRequiredFiles) {
-            Toast.makeText(this, "Zip file does not contain the required files.", Toast.LENGTH_SHORT).show();
             return false;
         }
         if (!destDir.exists()) {

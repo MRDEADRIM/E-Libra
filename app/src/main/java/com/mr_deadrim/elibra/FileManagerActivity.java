@@ -8,6 +8,7 @@ import android.os.Bundle;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Environment;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.View;
@@ -113,8 +114,8 @@ public class FileManagerActivity extends AppCompatActivity {
                 if (status.equals("select_folder") && file.isDirectory()) {
                     fileList.add(file.getAbsolutePath());
                 }
-                if (status.equals("select_zip_file") && (file.isDirectory() || "zip".equals(fileType))) {
-                    fileList.add(file.getAbsolutePath());
+                if (status.equals("select_zip_file") && (file.isDirectory() || "zip".equals(fileType) && file.getName().endsWith(".zip"))) {
+                        fileList.add(file.getAbsolutePath());
                 }
             }
         }
